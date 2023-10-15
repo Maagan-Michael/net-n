@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "switchmanagerapi"
+version = "0.1.0"
+description = ""
+authors = ["Nathan Schwarz <nathan.schwarz97@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.103.2"
+uvicorn = "^0.23.2"
+pydantic = "^2.4.2"
+
+[tool.poetry.scripts]
+start = "switchmanagerapi.main:app - reload"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
