@@ -1,30 +1,9 @@
----
-title: FastAPI v0.1.0
-language_tabs:
-  - shell: Shell
-  - http: HTTP
-  - javascript: JavaScript
-  - ruby: Ruby
-  - python: Python
-  - php: PHP
-  - java: Java
-  - go: Go
-toc_footers: []
-includes: []
-search: true
-highlight_theme: darkula
-headingLevel: 2
-
----
-
-<!-- Generator: Widdershins v4.0.1 -->
-
-<h1 id="fastapi">FastAPI v0.1.0</h1>
+<h1 id="fastapi">switchManager API draft</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
 <h1 id="fastapi-v1">v1</h1>
-
+s
 ## listConnections_api_v1_connections_get
 
 <a id="opIdlistConnections_api_v1_connections_get"></a>
