@@ -1,15 +1,28 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 from typing import Optional
+from .helpers import IP_REGXP
 
 class IConnectionBase(BaseModel):
     """Base Connection model interface"""
     id: int
-    name: str = Field(alias="ppp")
+    name: str = Field(alias="ppp", min_length=3, max_length=255)
     port: int = 0
     toggled: bool = False
     toggleDate: Optional[datetime] = None
     type: str = "copper|fiber"
+
+    @validator("port")
+    def validate_port(cls, v):
+        assert v >= 0, "port must be positive"
+        assert v <= 65535, "port must be lower than 65535"
+        return v
+
+    @validator("toggleDate")
+    def validate_toggleDate(cls, v):
+        if v is not None:
+            assert v > datetime.now(), "toggleDate must be in the future"
+        return v
 
 class IConnection(IConnectionBase):
     """Connection model interface"""
@@ -27,16 +40,34 @@ class Connection(IConnection):
 class Switch(BaseModel):
     "Switch Database model"
     id: int
-    name: str
-    # todo create custom IP regex verification
+    name: str = Field(min_length=1, max_length=255)
     ip: str = "0.0.0.0"
     gpsLat: Optional[float] = None
     gpsLong: Optional[float] = None
 
+    @validator("gpsLat")
+    def validate_gpsLat(cls, v):
+        if v is not None:
+            assert v >= -90, "gpsLat must be greater than -90"
+            assert v <= 90, "gpsLat must be lower than 90"
+        return v
+
+    @validator("gpsLong")
+    def validate_gpsLong(cls, v):
+        if v is not None:
+            assert v >= -180, "gpsLong must be greater than -180"
+            assert v <= 180, "gpsLong must be lower than 180"
+        return v
+
+    @validator("ip")
+    def validate_ip(cls, v):
+        assert IP_REGXP.match(v) is not None, "ip must be a valid IPv4/IPv6 address"
+        return v
+
 class Customer(BaseModel):
     """Customer Database model"""
     id: int
-    firstname: str
-    lastname: str
-    type: str
-    address: str
+    firstname: str = Field(min_length=1, max_length=255)
+    lastname: str = Field(min_length=1, max_length=255)
+    type: str = Field(min_length=1, max_length=255)
+    address: str = Field(min_length=1, max_length=255)
