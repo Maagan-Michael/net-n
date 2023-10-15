@@ -1,6 +1,7 @@
 from enum import Enum, IntEnum
 from pydantic import BaseModel
 from .models import ConnectionInterface, Switch, Customer
+from typing import Optional
 
 # generic
 class OrderEnum(str, Enum):
@@ -33,6 +34,6 @@ class ConnectionListInput(BaseModel):
     page: int = 0
     limit: int = 10
     sort: str = "id"
-    search: str = ""
+    search: Optional[str] = None
     order: OrderEnum = OrderEnum.asc
     filter: ListFilterEnum = ListFilterEnum.all

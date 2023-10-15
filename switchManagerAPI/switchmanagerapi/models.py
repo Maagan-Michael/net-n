@@ -1,5 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, Field
+from typing import Optional
 
 class ConnectionInterface(BaseModel):
     id: int
@@ -22,8 +23,8 @@ class Switch(BaseModel):
     name: str
     # todo create custom IP regex verification
     ip: str = "0.0.0.0"
-    gpsLat: float = 0.0
-    gpsLong: float = 0.0
+    gpsLat: Optional[float] = None
+    gpsLong: Optional[float] = None
 
 class Customer(BaseModel):
     id: int
