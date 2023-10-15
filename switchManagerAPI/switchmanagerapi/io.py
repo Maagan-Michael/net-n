@@ -1,6 +1,6 @@
-from enum import Enum, IntEnum
+from enum import Enum
 from pydantic import BaseModel, Field
-from .models import IConnectionBase, IConnection, Switch, Customer
+from .models import IConnectionBase, IConnection, Connection, Switch, Customer
 from typing import Optional
 
 # generic
@@ -22,17 +22,17 @@ class ConnectionsOutput(BaseModel):
     hasPrevious: bool = False
     hasNext: bool = False
 
-class ListFilterEnum(IntEnum):
+class ListFilterEnum(str, Enum):
     """to filter down connections search results"""
-    all = 0
-    customer = 1
-    address = 2
-    toggled = 3
-    notToggled = 4
-    up = 5
-    down = 6
-    port = 7
-    switch = 8
+    all = "all"
+    customer = "customer"
+    address = "address"
+    enabled = "enabled"
+    disabled = "disabled"
+    up = "up"
+    down = "down"
+    port = "port"
+    switch = "switch"
 
 class ConnectionListInput(BaseModel):
     """connections list API input"""
@@ -44,6 +44,13 @@ class ConnectionListInput(BaseModel):
     filter: ListFilterEnum = ListFilterEnum.all
 
 # connection update
-class ConnectionInput(IConnectionBase):
+class UpdateConnectionInput(IConnectionBase):
     """Connection model update API input"""
     pass
+
+# connection create
+class ConnectionInput(Connection):
+    """Connection model create API input"""
+    # relationships
+    switchId: int = 0
+    customerId: int = 0
