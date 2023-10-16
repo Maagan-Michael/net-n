@@ -34,12 +34,19 @@ class ListFilterEnum(str, Enum):
     port = "port"
     switch = "switch"
 
+class ListSortEnum(str, Enum):
+    con = "con"
+    fullname = "name"
+    customerId = "cid"
+    address = "address"
+    switch = "switch"
+
 class ConnectionListInput(BaseModel):
     """connections list API input"""
     page: int = 0
-    limit: int = 10
-    sort: str = "id"
+    limit: int = Field(default=10, ge=1, le=100)
     search: Optional[str] = None
+    sort: ListSortEnum = ListSortEnum.con
     order: OrderEnum = OrderEnum.asc
     filter: ListFilterEnum = ListFilterEnum.all
 

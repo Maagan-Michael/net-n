@@ -6,11 +6,11 @@ from .helpers import IP_REGXP
 class IConnectionBase(BaseModel):
     """Base Connection model interface"""
     id: int
-    name: str = Field(alias="ppp", min_length=3, max_length=255)
-    port: int = 0
-    toggled: bool = False
-    toggleDate: Optional[datetime] = None
-    type: str = "copper|fiber"
+    name: str = Field(alias="ppp", min_length=3, max_length=255, description="connection name")
+    port: int = Field(default=0, description="port number on the switch")
+    toggled: bool = Field(default=False, description="define if the port is opened")
+    toggleDate: Optional[datetime] = Field(default=None, description="date at which the port should open / close based on currrent port status")
+    type: str = Field(default="copper|fiber", description="physical connection type")
 
     @validator("port")
     def validate_port(cls, v):
@@ -69,5 +69,5 @@ class Customer(BaseModel):
     id: int
     firstname: str = Field(min_length=1, max_length=255)
     lastname: str = Field(min_length=1, max_length=255)
-    type: str = Field(min_length=1, max_length=255)
+    type: str = Field(min_length=1, max_length=255, description="customer type (company name || person status)")
     address: str = Field(min_length=1, max_length=255)
