@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from typing import Union
-from switchmanagerapi.io import ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, UpdateConnectionInput
+from ..models.connection import BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, UpdateConnectionInput
 
 router = APIRouter(
     tags=["v1", "connections"],
@@ -8,7 +8,6 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-# connections CRUD
 # connections CRUD
 @router.get("/", response_model=ConnectionsOutput)
 async def listConnections(input: ConnectionListInput = Depends()):
@@ -20,17 +19,10 @@ async def getConnection(id: int):
     """return a connection"""
     return ConnectionOutput()
 
-@router.post("/upsert", response_model=Union[ConnectionOutput, list[ConnectionOutput]])
-async def createConnection(input: Union[ConnectionUpsertInput, list[ConnectionUpsertInput]]):
-    """create one / upsert multiple connections"""
-    if (isinstance(input, list)):
-        return [ConnectionOutput()]
-    return ConnectionOutput()
-
-@router.post("/update/{id}", response_model=ConnectionOutput)
-async def updateConnection(input: UpdateConnectionInput):
-    """update a connection"""
-    return ConnectionOutput()
+@router.post("/upsert", response_model=BatchConnectionOutput)
+async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUpsertInput]]):
+    """upsert or udpate one || multiple connections"""
+    BatchConnectionOutput(items=[ConnectionOutput()], errors=[])
 
 @router.delete("/delete/{id}", response_model=str)
 async def deleteConnection(id: int):

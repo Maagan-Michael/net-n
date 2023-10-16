@@ -2,7 +2,6 @@ import uvicorn
 from fastapi import FastAPI
 from switchmanagerapi.routers import connections, customers, switches
 
-
 app = FastAPI(
     # todo : authentification dependency with external oauth service
     dependencies=[],

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from switchmanagerapi.models import Customer
 from typing import Union
+from ..models.customer import Customer, BatchedCustomerOutput, UpserCustomerInput
 
 router = APIRouter(
     tags=["v1", "customers"],
@@ -19,17 +19,10 @@ async def getCustomer(id: int):
     """return a customer"""
     return Customer()
 
-@router.post("/upsert", response_model=Union[Customer, list[Customer]])
-async def createCustomer(input: Union[Customer, list[Customer]]):
-    """create a customer"""
-    if (isinstance(input, list)):
-        return [Customer()]
-    return Customer()
-
-@router.post("/update/{id}", response_model=Customer)
-async def updateCustomer(input: Customer):
-    """update a customer"""
-    return Customer()
+@router.post("/upsert", response_model=BatchedCustomerOutput)
+async def upsertCustomer(input: Union[UpserCustomerInput, list[UpserCustomerInput]]):
+    """upsert or udpate one || multiple customer(s)"""
+    return BatchedCustomerOutput(items=[Customer()], errors=[])
 
 @router.delete("/delete/{id}", response_model=str)
 async def deleteCustomer(id: int):
