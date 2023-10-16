@@ -1,9 +1,30 @@
-<h1 id="fastapi">switchManager API draft</h1>
+---
+title: FastAPI v0.1.0
+language_tabs:
+  - shell: Shell
+  - http: HTTP
+  - javascript: JavaScript
+  - ruby: Ruby
+  - python: Python
+  - php: PHP
+  - java: Java
+  - go: Go
+toc_footers: []
+includes: []
+search: true
+highlight_theme: darkula
+headingLevel: 2
+
+---
+
+<!-- Generator: Widdershins v4.0.1 -->
+
+<h1 id="fastapi">FastAPI v0.1.0</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
 <h1 id="fastapi-v1">v1</h1>
-s
+
 ## listConnections_api_v1_connections_get
 
 <a id="opIdlistConnections_api_v1_connections_get"></a>
@@ -20,8 +41,8 @@ return a paginated list of connections
 |---|---|---|---|---|
 |page|query|integer|false|none|
 |limit|query|integer|false|none|
-|sort|query|string|false|none|
 |search|query|any|false|none|
+|sort|query|any|false|none|
 |order|query|any|false|none|
 |filter|query|any|false|none|
 
@@ -285,6 +306,245 @@ delete a connection
 ```
 
 <h3 id="deleteconnection_api_v1_connection_delete__id__delete-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|string|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## listCustomers_api_v1_customers_get
+
+<a id="opIdlistCustomers_api_v1_customers_get"></a>
+
+`GET /api/v1/customers`
+
+*Listcustomers*
+
+return a list of customers
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": 0,
+    "firstname": "string",
+    "lastname": "string",
+    "type": "string",
+    "address": "string"
+  }
+]
+```
+
+<h3 id="listcustomers_api_v1_customers_get-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
+
+<h3 id="listcustomers_api_v1_customers_get-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+*Response Listcustomers Api V1 Customers Get*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|Response Listcustomers Api V1 Customers Get|[[Customer](#schemacustomer)]|false|none|[Customer Database model]|
+|» Customer|[Customer](#schemacustomer)|false|none|Customer Database model|
+|»» id|integer|true|none|none|
+|»» firstname|string|true|none|none|
+|»» lastname|string|true|none|none|
+|»» type|string|true|none|customer type (company name || person status)|
+|»» address|string|true|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## getCustomer_api_v1_customer__id__get
+
+<a id="opIdgetCustomer_api_v1_customer__id__get"></a>
+
+`GET /api/v1/customer/{id}`
+
+*Getcustomer*
+
+return a customer
+
+<h3 id="getcustomer_api_v1_customer__id__get-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|integer|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": 0,
+  "firstname": "string",
+  "lastname": "string",
+  "type": "string",
+  "address": "string"
+}
+```
+
+<h3 id="getcustomer_api_v1_customer__id__get-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[Customer](#schemacustomer)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## createCustomer_api_v1_customer_create_post
+
+<a id="opIdcreateCustomer_api_v1_customer_create_post"></a>
+
+`POST /api/v1/customer/create`
+
+*Createcustomer*
+
+create a customer
+
+> Body parameter
+
+```json
+{
+  "id": 0,
+  "firstname": "string",
+  "lastname": "string",
+  "type": "string",
+  "address": "string"
+}
+```
+
+<h3 id="createcustomer_api_v1_customer_create_post-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[Customer](#schemacustomer)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": 0,
+  "firstname": "string",
+  "lastname": "string",
+  "type": "string",
+  "address": "string"
+}
+```
+
+<h3 id="createcustomer_api_v1_customer_create_post-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[Customer](#schemacustomer)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## updateCustomer_api_v1_customer_update__id__post
+
+<a id="opIdupdateCustomer_api_v1_customer_update__id__post"></a>
+
+`POST /api/v1/customer/update/{id}`
+
+*Updatecustomer*
+
+update a customer
+
+> Body parameter
+
+```json
+{
+  "id": 0,
+  "firstname": "string",
+  "lastname": "string",
+  "type": "string",
+  "address": "string"
+}
+```
+
+<h3 id="updatecustomer_api_v1_customer_update__id__post-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[Customer](#schemacustomer)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": 0,
+  "firstname": "string",
+  "lastname": "string",
+  "type": "string",
+  "address": "string"
+}
+```
+
+<h3 id="updatecustomer_api_v1_customer_update__id__post-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[Customer](#schemacustomer)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## deleteCustomer_api_v1_customer_delete__id__delete
+
+<a id="opIddeleteCustomer_api_v1_customer_delete__id__delete"></a>
+
+`DELETE /api/v1/customer/delete/{id}`
+
+*Deletecustomer*
+
+delete a customer
+
+<h3 id="deletecustomer_api_v1_customer_delete__id__delete-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|integer|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+"string"
+```
+
+<h3 id="deletecustomer_api_v1_customer_delete__id__delete-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -564,245 +824,6 @@ delete a switch
 This operation does not require authentication
 </aside>
 
-## listCustomers_api_v1_customers_get
-
-<a id="opIdlistCustomers_api_v1_customers_get"></a>
-
-`GET /api/v1/customers`
-
-*Listcustomers*
-
-return a list of customers
-
-> Example responses
-
-> 200 Response
-
-```json
-[
-  {
-    "id": 0,
-    "firstname": "string",
-    "lastname": "string",
-    "type": "string",
-    "address": "string"
-  }
-]
-```
-
-<h3 id="listcustomers_api_v1_customers_get-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
-
-<h3 id="listcustomers_api_v1_customers_get-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-*Response Listcustomers Api V1 Customers Get*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|Response Listcustomers Api V1 Customers Get|[[Customer](#schemacustomer)]|false|none|[Customer Database model]|
-|» Customer|[Customer](#schemacustomer)|false|none|Customer Database model|
-|»» id|integer|true|none|none|
-|»» firstname|string|true|none|none|
-|»» lastname|string|true|none|none|
-|»» type|string|true|none|none|
-|»» address|string|true|none|none|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## getCustomer_api_v1_customer__id__get
-
-<a id="opIdgetCustomer_api_v1_customer__id__get"></a>
-
-`GET /api/v1/customer/{id}`
-
-*Getcustomer*
-
-return a customer
-
-<h3 id="getcustomer_api_v1_customer__id__get-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|integer|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": 0,
-  "firstname": "string",
-  "lastname": "string",
-  "type": "string",
-  "address": "string"
-}
-```
-
-<h3 id="getcustomer_api_v1_customer__id__get-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[Customer](#schemacustomer)|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
-|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## createCustomer_api_v1_customer_create_post
-
-<a id="opIdcreateCustomer_api_v1_customer_create_post"></a>
-
-`POST /api/v1/customer/create`
-
-*Createcustomer*
-
-create a customer
-
-> Body parameter
-
-```json
-{
-  "id": 0,
-  "firstname": "string",
-  "lastname": "string",
-  "type": "string",
-  "address": "string"
-}
-```
-
-<h3 id="createcustomer_api_v1_customer_create_post-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[Customer](#schemacustomer)|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": 0,
-  "firstname": "string",
-  "lastname": "string",
-  "type": "string",
-  "address": "string"
-}
-```
-
-<h3 id="createcustomer_api_v1_customer_create_post-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[Customer](#schemacustomer)|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
-|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## updateCustomer_api_v1_customer_update__id__post
-
-<a id="opIdupdateCustomer_api_v1_customer_update__id__post"></a>
-
-`POST /api/v1/customer/update/{id}`
-
-*Updatecustomer*
-
-update a customer
-
-> Body parameter
-
-```json
-{
-  "id": 0,
-  "firstname": "string",
-  "lastname": "string",
-  "type": "string",
-  "address": "string"
-}
-```
-
-<h3 id="updatecustomer_api_v1_customer_update__id__post-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[Customer](#schemacustomer)|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": 0,
-  "firstname": "string",
-  "lastname": "string",
-  "type": "string",
-  "address": "string"
-}
-```
-
-<h3 id="updatecustomer_api_v1_customer_update__id__post-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[Customer](#schemacustomer)|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
-|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## deleteCustomer_api_v1_customer_delete__id__delete
-
-<a id="opIddeleteCustomer_api_v1_customer_delete__id__delete"></a>
-
-`DELETE /api/v1/customer/delete/{id}`
-
-*Deletecustomer*
-
-delete a customer
-
-<h3 id="deletecustomer_api_v1_customer_delete__id__delete-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|integer|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-"string"
-```
-
-<h3 id="deletecustomer_api_v1_customer_delete__id__delete-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|string|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
-|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
 # Schemas
 
 <h2 id="tocS_ConnectionInput">ConnectionInput</h2>
@@ -836,10 +857,10 @@ ConnectionInput
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|integer|true|none|none|
-|ppp|string|true|none|none|
-|port|integer|false|none|none|
-|toggled|boolean|false|none|none|
-|toggleDate|any|false|none|none|
+|ppp|string|true|none|connection name|
+|port|integer|false|none|port number on the switch|
+|toggled|boolean|false|none|define if the port is opened|
+|toggleDate|any|false|none|date at which the port should open / close based on currrent port status|
 
 anyOf
 
@@ -857,7 +878,7 @@ continued
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|type|string|false|none|none|
+|type|string|false|none|physical connection type|
 |isUp|boolean|false|none|none|
 |proto|string|false|none|none|
 |speed|integer|false|none|none|
@@ -907,10 +928,10 @@ ConnectionOutput
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|integer|true|none|none|
-|ppp|string|true|none|none|
-|port|integer|false|none|none|
-|toggled|boolean|false|none|none|
-|toggleDate|any|false|none|none|
+|ppp|string|true|none|connection name|
+|port|integer|false|none|port number on the switch|
+|toggled|boolean|false|none|define if the port is opened|
+|toggleDate|any|false|none|date at which the port should open / close based on currrent port status|
 
 anyOf
 
@@ -928,7 +949,7 @@ continued
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|type|string|false|none|none|
+|type|string|false|none|physical connection type|
 |isUp|boolean|false|none|none|
 |proto|string|false|none|none|
 |speed|integer|false|none|none|
@@ -988,7 +1009,7 @@ Customer
 |id|integer|true|none|none|
 |firstname|string|true|none|none|
 |lastname|string|true|none|none|
-|type|string|true|none|none|
+|type|string|true|none|customer type (company name || person status)|
 |address|string|true|none|none|
 
 <h2 id="tocS_HTTPValidationError">HTTPValidationError</h2>
@@ -1054,6 +1075,36 @@ ListFilterEnum
 |ListFilterEnum|down|
 |ListFilterEnum|port|
 |ListFilterEnum|switch|
+
+<h2 id="tocS_ListSortEnum">ListSortEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemalistsortenum"></a>
+<a id="schema_ListSortEnum"></a>
+<a id="tocSlistsortenum"></a>
+<a id="tocslistsortenum"></a>
+
+```json
+"con"
+
+```
+
+ListSortEnum
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ListSortEnum|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|ListSortEnum|con|
+|ListSortEnum|name|
+|ListSortEnum|cid|
+|ListSortEnum|address|
+|ListSortEnum|switch|
 
 <h2 id="tocS_OrderEnum">OrderEnum</h2>
 <!-- backwards compatibility -->
@@ -1167,10 +1218,10 @@ UpdateConnectionInput
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|integer|true|none|none|
-|ppp|string|true|none|none|
-|port|integer|false|none|none|
-|toggled|boolean|false|none|none|
-|toggleDate|any|false|none|none|
+|ppp|string|true|none|connection name|
+|port|integer|false|none|port number on the switch|
+|toggled|boolean|false|none|define if the port is opened|
+|toggleDate|any|false|none|date at which the port should open / close based on currrent port status|
 
 anyOf
 
@@ -1188,7 +1239,7 @@ continued
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|type|string|false|none|none|
+|type|string|false|none|physical connection type|
 
 <h2 id="tocS_ValidationError">ValidationError</h2>
 <!-- backwards compatibility -->
