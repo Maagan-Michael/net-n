@@ -92,7 +92,7 @@ return a connection
 
 ```json
 {
-  "id": 0,
+  "id": "string",
   "ppp": "string",
   "port": 0,
   "toggled": false,
@@ -102,14 +102,13 @@ return a connection
   "proto": "snmp",
   "speed": 0,
   "switch": {
-    "id": 0,
-    "name": "string",
+    "id": "string",
     "ip": "0.0.0.0",
     "gpsLat": 0,
     "gpsLong": 0
   },
   "customer": {
-    "id": 0,
+    "id": "string",
     "firstname": "string",
     "lastname": "string",
     "type": "string",
@@ -130,26 +129,26 @@ return a connection
 This operation does not require authentication
 </aside>
 
-## createConnection_api_v1_connections_upsert_post
+## upsertConnection_api_v1_connections_upsert_post
 
-<a id="opIdcreateConnection_api_v1_connections_upsert_post"></a>
+<a id="opIdupsertConnection_api_v1_connections_upsert_post"></a>
 
 `POST /api/v1/connections/upsert`
 
-*Createconnection*
+*Upsertconnection*
 
-create one / upsert multiple connections
+upsert or udpate one || multiple connections
 
 > Body parameter
 
 ```json
 {
-  "id": 0,
-  "ppp": "string",
+  "id": "string",
+  "name": "string",
   "port": 0,
-  "toggled": false,
+  "toggled": true,
   "toggleDate": "2019-08-24T14:15:22Z",
-  "type": "copper|fiber",
+  "type": "string",
   "isUp": true,
   "proto": "string",
   "speed": 0,
@@ -158,7 +157,7 @@ create one / upsert multiple connections
 }
 ```
 
-<h3 id="createconnection_api_v1_connections_upsert_post-parameters">Parameters</h3>
+<h3 id="upsertconnection_api_v1_connections_upsert_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -170,205 +169,16 @@ create one / upsert multiple connections
 
 ```json
 {
-  "id": 0,
-  "ppp": "string",
-  "port": 0,
-  "toggled": false,
-  "toggleDate": "2019-08-24T14:15:22Z",
-  "type": "copper|fiber",
-  "isUp": false,
-  "proto": "snmp",
-  "speed": 0,
-  "switch": {
-    "id": 0,
-    "name": "string",
-    "ip": "0.0.0.0",
-    "gpsLat": 0,
-    "gpsLong": 0
-  },
-  "customer": {
-    "id": 0,
-    "firstname": "string",
-    "lastname": "string",
-    "type": "string",
-    "address": "string"
-  }
+  "items": [],
+  "errors": []
 }
 ```
 
-<h3 id="createconnection_api_v1_connections_upsert_post-responses">Responses</h3>
+<h3 id="upsertconnection_api_v1_connections_upsert_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
-|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-
-<h3 id="createconnection_api_v1_connections_upsert_post-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-*Response Createconnection Api V1 Connections Upsert Post*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|Response Createconnection Api V1 Connections Upsert Post|any|false|none|none|
-
-*anyOf*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|» *anonymous*|[ConnectionOutput](#schemaconnectionoutput)|false|none|Connection model API output|
-|»» id|integer|true|none|none|
-|»» ppp|string|true|none|connection name|
-|»» port|integer|false|none|port number on the switch|
-|»» toggled|boolean|false|none|define if the port is opened|
-|»» toggleDate|any|false|none|date at which the port should open / close based on currrent port status|
-
-*anyOf*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»»» *anonymous*|string(date-time)|false|none|none|
-
-*or*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»»» *anonymous*|null|false|none|none|
-
-*continued*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»» type|string|false|none|physical connection type|
-|»» isUp|boolean|false|none|none|
-|»» proto|string|false|none|none|
-|»» speed|integer|false|none|none|
-|»» switch|[Switch](#schemaswitch)|false|none|Switch Database model|
-|»»» id|integer|true|none|none|
-|»»» name|string|true|none|none|
-|»»» ip|string|false|none|none|
-|»»» gpsLat|any|false|none|none|
-
-*anyOf*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»»»» *anonymous*|number|false|none|none|
-
-*or*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»»»» *anonymous*|null|false|none|none|
-
-*continued*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»»» gpsLong|any|false|none|none|
-
-*anyOf*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»»»» *anonymous*|number|false|none|none|
-
-*or*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»»»» *anonymous*|null|false|none|none|
-
-*continued*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»» customer|[Customer](#schemacustomer)|false|none|Customer Database model|
-|»»» id|integer|true|none|none|
-|»»» firstname|string|true|none|none|
-|»»» lastname|string|true|none|none|
-|»»» type|string|true|none|customer type (company name || person status)|
-|»»» address|string|true|none|none|
-
-*or*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|» *anonymous*|[[ConnectionOutput](#schemaconnectionoutput)]|false|none|[Connection model API output]|
-|»» ConnectionOutput|[ConnectionOutput](#schemaconnectionoutput)|false|none|Connection model API output|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## updateConnection_api_v1_connections_update__id__post
-
-<a id="opIdupdateConnection_api_v1_connections_update__id__post"></a>
-
-`POST /api/v1/connections/update/{id}`
-
-*Updateconnection*
-
-update a connection
-
-> Body parameter
-
-```json
-{
-  "id": 0,
-  "ppp": "string",
-  "port": 0,
-  "toggled": false,
-  "toggleDate": "2019-08-24T14:15:22Z",
-  "type": "copper|fiber"
-}
-```
-
-<h3 id="updateconnection_api_v1_connections_update__id__post-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[UpdateConnectionInput](#schemaupdateconnectioninput)|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": 0,
-  "ppp": "string",
-  "port": 0,
-  "toggled": false,
-  "toggleDate": "2019-08-24T14:15:22Z",
-  "type": "copper|fiber",
-  "isUp": false,
-  "proto": "snmp",
-  "speed": 0,
-  "switch": {
-    "id": 0,
-    "name": "string",
-    "ip": "0.0.0.0",
-    "gpsLat": 0,
-    "gpsLong": 0
-  },
-  "customer": {
-    "id": 0,
-    "firstname": "string",
-    "lastname": "string",
-    "type": "string",
-    "address": "string"
-  }
-}
-```
-
-<h3 id="updateconnection_api_v1_connections_update__id__post-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[ConnectionOutput](#schemaconnectionoutput)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[switchmanagerapi__models__factories__batcheableOutputFactory___locals___BatcheableOutputModel__1](#schemaswitchmanagerapi__models__factories__batcheableoutputfactory___locals___batcheableoutputmodel__1)|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
@@ -429,7 +239,7 @@ return a list of customers
 ```json
 [
   {
-    "id": 0,
+    "id": "string",
     "firstname": "string",
     "lastname": "string",
     "type": "string",
@@ -455,7 +265,7 @@ Status Code **200**
 |---|---|---|---|---|
 |Response Listcustomers Api V1 Customers  Get|[[Customer](#schemacustomer)]|false|none|[Customer Database model]|
 |» Customer|[Customer](#schemacustomer)|false|none|Customer Database model|
-|»» id|integer|true|none|none|
+|»» id|string|true|none|customer id / worker id|
 |»» firstname|string|true|none|none|
 |»» lastname|string|true|none|none|
 |»» type|string|true|none|customer type (company name || person status)|
@@ -487,7 +297,7 @@ return a customer
 
 ```json
 {
-  "id": 0,
+  "id": "string",
   "firstname": "string",
   "lastname": "string",
   "type": "string",
@@ -507,21 +317,21 @@ return a customer
 This operation does not require authentication
 </aside>
 
-## createCustomer_api_v1_customers_upsert_post
+## upsertCustomer_api_v1_customers_upsert_post
 
-<a id="opIdcreateCustomer_api_v1_customers_upsert_post"></a>
+<a id="opIdupsertCustomer_api_v1_customers_upsert_post"></a>
 
 `POST /api/v1/customers/upsert`
 
-*Createcustomer*
+*Upsertcustomer*
 
-create a customer
+upsert or udpate one || multiple customer(s)
 
 > Body parameter
 
 ```json
 {
-  "id": 0,
+  "id": "string",
   "firstname": "string",
   "lastname": "string",
   "type": "string",
@@ -529,7 +339,7 @@ create a customer
 }
 ```
 
-<h3 id="createcustomer_api_v1_customers_upsert_post-parameters">Parameters</h3>
+<h3 id="upsertcustomer_api_v1_customers_upsert_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -541,101 +351,16 @@ create a customer
 
 ```json
 {
-  "id": 0,
-  "firstname": "string",
-  "lastname": "string",
-  "type": "string",
-  "address": "string"
+  "items": [],
+  "errors": []
 }
 ```
 
-<h3 id="createcustomer_api_v1_customers_upsert_post-responses">Responses</h3>
+<h3 id="upsertcustomer_api_v1_customers_upsert_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
-|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-
-<h3 id="createcustomer_api_v1_customers_upsert_post-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-*Response Createcustomer Api V1 Customers Upsert Post*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|Response Createcustomer Api V1 Customers Upsert Post|any|false|none|none|
-
-*anyOf*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|» *anonymous*|[Customer](#schemacustomer)|false|none|Customer Database model|
-|»» id|integer|true|none|none|
-|»» firstname|string|true|none|none|
-|»» lastname|string|true|none|none|
-|»» type|string|true|none|customer type (company name || person status)|
-|»» address|string|true|none|none|
-
-*or*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|» *anonymous*|[[Customer](#schemacustomer)]|false|none|[Customer Database model]|
-|»» Customer|[Customer](#schemacustomer)|false|none|Customer Database model|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## updateCustomer_api_v1_customers_update__id__post
-
-<a id="opIdupdateCustomer_api_v1_customers_update__id__post"></a>
-
-`POST /api/v1/customers/update/{id}`
-
-*Updatecustomer*
-
-update a customer
-
-> Body parameter
-
-```json
-{
-  "id": 0,
-  "firstname": "string",
-  "lastname": "string",
-  "type": "string",
-  "address": "string"
-}
-```
-
-<h3 id="updatecustomer_api_v1_customers_update__id__post-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[Customer](#schemacustomer)|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": 0,
-  "firstname": "string",
-  "lastname": "string",
-  "type": "string",
-  "address": "string"
-}
-```
-
-<h3 id="updatecustomer_api_v1_customers_update__id__post-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[Customer](#schemacustomer)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[switchmanagerapi__models__factories__batcheableOutputFactory___locals___BatcheableOutputModel__2](#schemaswitchmanagerapi__models__factories__batcheableoutputfactory___locals___batcheableoutputmodel__2)|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
@@ -679,15 +404,15 @@ delete a customer
 This operation does not require authentication
 </aside>
 
-## listSwitches_api_v1_switchs__get
+## listSwitches_api_v1_switches__get
 
-<a id="opIdlistSwitches_api_v1_switchs__get"></a>
+<a id="opIdlistSwitches_api_v1_switches__get"></a>
 
-`GET /api/v1/switchs/`
+`GET /api/v1/switches/`
 
 *Listswitches*
 
-return a list of switchs
+return a list of switches
 
 > Example responses
 
@@ -696,8 +421,7 @@ return a list of switchs
 ```json
 [
   {
-    "id": 0,
-    "name": "string",
+    "id": "string",
     "ip": "0.0.0.0",
     "gpsLat": 0,
     "gpsLong": 0
@@ -705,26 +429,25 @@ return a list of switchs
 ]
 ```
 
-<h3 id="listswitches_api_v1_switchs__get-responses">Responses</h3>
+<h3 id="listswitches_api_v1_switches__get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
 
-<h3 id="listswitches_api_v1_switchs__get-responseschema">Response Schema</h3>
+<h3 id="listswitches_api_v1_switches__get-responseschema">Response Schema</h3>
 
 Status Code **200**
 
-*Response Listswitches Api V1 Switchs  Get*
+*Response Listswitches Api V1 Switches  Get*
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|Response Listswitches Api V1 Switchs  Get|[[Switch](#schemaswitch)]|false|none|[Switch Database model]|
+|Response Listswitches Api V1 Switches  Get|[[Switch](#schemaswitch)]|false|none|[Switch Database model]|
 |» Switch|[Switch](#schemaswitch)|false|none|Switch Database model|
-|»» id|integer|true|none|none|
-|»» name|string|true|none|none|
-|»» ip|string|false|none|none|
+|»» id|string|true|none|switch unique name / id|
+|»» ip|string|false|none|switch ip address|
 |»» gpsLat|any|false|none|none|
 
 *anyOf*
@@ -761,17 +484,17 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## getSwitch_api_v1_switchs__id__get
+## getSwitch_api_v1_switches__id__get
 
-<a id="opIdgetSwitch_api_v1_switchs__id__get"></a>
+<a id="opIdgetSwitch_api_v1_switches__id__get"></a>
 
-`GET /api/v1/switchs/{id}`
+`GET /api/v1/switches/{id}`
 
 *Getswitch*
 
 return a switch
 
-<h3 id="getswitch_api_v1_switchs__id__get-parameters">Parameters</h3>
+<h3 id="getswitch_api_v1_switches__id__get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -783,15 +506,14 @@ return a switch
 
 ```json
 {
-  "id": 0,
-  "name": "string",
+  "id": "string",
   "ip": "0.0.0.0",
   "gpsLat": 0,
   "gpsLong": 0
 }
 ```
 
-<h3 id="getswitch_api_v1_switchs__id__get-responses">Responses</h3>
+<h3 id="getswitch_api_v1_switches__id__get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -803,29 +525,28 @@ return a switch
 This operation does not require authentication
 </aside>
 
-## createSwitch_api_v1_switchs_upsert_post
+## upsertSwitch_api_v1_switches_upsert_post
 
-<a id="opIdcreateSwitch_api_v1_switchs_upsert_post"></a>
+<a id="opIdupsertSwitch_api_v1_switches_upsert_post"></a>
 
-`POST /api/v1/switchs/upsert`
+`POST /api/v1/switches/upsert`
 
-*Createswitch*
+*Upsertswitch*
 
-upsert one / multiple switch(s)
+upsert or udpate one || multiple switch(s)
 
 > Body parameter
 
 ```json
 {
-  "id": 0,
-  "name": "string",
-  "ip": "0.0.0.0",
+  "id": "string",
+  "ip": "string",
   "gpsLat": 0,
   "gpsLong": 0
 }
 ```
 
-<h3 id="createswitch_api_v1_switchs_upsert_post-parameters">Parameters</h3>
+<h3 id="upsertswitch_api_v1_switches_upsert_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -837,130 +558,16 @@ upsert one / multiple switch(s)
 
 ```json
 {
-  "id": 0,
-  "name": "string",
-  "ip": "0.0.0.0",
-  "gpsLat": 0,
-  "gpsLong": 0
+  "items": [],
+  "errors": []
 }
 ```
 
-<h3 id="createswitch_api_v1_switchs_upsert_post-responses">Responses</h3>
+<h3 id="upsertswitch_api_v1_switches_upsert_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
-|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-
-<h3 id="createswitch_api_v1_switchs_upsert_post-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-*Response Createswitch Api V1 Switchs Upsert Post*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|Response Createswitch Api V1 Switchs Upsert Post|any|false|none|none|
-
-*anyOf*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|» *anonymous*|[Switch](#schemaswitch)|false|none|Switch Database model|
-|»» id|integer|true|none|none|
-|»» name|string|true|none|none|
-|»» ip|string|false|none|none|
-|»» gpsLat|any|false|none|none|
-
-*anyOf*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»»» *anonymous*|number|false|none|none|
-
-*or*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»»» *anonymous*|null|false|none|none|
-
-*continued*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»» gpsLong|any|false|none|none|
-
-*anyOf*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»»» *anonymous*|number|false|none|none|
-
-*or*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|»»» *anonymous*|null|false|none|none|
-
-*or*
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|» *anonymous*|[[Switch](#schemaswitch)]|false|none|[Switch Database model]|
-|»» Switch|[Switch](#schemaswitch)|false|none|Switch Database model|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## updateSwitch_api_v1_switchs_update__id__post
-
-<a id="opIdupdateSwitch_api_v1_switchs_update__id__post"></a>
-
-`POST /api/v1/switchs/update/{id}`
-
-*Updateswitch*
-
-update a switch
-
-> Body parameter
-
-```json
-{
-  "id": 0,
-  "name": "string",
-  "ip": "0.0.0.0",
-  "gpsLat": 0,
-  "gpsLong": 0
-}
-```
-
-<h3 id="updateswitch_api_v1_switchs_update__id__post-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[Switch](#schemaswitch)|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": 0,
-  "name": "string",
-  "ip": "0.0.0.0",
-  "gpsLat": 0,
-  "gpsLong": 0
-}
-```
-
-<h3 id="updateswitch_api_v1_switchs_update__id__post-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[Switch](#schemaswitch)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[switchmanagerapi__models__factories__batcheableOutputFactory___locals___BatcheableOutputModel__3](#schemaswitchmanagerapi__models__factories__batcheableoutputfactory___locals___batcheableoutputmodel__3)|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
@@ -968,17 +575,17 @@ update a switch
 This operation does not require authentication
 </aside>
 
-## deleteSwitch_api_v1_switchs_delete__id__delete
+## deleteSwitch_api_v1_switches_delete__id__delete
 
-<a id="opIddeleteSwitch_api_v1_switchs_delete__id__delete"></a>
+<a id="opIddeleteSwitch_api_v1_switches_delete__id__delete"></a>
 
-`DELETE /api/v1/switchs/delete/{id}`
+`DELETE /api/v1/switches/delete/{id}`
 
 *Deleteswitch*
 
 delete a switch
 
-<h3 id="deleteswitch_api_v1_switchs_delete__id__delete-parameters">Parameters</h3>
+<h3 id="deleteswitch_api_v1_switches_delete__id__delete-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -992,7 +599,7 @@ delete a switch
 "string"
 ```
 
-<h3 id="deleteswitch_api_v1_switchs_delete__id__delete-responses">Responses</h3>
+<h3 id="deleteswitch_api_v1_switches_delete__id__delete-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1006,6 +613,30 @@ This operation does not require authentication
 
 # Schemas
 
+<h2 id="tocS_BatchError">BatchError</h2>
+<!-- backwards compatibility -->
+<a id="schemabatcherror"></a>
+<a id="schema_BatchError"></a>
+<a id="tocSbatcherror"></a>
+<a id="tocsbatcherror"></a>
+
+```json
+{
+  "id": "",
+  "error": ""
+}
+
+```
+
+BatchError
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|none|
+|error|string|false|none|none|
+
 <h2 id="tocS_ConnectionOutput">ConnectionOutput</h2>
 <!-- backwards compatibility -->
 <a id="schemaconnectionoutput"></a>
@@ -1015,7 +646,7 @@ This operation does not require authentication
 
 ```json
 {
-  "id": 0,
+  "id": "string",
   "ppp": "string",
   "port": 0,
   "toggled": false,
@@ -1025,14 +656,13 @@ This operation does not require authentication
   "proto": "snmp",
   "speed": 0,
   "switch": {
-    "id": 0,
-    "name": "string",
+    "id": "string",
     "ip": "0.0.0.0",
     "gpsLat": 0,
     "gpsLong": 0
   },
   "customer": {
-    "id": 0,
+    "id": "string",
     "firstname": "string",
     "lastname": "string",
     "type": "string",
@@ -1048,7 +678,7 @@ ConnectionOutput
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|none|none|
+|id|string|true|none|connection id|
 |ppp|string|true|none|connection name|
 |port|integer|false|none|port number on the switch|
 |toggled|boolean|false|none|define if the port is opened|
@@ -1086,12 +716,12 @@ continued
 
 ```json
 {
-  "id": 0,
-  "ppp": "string",
+  "id": "string",
+  "name": "string",
   "port": 0,
-  "toggled": false,
+  "toggled": true,
   "toggleDate": "2019-08-24T14:15:22Z",
-  "type": "copper|fiber",
+  "type": "string",
   "isUp": true,
   "proto": "string",
   "speed": 0,
@@ -1107,11 +737,79 @@ ConnectionUpsertInput
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|none|none|
-|ppp|string|true|none|connection name|
-|port|integer|false|none|port number on the switch|
-|toggled|boolean|false|none|define if the port is opened|
-|toggleDate|any|false|none|date at which the port should open / close based on currrent port status|
+|id|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|string|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|string|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|port|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|integer|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|toggled|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|boolean|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|toggleDate|any|false|none|none|
 
 anyOf
 
@@ -1129,7 +827,24 @@ continued
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|type|string|false|none|physical connection type|
+|type|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|string|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
 |isUp|any|false|none|none|
 
 anyOf
@@ -1251,7 +966,7 @@ ConnectionsOutput
 
 ```json
 {
-  "id": 0,
+  "id": "string",
   "firstname": "string",
   "lastname": "string",
   "type": "string",
@@ -1266,7 +981,7 @@ Customer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|none|none|
+|id|string|true|none|customer id / worker id|
 |firstname|string|true|none|none|
 |lastname|string|true|none|none|
 |type|string|true|none|customer type (company name || person status)|
@@ -1366,32 +1081,32 @@ ListSortEnum
 |ListSortEnum|address|
 |ListSortEnum|switch|
 
-<h2 id="tocS_OrderEnum">OrderEnum</h2>
+<h2 id="tocS_OrderBy">OrderBy</h2>
 <!-- backwards compatibility -->
-<a id="schemaorderenum"></a>
-<a id="schema_OrderEnum"></a>
-<a id="tocSorderenum"></a>
-<a id="tocsorderenum"></a>
+<a id="schemaorderby"></a>
+<a id="schema_OrderBy"></a>
+<a id="tocSorderby"></a>
+<a id="tocsorderby"></a>
 
 ```json
 "asc"
 
 ```
 
-OrderEnum
+OrderBy
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|OrderEnum|string|false|none|to order results in a paginated request|
+|OrderBy|string|false|none|to order results in a paginated request|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
-|OrderEnum|asc|
-|OrderEnum|desc|
+|OrderBy|asc|
+|OrderBy|desc|
 
 <h2 id="tocS_Switch">Switch</h2>
 <!-- backwards compatibility -->
@@ -1402,8 +1117,7 @@ OrderEnum
 
 ```json
 {
-  "id": 0,
-  "name": "string",
+  "id": "string",
   "ip": "0.0.0.0",
   "gpsLat": 0,
   "gpsLong": 0
@@ -1417,9 +1131,8 @@ Switch
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|none|none|
-|name|string|true|none|none|
-|ip|string|false|none|none|
+|id|string|true|none|switch unique name / id|
+|ip|string|false|none|switch ip address|
 |gpsLat|any|false|none|none|
 
 anyOf
@@ -1452,42 +1165,37 @@ or
 |---|---|---|---|---|
 |» *anonymous*|null|false|none|none|
 
-<h2 id="tocS_UpdateConnectionInput">UpdateConnectionInput</h2>
+<h2 id="tocS_UpserCustomerInput">UpserCustomerInput</h2>
 <!-- backwards compatibility -->
-<a id="schemaupdateconnectioninput"></a>
-<a id="schema_UpdateConnectionInput"></a>
-<a id="tocSupdateconnectioninput"></a>
-<a id="tocsupdateconnectioninput"></a>
+<a id="schemaupsercustomerinput"></a>
+<a id="schema_UpserCustomerInput"></a>
+<a id="tocSupsercustomerinput"></a>
+<a id="tocsupsercustomerinput"></a>
 
 ```json
 {
-  "id": 0,
-  "ppp": "string",
-  "port": 0,
-  "toggled": false,
-  "toggleDate": "2019-08-24T14:15:22Z",
-  "type": "copper|fiber"
+  "id": "string",
+  "firstname": "string",
+  "lastname": "string",
+  "type": "string",
+  "address": "string"
 }
 
 ```
 
-UpdateConnectionInput
+UpserCustomerInput
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|true|none|none|
-|ppp|string|true|none|connection name|
-|port|integer|false|none|port number on the switch|
-|toggled|boolean|false|none|define if the port is opened|
-|toggleDate|any|false|none|date at which the port should open / close based on currrent port status|
+|id|any|false|none|none|
 
 anyOf
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|» *anonymous*|string(date-time)|false|none|none|
+|» *anonymous*|string|false|none|none|
 
 or
 
@@ -1499,7 +1207,164 @@ continued
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|type|string|false|none|physical connection type|
+|firstname|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|string|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|lastname|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|string|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|string|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|address|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|string|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+<h2 id="tocS_UpsertSwitchInput">UpsertSwitchInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaupsertswitchinput"></a>
+<a id="schema_UpsertSwitchInput"></a>
+<a id="tocSupsertswitchinput"></a>
+<a id="tocsupsertswitchinput"></a>
+
+```json
+{
+  "id": "string",
+  "ip": "string",
+  "gpsLat": 0,
+  "gpsLong": 0
+}
+
+```
+
+UpsertSwitchInput
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|string|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ip|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|string|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|gpsLat|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|number|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|gpsLong|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|number|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
 
 <h2 id="tocS_ValidationError">ValidationError</h2>
 <!-- backwards compatibility -->
@@ -1545,4 +1410,76 @@ continued
 |---|---|---|---|---|
 |msg|string|true|none|none|
 |type|string|true|none|none|
+
+<h2 id="tocS_switchmanagerapi__models__factories__batcheableOutputFactory___locals___BatcheableOutputModel__1">switchmanagerapi__models__factories__batcheableOutputFactory___locals___BatcheableOutputModel__1</h2>
+<!-- backwards compatibility -->
+<a id="schemaswitchmanagerapi__models__factories__batcheableoutputfactory___locals___batcheableoutputmodel__1"></a>
+<a id="schema_switchmanagerapi__models__factories__batcheableOutputFactory___locals___BatcheableOutputModel__1"></a>
+<a id="tocSswitchmanagerapi__models__factories__batcheableoutputfactory___locals___batcheableoutputmodel__1"></a>
+<a id="tocsswitchmanagerapi__models__factories__batcheableoutputfactory___locals___batcheableoutputmodel__1"></a>
+
+```json
+{
+  "items": [],
+  "errors": []
+}
+
+```
+
+BatcheableOutputModel
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|items|[[ConnectionOutput](#schemaconnectionoutput)]|false|none|[Connection model API output]|
+|errors|[[BatchError](#schemabatcherror)]|false|none|[Batch error model]|
+
+<h2 id="tocS_switchmanagerapi__models__factories__batcheableOutputFactory___locals___BatcheableOutputModel__2">switchmanagerapi__models__factories__batcheableOutputFactory___locals___BatcheableOutputModel__2</h2>
+<!-- backwards compatibility -->
+<a id="schemaswitchmanagerapi__models__factories__batcheableoutputfactory___locals___batcheableoutputmodel__2"></a>
+<a id="schema_switchmanagerapi__models__factories__batcheableOutputFactory___locals___BatcheableOutputModel__2"></a>
+<a id="tocSswitchmanagerapi__models__factories__batcheableoutputfactory___locals___batcheableoutputmodel__2"></a>
+<a id="tocsswitchmanagerapi__models__factories__batcheableoutputfactory___locals___batcheableoutputmodel__2"></a>
+
+```json
+{
+  "items": [],
+  "errors": []
+}
+
+```
+
+BatcheableOutputModel
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|items|[[Customer](#schemacustomer)]|false|none|[Customer Database model]|
+|errors|[[BatchError](#schemabatcherror)]|false|none|[Batch error model]|
+
+<h2 id="tocS_switchmanagerapi__models__factories__batcheableOutputFactory___locals___BatcheableOutputModel__3">switchmanagerapi__models__factories__batcheableOutputFactory___locals___BatcheableOutputModel__3</h2>
+<!-- backwards compatibility -->
+<a id="schemaswitchmanagerapi__models__factories__batcheableoutputfactory___locals___batcheableoutputmodel__3"></a>
+<a id="schema_switchmanagerapi__models__factories__batcheableOutputFactory___locals___BatcheableOutputModel__3"></a>
+<a id="tocSswitchmanagerapi__models__factories__batcheableoutputfactory___locals___batcheableoutputmodel__3"></a>
+<a id="tocsswitchmanagerapi__models__factories__batcheableoutputfactory___locals___batcheableoutputmodel__3"></a>
+
+```json
+{
+  "items": [],
+  "errors": []
+}
+
+```
+
+BatcheableOutputModel
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|items|[[Switch](#schemaswitch)]|false|none|[Switch Database model]|
+|errors|[[BatchError](#schemabatcherror)]|false|none|[Batch error model]|
 
