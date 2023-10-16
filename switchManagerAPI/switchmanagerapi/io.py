@@ -55,9 +55,12 @@ class UpdateConnectionInput(IConnectionBase):
     """Connection model update API input"""
     pass
 
-# connection create
-class ConnectionInput(Connection):
-    """Connection model create API input"""
-    # relationships
-    switchId: int = 0
-    customerId: int = 0
+# connection upsert
+
+class ConnectionUpsertInput(Connection):
+    """Connection model upsert API input"""
+    isUp: Optional[bool] = None
+    proto: Optional[str] = None
+    speed: Optional[int] = None
+    switchId: Optional[int] = None
+    customerId: Optional[int] = None

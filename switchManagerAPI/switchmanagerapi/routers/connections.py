@@ -1,35 +1,38 @@
 from fastapi import APIRouter, Depends
-from switchmanagerapi.io import ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionInput, UpdateConnectionInput
+from typing import Union
+from switchmanagerapi.io import ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, UpdateConnectionInput
 
 router = APIRouter(
-    tags=["v1"],
-    prefix="/api/v1",
+    tags=["v1", "connections"],
+    prefix="/api/v1/connections",
     responses={404: {"description": "Not found"}},
 )
 
 # connections CRUD
 # connections CRUD
-@router.get("/connections", tags=["v1"], response_model=ConnectionsOutput)
-async def listConnections(input: ConnectionListInput = Depends()) -> ConnectionsOutput:
+@router.get("/", response_model=ConnectionsOutput)
+async def listConnections(input: ConnectionListInput = Depends()):
     """return a paginated list of connections"""
     return ConnectionsOutput()
 
-@router.get("/connection/{id}", tags=["v1"], response_model=ConnectionOutput)
-async def getConnection(id: int) -> ConnectionOutput:
+@router.get("/{id}", response_model=ConnectionOutput)
+async def getConnection(id: int):
     """return a connection"""
     return ConnectionOutput()
 
-@router.post("/connection/create", tags=["v1"], response_model=ConnectionOutput)
-async def createConnection(input: ConnectionInput) -> ConnectionOutput:
-    """create a connection"""
+@router.post("/upsert", response_model=Union[ConnectionOutput, list[ConnectionOutput]])
+async def createConnection(input: Union[ConnectionUpsertInput, list[ConnectionUpsertInput]]):
+    """create one / upsert multiple connections"""
+    if (isinstance(input, list)):
+        return [ConnectionOutput()]
     return ConnectionOutput()
 
-@router.post("/connection/update/{id}", tags=["v1"], response_model=ConnectionOutput)
-async def updateConnection(input: UpdateConnectionInput) -> ConnectionOutput:
+@router.post("/update/{id}", response_model=ConnectionOutput)
+async def updateConnection(input: UpdateConnectionInput):
     """update a connection"""
     return ConnectionOutput()
 
-@router.delete("/connection/delete/{id}", tags=["v1"], response_model=str)
-async def deleteConnection(id: int) -> str:
+@router.delete("/delete/{id}", response_model=str)
+async def deleteConnection(id: int):
     """delete a connection"""
     return id
