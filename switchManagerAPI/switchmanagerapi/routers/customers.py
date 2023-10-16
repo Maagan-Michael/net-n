@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from typing import Union
-from ..models.customer import Customer, BatchedCustomerOutput, UpserCustomerInput
+from ..models.customer import Customer, BatchedCustomerOutput, UpsertCustomerInput
 
 router = APIRouter(
     tags=["v1", "customers"],
@@ -20,7 +20,7 @@ async def getCustomer(id: int):
     return Customer()
 
 @router.post("/upsert", response_model=BatchedCustomerOutput)
-async def upsertCustomer(input: Union[UpserCustomerInput, list[UpserCustomerInput]]):
+async def upsertCustomer(input: Union[UpsertCustomerInput, list[UpsertCustomerInput]]):
     """upsert or udpate one || multiple customer(s)"""
     return BatchedCustomerOutput(items=[Customer()], errors=[])
 

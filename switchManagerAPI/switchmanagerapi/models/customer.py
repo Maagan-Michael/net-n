@@ -15,7 +15,7 @@ class Customer(BaseModel):
 # API
 BatchedCustomerOutput = batcheableOutputFactory(Customer)
 
-class UpserCustomerInput(BaseModel):
+class UpsertCustomerInput(BaseModel):
     id: Optional[str] = None
     firstname: Optional[str] = None
     lastname: Optional[str] = None
