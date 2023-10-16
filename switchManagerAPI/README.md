@@ -25,17 +25,17 @@ headingLevel: 2
 
 <h1 id="fastapi-v1">v1</h1>
 
-## listConnections_api_v1_connections_get
+## listConnections_api_v1_connections__get
 
-<a id="opIdlistConnections_api_v1_connections_get"></a>
+<a id="opIdlistConnections_api_v1_connections__get"></a>
 
-`GET /api/v1/connections`
+`GET /api/v1/connections/`
 
 *Listconnections*
 
 return a paginated list of connections
 
-<h3 id="listconnections_api_v1_connections_get-parameters">Parameters</h3>
+<h3 id="listconnections_api_v1_connections__get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -58,7 +58,7 @@ return a paginated list of connections
 }
 ```
 
-<h3 id="listconnections_api_v1_connections_get-responses">Responses</h3>
+<h3 id="listconnections_api_v1_connections__get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -70,17 +70,17 @@ return a paginated list of connections
 This operation does not require authentication
 </aside>
 
-## getConnection_api_v1_connection__id__get
+## getConnection_api_v1_connections__id__get
 
-<a id="opIdgetConnection_api_v1_connection__id__get"></a>
+<a id="opIdgetConnection_api_v1_connections__id__get"></a>
 
-`GET /api/v1/connection/{id}`
+`GET /api/v1/connections/{id}`
 
 *Getconnection*
 
 return a connection
 
-<h3 id="getconnection_api_v1_connection__id__get-parameters">Parameters</h3>
+<h3 id="getconnection_api_v1_connections__id__get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -118,7 +118,7 @@ return a connection
 }
 ```
 
-<h3 id="getconnection_api_v1_connection__id__get-responses">Responses</h3>
+<h3 id="getconnection_api_v1_connections__id__get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -130,15 +130,15 @@ return a connection
 This operation does not require authentication
 </aside>
 
-## createConnection_api_v1_connection_create_post
+## createConnection_api_v1_connections_upsert_post
 
-<a id="opIdcreateConnection_api_v1_connection_create_post"></a>
+<a id="opIdcreateConnection_api_v1_connections_upsert_post"></a>
 
-`POST /api/v1/connection/create`
+`POST /api/v1/connections/upsert`
 
 *Createconnection*
 
-create a connection
+create one / upsert multiple connections
 
 > Body parameter
 
@@ -150,19 +150,19 @@ create a connection
   "toggled": false,
   "toggleDate": "2019-08-24T14:15:22Z",
   "type": "copper|fiber",
-  "isUp": false,
-  "proto": "snmp",
+  "isUp": true,
+  "proto": "string",
   "speed": 0,
   "switchId": 0,
   "customerId": 0
 }
 ```
 
-<h3 id="createconnection_api_v1_connection_create_post-parameters">Parameters</h3>
+<h3 id="createconnection_api_v1_connections_upsert_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[ConnectionInput](#schemaconnectioninput)|true|none|
+|body|body|any|true|none|
 
 > Example responses
 
@@ -196,23 +196,118 @@ create a connection
 }
 ```
 
-<h3 id="createconnection_api_v1_connection_create_post-responses">Responses</h3>
+<h3 id="createconnection_api_v1_connections_upsert_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[ConnectionOutput](#schemaconnectionoutput)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+
+<h3 id="createconnection_api_v1_connections_upsert_post-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+*Response Createconnection Api V1 Connections Upsert Post*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|Response Createconnection Api V1 Connections Upsert Post|any|false|none|none|
+
+*anyOf*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|[ConnectionOutput](#schemaconnectionoutput)|false|none|Connection model API output|
+|»» id|integer|true|none|none|
+|»» ppp|string|true|none|connection name|
+|»» port|integer|false|none|port number on the switch|
+|»» toggled|boolean|false|none|define if the port is opened|
+|»» toggleDate|any|false|none|date at which the port should open / close based on currrent port status|
+
+*anyOf*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|string(date-time)|false|none|none|
+
+*or*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|null|false|none|none|
+
+*continued*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»» type|string|false|none|physical connection type|
+|»» isUp|boolean|false|none|none|
+|»» proto|string|false|none|none|
+|»» speed|integer|false|none|none|
+|»» switch|[Switch](#schemaswitch)|false|none|Switch Database model|
+|»»» id|integer|true|none|none|
+|»»» name|string|true|none|none|
+|»»» ip|string|false|none|none|
+|»»» gpsLat|any|false|none|none|
+
+*anyOf*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»»» *anonymous*|number|false|none|none|
+
+*or*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»»» *anonymous*|null|false|none|none|
+
+*continued*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» gpsLong|any|false|none|none|
+
+*anyOf*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»»» *anonymous*|number|false|none|none|
+
+*or*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»»» *anonymous*|null|false|none|none|
+
+*continued*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»» customer|[Customer](#schemacustomer)|false|none|Customer Database model|
+|»»» id|integer|true|none|none|
+|»»» firstname|string|true|none|none|
+|»»» lastname|string|true|none|none|
+|»»» type|string|true|none|customer type (company name || person status)|
+|»»» address|string|true|none|none|
+
+*or*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|[[ConnectionOutput](#schemaconnectionoutput)]|false|none|[Connection model API output]|
+|»» ConnectionOutput|[ConnectionOutput](#schemaconnectionoutput)|false|none|Connection model API output|
 
 <aside class="success">
 This operation does not require authentication
 </aside>
 
-## updateConnection_api_v1_connection_update__id__post
+## updateConnection_api_v1_connections_update__id__post
 
-<a id="opIdupdateConnection_api_v1_connection_update__id__post"></a>
+<a id="opIdupdateConnection_api_v1_connections_update__id__post"></a>
 
-`POST /api/v1/connection/update/{id}`
+`POST /api/v1/connections/update/{id}`
 
 *Updateconnection*
 
@@ -231,7 +326,7 @@ update a connection
 }
 ```
 
-<h3 id="updateconnection_api_v1_connection_update__id__post-parameters">Parameters</h3>
+<h3 id="updateconnection_api_v1_connections_update__id__post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -269,7 +364,7 @@ update a connection
 }
 ```
 
-<h3 id="updateconnection_api_v1_connection_update__id__post-responses">Responses</h3>
+<h3 id="updateconnection_api_v1_connections_update__id__post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -281,17 +376,17 @@ update a connection
 This operation does not require authentication
 </aside>
 
-## deleteConnection_api_v1_connection_delete__id__delete
+## deleteConnection_api_v1_connections_delete__id__delete
 
-<a id="opIddeleteConnection_api_v1_connection_delete__id__delete"></a>
+<a id="opIddeleteConnection_api_v1_connections_delete__id__delete"></a>
 
-`DELETE /api/v1/connection/delete/{id}`
+`DELETE /api/v1/connections/delete/{id}`
 
 *Deleteconnection*
 
 delete a connection
 
-<h3 id="deleteconnection_api_v1_connection_delete__id__delete-parameters">Parameters</h3>
+<h3 id="deleteconnection_api_v1_connections_delete__id__delete-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -305,7 +400,7 @@ delete a connection
 "string"
 ```
 
-<h3 id="deleteconnection_api_v1_connection_delete__id__delete-responses">Responses</h3>
+<h3 id="deleteconnection_api_v1_connections_delete__id__delete-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -317,11 +412,11 @@ delete a connection
 This operation does not require authentication
 </aside>
 
-## listCustomers_api_v1_customers_get
+## listCustomers_api_v1_customers__get
 
-<a id="opIdlistCustomers_api_v1_customers_get"></a>
+<a id="opIdlistCustomers_api_v1_customers__get"></a>
 
-`GET /api/v1/customers`
+`GET /api/v1/customers/`
 
 *Listcustomers*
 
@@ -343,22 +438,22 @@ return a list of customers
 ]
 ```
 
-<h3 id="listcustomers_api_v1_customers_get-responses">Responses</h3>
+<h3 id="listcustomers_api_v1_customers__get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
 
-<h3 id="listcustomers_api_v1_customers_get-responseschema">Response Schema</h3>
+<h3 id="listcustomers_api_v1_customers__get-responseschema">Response Schema</h3>
 
 Status Code **200**
 
-*Response Listcustomers Api V1 Customers Get*
+*Response Listcustomers Api V1 Customers  Get*
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|Response Listcustomers Api V1 Customers Get|[[Customer](#schemacustomer)]|false|none|[Customer Database model]|
+|Response Listcustomers Api V1 Customers  Get|[[Customer](#schemacustomer)]|false|none|[Customer Database model]|
 |» Customer|[Customer](#schemacustomer)|false|none|Customer Database model|
 |»» id|integer|true|none|none|
 |»» firstname|string|true|none|none|
@@ -370,17 +465,17 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## getCustomer_api_v1_customer__id__get
+## getCustomer_api_v1_customers__id__get
 
-<a id="opIdgetCustomer_api_v1_customer__id__get"></a>
+<a id="opIdgetCustomer_api_v1_customers__id__get"></a>
 
-`GET /api/v1/customer/{id}`
+`GET /api/v1/customers/{id}`
 
 *Getcustomer*
 
 return a customer
 
-<h3 id="getcustomer_api_v1_customer__id__get-parameters">Parameters</h3>
+<h3 id="getcustomer_api_v1_customers__id__get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -400,7 +495,7 @@ return a customer
 }
 ```
 
-<h3 id="getcustomer_api_v1_customer__id__get-responses">Responses</h3>
+<h3 id="getcustomer_api_v1_customers__id__get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -412,11 +507,11 @@ return a customer
 This operation does not require authentication
 </aside>
 
-## createCustomer_api_v1_customer_create_post
+## createCustomer_api_v1_customers_upsert_post
 
-<a id="opIdcreateCustomer_api_v1_customer_create_post"></a>
+<a id="opIdcreateCustomer_api_v1_customers_upsert_post"></a>
 
-`POST /api/v1/customer/create`
+`POST /api/v1/customers/upsert`
 
 *Createcustomer*
 
@@ -434,11 +529,11 @@ create a customer
 }
 ```
 
-<h3 id="createcustomer_api_v1_customer_create_post-parameters">Parameters</h3>
+<h3 id="createcustomer_api_v1_customers_upsert_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[Customer](#schemacustomer)|true|none|
+|body|body|any|true|none|
 
 > Example responses
 
@@ -454,23 +549,51 @@ create a customer
 }
 ```
 
-<h3 id="createcustomer_api_v1_customer_create_post-responses">Responses</h3>
+<h3 id="createcustomer_api_v1_customers_upsert_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[Customer](#schemacustomer)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+
+<h3 id="createcustomer_api_v1_customers_upsert_post-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+*Response Createcustomer Api V1 Customers Upsert Post*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|Response Createcustomer Api V1 Customers Upsert Post|any|false|none|none|
+
+*anyOf*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|[Customer](#schemacustomer)|false|none|Customer Database model|
+|»» id|integer|true|none|none|
+|»» firstname|string|true|none|none|
+|»» lastname|string|true|none|none|
+|»» type|string|true|none|customer type (company name || person status)|
+|»» address|string|true|none|none|
+
+*or*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|[[Customer](#schemacustomer)]|false|none|[Customer Database model]|
+|»» Customer|[Customer](#schemacustomer)|false|none|Customer Database model|
 
 <aside class="success">
 This operation does not require authentication
 </aside>
 
-## updateCustomer_api_v1_customer_update__id__post
+## updateCustomer_api_v1_customers_update__id__post
 
-<a id="opIdupdateCustomer_api_v1_customer_update__id__post"></a>
+<a id="opIdupdateCustomer_api_v1_customers_update__id__post"></a>
 
-`POST /api/v1/customer/update/{id}`
+`POST /api/v1/customers/update/{id}`
 
 *Updatecustomer*
 
@@ -488,7 +611,7 @@ update a customer
 }
 ```
 
-<h3 id="updatecustomer_api_v1_customer_update__id__post-parameters">Parameters</h3>
+<h3 id="updatecustomer_api_v1_customers_update__id__post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -508,7 +631,7 @@ update a customer
 }
 ```
 
-<h3 id="updatecustomer_api_v1_customer_update__id__post-responses">Responses</h3>
+<h3 id="updatecustomer_api_v1_customers_update__id__post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -520,17 +643,17 @@ update a customer
 This operation does not require authentication
 </aside>
 
-## deleteCustomer_api_v1_customer_delete__id__delete
+## deleteCustomer_api_v1_customers_delete__id__delete
 
-<a id="opIddeleteCustomer_api_v1_customer_delete__id__delete"></a>
+<a id="opIddeleteCustomer_api_v1_customers_delete__id__delete"></a>
 
-`DELETE /api/v1/customer/delete/{id}`
+`DELETE /api/v1/customers/delete/{id}`
 
 *Deletecustomer*
 
 delete a customer
 
-<h3 id="deletecustomer_api_v1_customer_delete__id__delete-parameters">Parameters</h3>
+<h3 id="deletecustomer_api_v1_customers_delete__id__delete-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -544,7 +667,7 @@ delete a customer
 "string"
 ```
 
-<h3 id="deletecustomer_api_v1_customer_delete__id__delete-responses">Responses</h3>
+<h3 id="deletecustomer_api_v1_customers_delete__id__delete-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -556,15 +679,15 @@ delete a customer
 This operation does not require authentication
 </aside>
 
-## listSwitches_api_v1_switches_get
+## listSwitches_api_v1_switchs__get
 
-<a id="opIdlistSwitches_api_v1_switches_get"></a>
+<a id="opIdlistSwitches_api_v1_switchs__get"></a>
 
-`GET /api/v1/switches`
+`GET /api/v1/switchs/`
 
 *Listswitches*
 
-return a list of switches
+return a list of switchs
 
 > Example responses
 
@@ -582,22 +705,22 @@ return a list of switches
 ]
 ```
 
-<h3 id="listswitches_api_v1_switches_get-responses">Responses</h3>
+<h3 id="listswitches_api_v1_switchs__get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
 
-<h3 id="listswitches_api_v1_switches_get-responseschema">Response Schema</h3>
+<h3 id="listswitches_api_v1_switchs__get-responseschema">Response Schema</h3>
 
 Status Code **200**
 
-*Response Listswitches Api V1 Switches Get*
+*Response Listswitches Api V1 Switchs  Get*
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|Response Listswitches Api V1 Switches Get|[[Switch](#schemaswitch)]|false|none|[Switch Database model]|
+|Response Listswitches Api V1 Switchs  Get|[[Switch](#schemaswitch)]|false|none|[Switch Database model]|
 |» Switch|[Switch](#schemaswitch)|false|none|Switch Database model|
 |»» id|integer|true|none|none|
 |»» name|string|true|none|none|
@@ -638,17 +761,17 @@ Status Code **200**
 This operation does not require authentication
 </aside>
 
-## getSwitch_api_v1_switch__id__get
+## getSwitch_api_v1_switchs__id__get
 
-<a id="opIdgetSwitch_api_v1_switch__id__get"></a>
+<a id="opIdgetSwitch_api_v1_switchs__id__get"></a>
 
-`GET /api/v1/switch/{id}`
+`GET /api/v1/switchs/{id}`
 
 *Getswitch*
 
 return a switch
 
-<h3 id="getswitch_api_v1_switch__id__get-parameters">Parameters</h3>
+<h3 id="getswitch_api_v1_switchs__id__get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -668,7 +791,7 @@ return a switch
 }
 ```
 
-<h3 id="getswitch_api_v1_switch__id__get-responses">Responses</h3>
+<h3 id="getswitch_api_v1_switchs__id__get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -680,15 +803,15 @@ return a switch
 This operation does not require authentication
 </aside>
 
-## createSwitch_api_v1_switch_create_post
+## createSwitch_api_v1_switchs_upsert_post
 
-<a id="opIdcreateSwitch_api_v1_switch_create_post"></a>
+<a id="opIdcreateSwitch_api_v1_switchs_upsert_post"></a>
 
-`POST /api/v1/switch/create`
+`POST /api/v1/switchs/upsert`
 
 *Createswitch*
 
-create a switch
+upsert one / multiple switch(s)
 
 > Body parameter
 
@@ -702,11 +825,11 @@ create a switch
 }
 ```
 
-<h3 id="createswitch_api_v1_switch_create_post-parameters">Parameters</h3>
+<h3 id="createswitch_api_v1_switchs_upsert_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[Switch](#schemaswitch)|true|none|
+|body|body|any|true|none|
 
 > Example responses
 
@@ -722,23 +845,80 @@ create a switch
 }
 ```
 
-<h3 id="createswitch_api_v1_switch_create_post-responses">Responses</h3>
+<h3 id="createswitch_api_v1_switchs_upsert_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|[Switch](#schemaswitch)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not found|None|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+
+<h3 id="createswitch_api_v1_switchs_upsert_post-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+*Response Createswitch Api V1 Switchs Upsert Post*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|Response Createswitch Api V1 Switchs Upsert Post|any|false|none|none|
+
+*anyOf*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|[Switch](#schemaswitch)|false|none|Switch Database model|
+|»» id|integer|true|none|none|
+|»» name|string|true|none|none|
+|»» ip|string|false|none|none|
+|»» gpsLat|any|false|none|none|
+
+*anyOf*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|number|false|none|none|
+
+*or*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|null|false|none|none|
+
+*continued*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»» gpsLong|any|false|none|none|
+
+*anyOf*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|number|false|none|none|
+
+*or*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|null|false|none|none|
+
+*or*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|[[Switch](#schemaswitch)]|false|none|[Switch Database model]|
+|»» Switch|[Switch](#schemaswitch)|false|none|Switch Database model|
 
 <aside class="success">
 This operation does not require authentication
 </aside>
 
-## updateSwitch_api_v1_switch_update__id__post
+## updateSwitch_api_v1_switchs_update__id__post
 
-<a id="opIdupdateSwitch_api_v1_switch_update__id__post"></a>
+<a id="opIdupdateSwitch_api_v1_switchs_update__id__post"></a>
 
-`POST /api/v1/switch/update/{id}`
+`POST /api/v1/switchs/update/{id}`
 
 *Updateswitch*
 
@@ -756,7 +936,7 @@ update a switch
 }
 ```
 
-<h3 id="updateswitch_api_v1_switch_update__id__post-parameters">Parameters</h3>
+<h3 id="updateswitch_api_v1_switchs_update__id__post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -776,7 +956,7 @@ update a switch
 }
 ```
 
-<h3 id="updateswitch_api_v1_switch_update__id__post-responses">Responses</h3>
+<h3 id="updateswitch_api_v1_switchs_update__id__post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -788,17 +968,17 @@ update a switch
 This operation does not require authentication
 </aside>
 
-## deleteSwitch_api_v1_switch_delete__id__delete
+## deleteSwitch_api_v1_switchs_delete__id__delete
 
-<a id="opIddeleteSwitch_api_v1_switch_delete__id__delete"></a>
+<a id="opIddeleteSwitch_api_v1_switchs_delete__id__delete"></a>
 
-`DELETE /api/v1/switch/delete/{id}`
+`DELETE /api/v1/switchs/delete/{id}`
 
 *Deleteswitch*
 
 delete a switch
 
-<h3 id="deleteswitch_api_v1_switch_delete__id__delete-parameters">Parameters</h3>
+<h3 id="deleteswitch_api_v1_switchs_delete__id__delete-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -812,7 +992,7 @@ delete a switch
 "string"
 ```
 
-<h3 id="deleteswitch_api_v1_switch_delete__id__delete-responses">Responses</h3>
+<h3 id="deleteswitch_api_v1_switchs_delete__id__delete-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -825,65 +1005,6 @@ This operation does not require authentication
 </aside>
 
 # Schemas
-
-<h2 id="tocS_ConnectionInput">ConnectionInput</h2>
-<!-- backwards compatibility -->
-<a id="schemaconnectioninput"></a>
-<a id="schema_ConnectionInput"></a>
-<a id="tocSconnectioninput"></a>
-<a id="tocsconnectioninput"></a>
-
-```json
-{
-  "id": 0,
-  "ppp": "string",
-  "port": 0,
-  "toggled": false,
-  "toggleDate": "2019-08-24T14:15:22Z",
-  "type": "copper|fiber",
-  "isUp": false,
-  "proto": "snmp",
-  "speed": 0,
-  "switchId": 0,
-  "customerId": 0
-}
-
-```
-
-ConnectionInput
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|integer|true|none|none|
-|ppp|string|true|none|connection name|
-|port|integer|false|none|port number on the switch|
-|toggled|boolean|false|none|define if the port is opened|
-|toggleDate|any|false|none|date at which the port should open / close based on currrent port status|
-
-anyOf
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|» *anonymous*|string(date-time)|false|none|none|
-
-or
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|» *anonymous*|null|false|none|none|
-
-continued
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|false|none|physical connection type|
-|isUp|boolean|false|none|none|
-|proto|string|false|none|none|
-|speed|integer|false|none|none|
-|switchId|integer|false|none|none|
-|customerId|integer|false|none|none|
 
 <h2 id="tocS_ConnectionOutput">ConnectionOutput</h2>
 <!-- backwards compatibility -->
@@ -955,6 +1076,145 @@ continued
 |speed|integer|false|none|none|
 |switch|[Switch](#schemaswitch)|false|none|Switch Database model|
 |customer|[Customer](#schemacustomer)|false|none|Customer Database model|
+
+<h2 id="tocS_ConnectionUpsertInput">ConnectionUpsertInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaconnectionupsertinput"></a>
+<a id="schema_ConnectionUpsertInput"></a>
+<a id="tocSconnectionupsertinput"></a>
+<a id="tocsconnectionupsertinput"></a>
+
+```json
+{
+  "id": 0,
+  "ppp": "string",
+  "port": 0,
+  "toggled": false,
+  "toggleDate": "2019-08-24T14:15:22Z",
+  "type": "copper|fiber",
+  "isUp": true,
+  "proto": "string",
+  "speed": 0,
+  "switchId": 0,
+  "customerId": 0
+}
+
+```
+
+ConnectionUpsertInput
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer|true|none|none|
+|ppp|string|true|none|connection name|
+|port|integer|false|none|port number on the switch|
+|toggled|boolean|false|none|define if the port is opened|
+|toggleDate|any|false|none|date at which the port should open / close based on currrent port status|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|string(date-time)|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|false|none|physical connection type|
+|isUp|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|boolean|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|proto|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|string|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|speed|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|integer|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|switchId|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|integer|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
+
+continued
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|customerId|any|false|none|none|
+
+anyOf
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|integer|false|none|none|
+
+or
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» *anonymous*|null|false|none|none|
 
 <h2 id="tocS_ConnectionsOutput">ConnectionsOutput</h2>
 <!-- backwards compatibility -->
