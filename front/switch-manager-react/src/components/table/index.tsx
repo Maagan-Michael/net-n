@@ -1,6 +1,10 @@
+import clsx from "clsx";
+
 interface ColumnProps {
     title: string;
     render?: (value: any) => React.ReactNode;
+    containerClass?: string;
+    separatorClass?: string;
 }
 
 interface DataCol extends ColumnProps {
@@ -30,7 +34,7 @@ export default function Table({ columns }: TableProps) {
                         return (
                             <th key={column.title} className="relative h-full px-4 border-b-[3px] border-gray-200">
                                 <span className="font-light text-sm">{render}</span>
-                                {index < columns.length - 1 && <div className="absolute min-h-[60%] w-[3px] rounded-full bg-gray-200 block top-[20%] right-0"></div>}
+                                <div className="absolute min-h-[60%] w-[3px] rounded-full bg-gray-200 block top-[20%] right-0"></div>
                             </th>
                         )
                     })
