@@ -21,9 +21,16 @@ const tableColumns = [
   },
   {
     title: "type",
+    separatorClass: "hidden",
+  },
+  {
+    title: "separator",
+    containerClass: "w-2 border-b-0 invisible",
+    separatorClass: "hidden",
   },
   {
     title: "connexion status",
+    separatorClass: "hidden",
   },
 ];
 

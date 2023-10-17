@@ -32,9 +32,17 @@ export default function Table({ columns }: TableProps) {
                             return column.render(column);
                         }
                         return (
-                            <th key={column.title} className="relative h-full px-4 border-b-[3px] border-gray-200">
-                                <span className="font-light text-sm">{render}</span>
-                                <div className="absolute min-h-[60%] w-[3px] rounded-full bg-gray-200 block top-[20%] right-0"></div>
+                            <th
+                            key={column.title}
+                            className={clsx("relative h-full px-4 border-b-[3px] border-gray-200", column.containerClass)}
+                                >
+                                <div className="font-light text-sm">{render}</div>
+                                <div className={
+                                clsx(
+                                        "absolute min-h-[60%] w-[3px] rounded-full bg-gray-200 block top-[20%] right-0",
+                                        column.separatorClass
+                                    )
+                                }></div>
                             </th>
                         )
                     })
