@@ -19,8 +19,10 @@ class Switch(BaseModel):
         return v
 
 # API
+#outputs
 BatchedSwitchOutput = batcheableOutputFactory(Switch)
 
+#inputs
 class UpsertSwitchInput(BaseModel):
     id: Optional[str] = None
     ip: Optional[str] = None

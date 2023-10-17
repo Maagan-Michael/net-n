@@ -38,21 +38,27 @@ class Connection(IConnection):
     customerId: int = 0
 
 ## API
-# connections list
+# outputs
+
+# single
 class ConnectionOutput(IConnection):
     """Connection model API output"""
     # relationships
     switch: Switch = None
     customer: Customer = None
 
+# upsert
 BatchConnectionOutput = batcheableOutputFactory(ConnectionOutput)
 
+# list
 class ConnectionsOutput(BaseModel):
     """connections paginated output"""
     connections: list[ConnectionOutput] = []
     hasPrevious: bool = False
     hasNext: bool = False
 
+# inputs
+# list query input
 class ListFilterEnum(str, Enum):
     """to filter down connections search results"""
     all = "all"
@@ -81,12 +87,7 @@ class ConnectionListInput(BaseModel):
     order: OrderBy = OrderBy.asc
     filter: ListFilterEnum = ListFilterEnum.all
 
-# connection update
-class UpdateConnectionInput(IConnectionBase):
-    """Connection model update API input"""
-    pass
-
-# connection upsert
+# upsert
 class ConnectionUpsertInput(BaseModel):
     """Connection model upsert API input"""
     id: Optional[str] = None

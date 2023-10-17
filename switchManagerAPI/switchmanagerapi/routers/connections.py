@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from typing import Union
-from ..models.connection import BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, UpdateConnectionInput
+from ..models.factories import BatchedDeleteOutput
+from ..models.connection import BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput
 
 router = APIRouter(
     tags=["v1", "connections"],
@@ -15,16 +16,18 @@ async def listConnections(input: ConnectionListInput = Depends()):
     return ConnectionsOutput()
 
 @router.get("/{id}", response_model=ConnectionOutput)
-async def getConnection(id: int):
+async def getConnection(id: str):
     """return a connection"""
     return ConnectionOutput()
 
 @router.post("/upsert", response_model=BatchConnectionOutput)
 async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUpsertInput]]):
     """upsert or udpate one || multiple connections"""
+    if not isinstance(input, list):
+        input = [input]
     BatchConnectionOutput(items=[ConnectionOutput()], errors=[])
 
-@router.delete("/delete/{id}", response_model=str)
-async def deleteConnection(id: int):
+@router.post("/delete", response_model=BatchedDeleteOutput)
+async def deleteConnection(ids: list[str]):
     """delete a connection"""
-    return id
+    return BatchedDeleteOutput(items=ids, errors=[])

@@ -18,3 +18,5 @@ def batcheableOutputFactory(model):
         items: list[model] = []
         errors: list[BatchError] = []
     return BatcheableOutputModel
+
+BatchedDeleteOutput = batcheableOutputFactory(str)

@@ -1,5 +1,6 @@
 from fastapi import APIRouter
-from typing import Union
+from typing import Optional, Union
+from ..models.factories import BatchedDeleteOutput
 from ..models.switch import Switch, BatchedSwitchOutput, UpsertSwitchInput
 
 router = APIRouter(
@@ -10,7 +11,7 @@ router = APIRouter(
 
 # switches CRUD
 @router.get("/", response_model=list[Switch])
-async def listSwitches():
+async def listSwitches(search: Optional[str] = None):
     """return a list of switches"""
     return []
 
@@ -22,10 +23,11 @@ async def getSwitch(id: int):
 @router.post("/upsert", response_model=BatchedSwitchOutput)
 async def upsertSwitch(input: Union[UpsertSwitchInput, list[UpsertSwitchInput]]):
     """upsert or udpate one || multiple switch(s)"""
-    if (isinstance(input, list)):
-        return BatchedSwitchOutput(items=[Switch()], errors=[])
+    if not isinstance(input, list):
+        input = [input]
+    return BatchedSwitchOutput(items=[Switch()], errors=[])
 
-@router.delete("/delete/{id}", response_model=str)
-async def deleteSwitch(id: int):
+@router.post("/delete", response_model=BatchedDeleteOutput)
+async def deleteSwitch(ids: list[str]):
     """delete a switch"""
-    return id
+    return BatchedDeleteOutput(items=ids, errors=[])

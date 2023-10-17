@@ -13,8 +13,10 @@ class Customer(BaseModel):
     address: str = Field(min_length=1, max_length=255)
 
 # API
+#outputs
 BatchedCustomerOutput = batcheableOutputFactory(Customer)
 
+#inputs
 class UpsertCustomerInput(BaseModel):
     id: Optional[str] = None
     firstname: Optional[str] = None
