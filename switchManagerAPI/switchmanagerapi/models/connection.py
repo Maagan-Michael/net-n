@@ -26,8 +26,8 @@ class IConnection(IConnectionBase):
     """Connection model interface"""
     """auto computed fields based on switch connection status"""
     isUp: bool = False
-    proto: str = "snmp"
-    speed: int = 0
+    adapter: str = "snmp"
+    speed: Optional[int] = 0
 
 
 ## Database
@@ -97,7 +97,7 @@ class ConnectionUpsertInput(BaseModel):
     toggleDate: Optional[datetime] = None
     type: Optional[str] = None
     isUp: Optional[bool] = None
-    proto: Optional[str] = None
+    adapter: Optional[str] = None
     speed: Optional[int] = None
     switchId: Optional[int] = None
     customerId: Optional[int] = None

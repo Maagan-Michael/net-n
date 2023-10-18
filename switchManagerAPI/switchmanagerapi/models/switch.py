@@ -12,6 +12,8 @@ class Switch(BaseModel):
     ip: str = Field(default="0.0.0.0", min_length=7, max_length=15, description="switch ip address")
     gpsLat: Optional[float] = Field(default=None, min=-90, max=90)
     gpsLong: Optional[float] = Field(default=None, min=-180, max=180)
+    name: str
+    description: str
 
     @validator("ip")
     def validate_ip(cls, v):
@@ -28,3 +30,5 @@ class UpsertSwitchInput(BaseModel):
     ip: Optional[str] = None
     gpsLat: Optional[float] = None
     gpsLong: Optional[float] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
