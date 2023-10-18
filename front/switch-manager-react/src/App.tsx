@@ -1,75 +1,127 @@
-import Table from "./components/table";
+import Table, { TableHeaderCell, TableRow } from "./components/tables/generic";
 
 const tableColumns = [
   {
-    title: "ppp",
+    data: {
+      id: "ppp",
+      title: "ppp",
+    },
+    render: TableHeaderCell,
   },
   {
-    title: "customer",
+    data: {
+      id: "customer",
+      title: "customer",
+    },
+    render: TableHeaderCell,
   },
   {
-    title: "ID",
+    data: {
+      id: "ID",
+      title: "ID",
+    },
+    render: TableHeaderCell,
   },
   {
-    title: "switch",
+    data: {
+      id: "switch",
+      title: "switch",
+    },
+    render: TableHeaderCell,
   },
   {
-    title: "date",
+    data: {
+      id: "date",
+      title: "date",
+    },
+    render: TableHeaderCell,
   },
   {
-    title: "address",
+    data: {
+      id: "address",
+      title: "address",
+    },
+    render: TableHeaderCell,
   },
   {
-    title: "type",
-    separatorClass: "hidden",
+    data: {
+      id: "type",
+      title: "type",
+    },
+    render: TableHeaderCell,
   },
   {
-    title: "separator",
-    containerClass: "w-2 border-b-0 invisible",
-    separatorClass: "hidden",
-  },
-  {
-    title: "connexion status",
-    separatorClass: "hidden",
+    data: {
+      id: "status",
+      title: "connexion status",
+    },
+    render: TableHeaderCell,
   },
 ];
 
 const mockupData = [
-  [
     {
-      title: "NR12",
-      property: "ppp"
+      data: {
+        id: "1",
+        ppp: "NR12",
+        customer: "woody Allen",
+        ID: "NR12",
+        switch: "NR12",
+        date: "NR12",
+        address: "NR12",
+        type: "NR12",
+        status: "NR12",
+      },
+      render: TableRow,
     },
     {
-      title: "woody Allen",
-      property: "customer"
+      data: {
+        id: "2",
+        ppp: "NR12",
+        customer: "woody Allen",
+        ID: "NR12",
+        switch: "NR12",
+        date: "NR12",
+        address: "NR12",
+        type: "NR12",
+        status: "NR12",
+      },
+      render: TableRow,
     },
     {
-      title: "NR12",
-      property: "ppp"
+      data: {
+        id: "3",
+        ppp: "NR12",
+        customer: "woody Allen",
+        ID: "NR12",
+        switch: "NR12",
+        date: "NR12",
+        address: "NR12",
+        type: "NR12",
+        status: "NR12",
+      },
+      render: TableRow,
     },
     {
-      title: "NR12",
-      property: "ppp"
-    },
-    {
-      title: "NR12",
-      property: "ppp"
-    },
-    {
-      title: "NR12",
-      property: "ppp"
-    },
-    {
-      title: "NR12",
-      property: "ppp"
+      data: {
+        id: "4",
+        ppp: "NR12",
+        customer: "woody Allen",
+        ID: "NR12",
+        switch: "NR12",
+        date: "NR12",
+        address: "NR12",
+        type: "NR12",
+        status: "NR12",
+      },
+      render: TableRow,
     }
-]]
+];
 
 function App() {
   return (
     <div className="p-8">
-      <Table columns={tableColumns} />
+      <Table columns={tableColumns} data={mockupData} />
     </div>
   );
 }
