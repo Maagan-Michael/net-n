@@ -6,21 +6,29 @@ from .customer import Customer
 from .switch import Switch
 from .factories import OrderBy, batcheableOutputFactory
 
-## common
+# common
+
+
 class IConnectionBase(BaseModel):
     """Base Connection model interface"""
     id: str = Field(min_length=3, max_length=255, description="connection id")
-    name: str = Field(alias="ppp", min_length=3, max_length=255, description="connection name")
-    port: int = Field(default=0, min=0, max=65535, description="port number on the switch")
-    toggled: bool = Field(default=False, description="define if the port is opened")
-    toggleDate: Optional[datetime] = Field(default=None, description="date at which the port should open / close based on currrent port status")
-    type: str = Field(default="copper|fiber", description="physical connection type")
+    name: str = Field(min_length=3, max_length=255,
+                      description="connection name")
+    port: int = Field(default=0, min=0, max=65535,
+                      description="port number on the switch")
+    toggled: bool = Field(
+        default=False, description="define if the port is opened")
+    toggleDate: Optional[datetime] = Field(
+        default=None, description="date at which the port should open / close based on currrent port status")
+    type: str = Field(default="copper|fiber",
+                      description="physical connection type")
 
     @validator("toggleDate")
     def validate_toggleDate(cls, v):
         if v is not None:
             assert v > datetime.now(), "toggleDate must be in the future"
         return v
+
 
 class IConnection(IConnectionBase):
     """Connection model interface"""
@@ -30,27 +38,32 @@ class IConnection(IConnectionBase):
     speed: Optional[int] = 0
 
 
-## Database
+# Database
 class Connection(IConnection):
     """Connection Database model"""
     # relationships
     switchId: int = 0
     customerId: int = 0
 
-## API
+# API
 # outputs
 
 # single
+
+
 class ConnectionOutput(IConnection):
     """Connection model API output"""
     # relationships
     switch: Switch = None
     customer: Customer = None
 
+
 # upsert
 BatchConnectionOutput = batcheableOutputFactory(ConnectionOutput)
 
 # list
+
+
 class ConnectionsOutput(BaseModel):
     """connections paginated output"""
     connections: list[ConnectionOutput] = []
@@ -59,6 +72,8 @@ class ConnectionsOutput(BaseModel):
 
 # inputs
 # list query input
+
+
 class ListFilterEnum(str, Enum):
     """to filter down connections search results"""
     all = "all"
@@ -71,12 +86,14 @@ class ListFilterEnum(str, Enum):
     port = "port"
     switch = "switch"
 
+
 class ListSortEnum(str, Enum):
     con = "con"
     fullname = "name"
     customerId = "cid"
     address = "address"
     switch = "switch"
+
 
 class ConnectionListInput(BaseModel):
     """connections list API input"""
@@ -88,6 +105,8 @@ class ConnectionListInput(BaseModel):
     filter: ListFilterEnum = ListFilterEnum.all
 
 # upsert
+
+
 class ConnectionUpsertInput(BaseModel):
     """Connection model upsert API input"""
     id: Optional[str] = None
