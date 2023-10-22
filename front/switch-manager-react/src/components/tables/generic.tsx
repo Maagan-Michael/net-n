@@ -15,7 +15,7 @@ export default function Table<T extends { id: string }>({
 }: TableProps<T>) {
   return (
     <div className="w-full p-4">
-      <section className="flex flex-col gap-y-4 pt-4">
+      <section className="flex flex-col gap-y-8 pt-4">
         {renderHeader}
         {data.map((d) => (
           <Row key={d.id} data={d} />

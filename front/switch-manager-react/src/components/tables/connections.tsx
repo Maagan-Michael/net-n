@@ -5,6 +5,7 @@ import { ReactComponent as House } from "../icons/house.svg";
 import { ReactComponent as Network } from "../icons/network.svg";
 import { ReactComponent as Customer } from "../icons/customer.svg";
 import { ReactComponent as Calandar } from "../icons/calandar.svg";
+import Toggle from "../inputs/toggle";
 
 export const mockupData = [
   {
@@ -141,9 +142,9 @@ export const Row = ({
         <div className="col-span-1">{data.address}</div>
         <div className="col-span-1">{data.type}</div>
       </div>
-      <div className="h-full rounded-md bg-neutral-100 p-4 grid grid-flow-col items-center justify-evenly col-span-2 border-2 border-neutral-100 transition-colors">
+      <div className="h-full rounded-md bg-neutral-100 p-4 grid grid-flow-col items-center justify-between col-span-2 border-2 border-neutral-100 transition-colors">
         <div className="flex items-center">
-          <input type="checkbox" checked={data.toggled} onChange={() => {}} />
+          <Toggle name="toggle connexion" toggled={data.toggled} />
         </div>
         <span>{data.adapter}</span>
         <ComputerIcon
