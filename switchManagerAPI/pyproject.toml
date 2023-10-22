@@ -11,6 +11,9 @@ fastapi = "^0.103.2"
 uvicorn = "^0.23.2"
 pydantic = "^2.4.2"
 
+[tool.poetry.group.dev.dependencies]
+faker = "^19.11.0"
+
 [tool.poetry.scripts]
 start = "switchmanagerapi.main:main"
 
