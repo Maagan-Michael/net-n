@@ -43,13 +43,13 @@ export const Header = () => (
         <Customer className="w-6 h-6" />
       </TableHeaderCell>
       <TableHeaderCell title="ID" separate classname="col-span-1" />
-      <TableHeaderCell title="switch" separate classname="col-span-3">
+      <TableHeaderCell title="switch" separate classname="col-span-2">
         <Network className="w-6 h-6" />
       </TableHeaderCell>
       <TableHeaderCell title="date" separate classname="col-span-2">
         <Calandar className="w-6 h-6" />
       </TableHeaderCell>
-      <TableHeaderCell title="address" separate classname="col-span-1">
+      <TableHeaderCell title="address" separate classname="col-span-2">
         <House className="w-6 h-6" />
       </TableHeaderCell>
       <TableHeaderCell title="type" classname="col-span-1" />
@@ -80,21 +80,21 @@ export const Row = ({
           {data.customer.firstname} {data.customer.lastname}
         </div>
         <div className="col-span-1">{data.customer.id}</div>
-        <div className="col-span-3">
+        <div className="col-span-2">
           {data.switch.name} ({data.switch.ip}) : {data.port}
         </div>
         <div className="col-span-2 flex flex-col items-center gap-x-2 justify-center">
           {data.toggleDate ? (
             <span>
               <DateStatus toggled={data.toggled} />
-              <span>{data.toggleDate.toISOString()}</span>
+              <span>{data.toggleDate}</span>
             </span>
           ) : (
             <span>N / A</span>
           )}
         </div>
-        <div className="col-span-1">{data.customer.address}</div>
-        <div className="col-span-1">{data.type}</div>
+        <div className="col-span-2">{data.customer.address}</div>
+        <div className="col-span-1">{data.customer.type}</div>
       </div>
       <div className="h-full rounded-md bg-neutral-100 p-4 grid grid-flow-col items-center justify-between col-span-2 border-2 border-neutral-100 transition-colors">
         <div className="flex items-center">

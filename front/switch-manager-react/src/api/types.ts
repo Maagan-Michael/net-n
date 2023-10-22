@@ -19,7 +19,7 @@ export interface ConnectionOutput {
     id: string
     name: string
     toggled: boolean
-    toggleDate?: Date
+    toggleDate?: string
     type: string
     customer: CustomerOutput
     switch: SwitchOuput
@@ -27,4 +27,10 @@ export interface ConnectionOutput {
     isUp: boolean
     adapter: string
     speed?: number
+}
+
+export interface ConnectionsOutput {
+    connections: ConnectionOutput[]
+    hasNext: boolean
+    hasPrevious: boolean
 }

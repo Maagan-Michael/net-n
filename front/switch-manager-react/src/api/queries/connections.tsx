@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import { ConnectionsOutput } from "../types";
 
 const fetchConnections = async () => {
   const res = await fetch(
@@ -8,5 +9,5 @@ const fetchConnections = async () => {
 };
 
 export function useConnectionsquery() {
-  return useQuery("connections", fetchConnections);
+  return useQuery<ConnectionsOutput>("connections", fetchConnections);
 }
