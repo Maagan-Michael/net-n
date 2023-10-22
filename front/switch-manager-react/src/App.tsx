@@ -1,10 +1,13 @@
-import Table from "./components/tables/generic";
-import { Header, Row, mockupData } from "./components/tables/connections";
+import { QueryClientProvider, QueryClient } from "react-query";
+import Dashboard from "./routes/dashboard";
+
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <div className="p-8">
-      <Table data={mockupData} renderHeader={<Header />} renderRow={Row} />
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <Dashboard />
+    </QueryClientProvider>
   );
 }
 
