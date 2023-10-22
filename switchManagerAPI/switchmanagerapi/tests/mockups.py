@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from faker import Faker
 from ..models.connection import ConnectionOutput
 from ..models.switch import Switch
@@ -30,7 +30,7 @@ def createMockSwitch() -> Switch:
 
 
 def createMockConnection() -> ConnectionOutput:
-    fake.seed(random.randint(0, 1000))
+    Faker.seed(random.randint(0, 1000))
     return ConnectionOutput(
         ppp="NR12",
         id=fake.uuid4(),
