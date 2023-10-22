@@ -17,7 +17,7 @@ router = APIRouter(
 async def listConnections(input: ConnectionListInput = Depends()):
     """return a paginated list of connections"""
     return ConnectionsOutput(
-        items=[createMockConnection() for i in range(10)],
+        connections=[createMockConnection() for i in range(10)],
         hasPrevious=False,
         hasNext=True,
     )
