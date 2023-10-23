@@ -79,7 +79,7 @@ export default function Dashboard() {
               );
             })}
             {search.length !== 0 && (
-              <div className="search-popup absolute w-full mt-48 left-0 rounded-md shadow-md p-4 bg-neutral-100 z-10 block">
+              <div className="search-popup absolute w-full mt-48 left-0 rounded-md shadow-md p-4 bg-neutral-100 z-10 hidden">
                 <div className="flex items-center justify-evenly pb-4 w-full">
                   {Object.entries(filtersMap).map(([key, props]) => (
                     <IconFilterElem
