@@ -105,7 +105,7 @@ export const Row = ({
         <ComputerIcon
           className={clsx(
             "w-6 h-6",
-            data.isUp ? "fill-green-400" : "fill-red-500"
+            data.isUp ? "text-green-400" : "text-red-500"
           )}
         />
       </div>

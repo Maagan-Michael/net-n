@@ -34,3 +34,16 @@ export interface ConnectionsOutput {
     hasNext: boolean
     hasPrevious: boolean
 }
+
+export enum ConnectionsFilters {
+    all = "all",
+    customer = "customer",
+    customerId = "customerId",
+    address = "address",
+    enabled = "enabled",
+    disabled = "disabled",
+    up = "up",
+    down = "down",
+    port = "port",
+    switch = "switch",
+}
