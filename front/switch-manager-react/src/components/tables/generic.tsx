@@ -8,13 +8,13 @@ export const TableSeparator = () => (
   <div className="absolute min-h-[60%] w-[2px] rounded-full bg-neutral-100 block top-[20%] right-0"></div>
 );
 
-export default function Table<T extends { id: string }>({
+export function Table<T extends { id: string }>({
   data,
   renderHeader,
   renderRow: Row,
 }: TableProps<T>) {
   return (
-    <div className="w-full p-4">
+    <div className="w-full">
       <section className="flex flex-col gap-y-8 pt-4">
         {renderHeader}
         {data.map((d) => (

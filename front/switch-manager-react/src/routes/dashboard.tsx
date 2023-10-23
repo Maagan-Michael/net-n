@@ -1,16 +1,12 @@
-import Table from "../components/tables/generic";
-import { Header, Row } from "../components/tables/connections";
-import { useConnectionsquery } from "../api/queries/connections";
+import { Outlet } from "react-router-dom";
 
 export default function Dashboard() {
-  const { data, isLoading } = useConnectionsquery();
   return (
-    <div className="p-8">
-      <Table
-        data={data?.connections || []}
-        renderHeader={<Header />}
-        renderRow={Row}
-      />
+    <div className="p-12">
+      <section>
+        <h1 className="font-thin text-3xl">SwitchManager</h1>
+      </section>
+      <Outlet />
     </div>
   );
 }

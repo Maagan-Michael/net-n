@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { TableSeparator } from "./generic";
+import { TableSeparator, Table } from "./generic";
 import { ReactComponent as ComputerIcon } from "../icons/computer.svg";
 import { ReactComponent as House } from "../icons/house.svg";
 import { ReactComponent as Network } from "../icons/network.svg";
@@ -7,6 +7,7 @@ import { ReactComponent as Customer } from "../icons/customer.svg";
 import { ReactComponent as Calandar } from "../icons/calandar.svg";
 import Toggle from "../inputs/toggle";
 import { ConnectionOutput } from "../../api/types";
+import { useConnectionsquery } from "../../api/queries/connections";
 
 export const TableHeaderCell = ({
   title,
@@ -111,3 +112,16 @@ export const Row = ({
     </div>
   );
 };
+
+export function ConnectionsTable() {
+  const { data, isLoading } = useConnectionsquery();
+  return (
+    <div>
+      <Table
+        data={data?.connections || []}
+        renderHeader={<Header />}
+        renderRow={Row}
+      />
+    </div>
+  );
+}
