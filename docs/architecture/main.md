@@ -23,13 +23,11 @@ actor "User" as user
 node "Network" as network
 
 Cluster_Boundary(cluster, "Backend") {
-    Namespace_Boundary(nsBackEnd, "Back End") {
-        KubernetesPod(KubernetesBE4, "front-end", "")
-        KubernetesPod(KubernetesBE1, "Api", "")
-        KubernetesPod(KubernetesBE2, "DB Ingestion module", "")
-        KubernetesPod(KubernetesBE3, "Adapter Module", "")
-        AzureSqlDatabase(backendSQL, "BackendDB", "")
-    }
+    KubernetesPod(KubernetesBE4, "front-end", "")
+    KubernetesPod(KubernetesBE1, "Api", "")
+    KubernetesPod(KubernetesBE2, "DB Ingestion module", "")
+    KubernetesPod(KubernetesBE3, "Adapter Module", "")
+    AzureSqlDatabase(backendSQL, "BackendDB", "")
 }
 AzureSqlDatabase(cloudSQL, "MMDB", "")
 
