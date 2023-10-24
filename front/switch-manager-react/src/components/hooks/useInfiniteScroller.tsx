@@ -28,13 +28,16 @@ export default function useInfiniteScroller(callback?: () => void) {
           }
         );
         observer.current.observe(el);
-        console.log(observer.current);
       }
     },
     [callback]
   );
   useEffect(() => {
-    //cleanup observer here
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
   }, []);
   return onReady;
 }

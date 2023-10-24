@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useInfiniteQuery } from "react-query";
 import { ConnectionsOutput } from "../types";
 
 const fetchConnections = async () => {
@@ -8,6 +8,6 @@ const fetchConnections = async () => {
   return res.json();
 };
 
-export function useConnectionsquery() {
-  return useQuery<ConnectionsOutput>("connections", fetchConnections);
+export function useConnectionsQuery() {
+  return useInfiniteQuery<ConnectionsOutput>("connections", fetchConnections);
 }

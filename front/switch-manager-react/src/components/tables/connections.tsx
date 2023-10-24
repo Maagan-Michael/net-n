@@ -7,7 +7,7 @@ import { ReactComponent as Customer } from "../icons/customer.svg";
 import { ReactComponent as Calandar } from "../icons/calandar.svg";
 import Toggle from "../inputs/toggle";
 import { ConnectionOutput } from "../../api/types";
-import { useConnectionsquery } from "../../api/queries/connections";
+import { useConnectionsQuery } from "../../api/queries/connections";
 import useInfiniteScroller from "../hooks/useInfiniteScroller";
 
 export const TableHeaderCell = ({
@@ -115,12 +115,22 @@ export const Row = ({
 };
 
 export function ConnectionsTable() {
-  const { data, isLoading } = useConnectionsquery();
+  const { data, isLoading } = useConnectionsQuery();
   const onReady = useInfiniteScroller();
+  if (isLoading) {
+    return <div>loading...</div>;
+  }
+  if (!data || data.pages.length === 0) {
+    return <div>no data</div>;
+  }
+  const pagesContent: ConnectionOutput[] = data.pages.reduce(
+    (r, page) => [...page.connections, ...r],
+    []
+  );
   return (
     <div>
       <Table
-        data={data?.connections || []}
+        data={pagesContent || []}
         renderHeader={<Header />}
         renderRow={Row}
         onReady={onReady}
