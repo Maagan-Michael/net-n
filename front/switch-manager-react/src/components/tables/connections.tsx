@@ -8,6 +8,7 @@ import { ReactComponent as Calandar } from "../icons/calandar.svg";
 import Toggle from "../inputs/toggle";
 import { ConnectionOutput } from "../../api/types";
 import { useConnectionsquery } from "../../api/queries/connections";
+import useInfiniteScroller from "../hooks/useInfiniteScroller";
 
 export const TableHeaderCell = ({
   title,
@@ -115,12 +116,14 @@ export const Row = ({
 
 export function ConnectionsTable() {
   const { data, isLoading } = useConnectionsquery();
+  const onReady = useInfiniteScroller();
   return (
     <div>
       <Table
         data={data?.connections || []}
         renderHeader={<Header />}
         renderRow={Row}
+        onReady={onReady}
       />
     </div>
   );
