@@ -5,8 +5,9 @@ site_dir: _site
 theme:
   name: material
 nav:
+  - 'Main': 'index.md'
   - 'Architecture': 'architecure/main.md'
-  - 'Data Flow': 'backend/datasync.md'
+  - 'Data Sync': 'backend/datasync.md'
 plugins:
   - search
   - build_plantuml:
