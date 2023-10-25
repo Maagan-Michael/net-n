@@ -6,15 +6,11 @@ import { ReactComponent as Network } from "../icons/network.svg";
 import { ReactComponent as Customer } from "../icons/customer.svg";
 import { ReactComponent as Calandar } from "../icons/calandar.svg";
 import Toggle from "../inputs/toggle";
+import { ConnectionOutput, ConnectionsOutput } from "../../api/types";
 import {
-  ConnectionOutput,
-  ConnectionsOutput,
-  ConnectionsFilters,
-  OrderBy,
-  ListSortEnum,
-} from "../../api/types";
-import { useConnectionsQuery } from "../../api/queries/connections";
-import { useSearchParams } from "react-router-dom";
+  useConnectionsQuery,
+  useConnectionsUrlParams,
+} from "../../api/queries/connections";
 import useInfiniteScroller from "../hooks/useInfiniteScroller";
 
 export const TableHeaderCell = ({
@@ -129,27 +125,9 @@ const LoadingRow = () => (
 );
 
 export function ConnectionsTable() {
-  const [searchParams] = useSearchParams();
-  const limit = Number(searchParams.get("limit")) || 10;
+  const [queryParams] = useConnectionsUrlParams();
   const { data, isLoading, fetchNextPage, isFetchingNextPage } =
-    useConnectionsQuery({
-      filter:
-        ConnectionsFilters[
-          (searchParams.get("filter") as keyof typeof ConnectionsFilters) ||
-            ConnectionsFilters.all
-        ],
-      sort: ListSortEnum[
-        (searchParams.get("sort") as keyof typeof ListSortEnum) ||
-          ListSortEnum.con
-      ],
-      order:
-        OrderBy[
-          (searchParams.get("order") as keyof typeof OrderBy) || OrderBy.asc
-        ],
-      search: searchParams.get("search") || undefined,
-      page: Number(searchParams.get("page")) || 0,
-      limit,
-    });
+    useConnectionsQuery(queryParams);
   const onReady = useInfiniteScroller(
     () => !isLoading && !isFetchingNextPage && fetchNextPage()
   );
@@ -173,7 +151,7 @@ export function ConnectionsTable() {
       />
       {(isFetchingNextPage || isLoading) && (
         <div className="flex flex-col gap-y-8 mt-8 animate-pulse">
-          {[...Array(limit)].map((i, idx) => (
+          {[...Array(queryParams.limit)].map((i, idx) => (
             <LoadingRow key={idx} />
           ))}
         </div>

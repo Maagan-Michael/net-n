@@ -1,6 +1,6 @@
 import clsx from "clsx";
-import { FunctionComponent, useCallback, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { FunctionComponent, useState } from "react";
+import { Outlet, URLSearchParamsInit } from "react-router-dom";
 import { ReactComponent as Search } from "../components/icons/search.svg";
 import TextButton from "../components/inputs/textBtn";
 import { ReactComponent as Customer } from "../components/icons/customer.svg";
@@ -8,6 +8,7 @@ import { ReactComponent as House } from "../components/icons/house.svg";
 import { ReactComponent as Network } from "../components/icons/network.svg";
 import { ReactComponent as Computer } from "../components/icons/computer.svg";
 import IconRoundBtn from "../components/inputs/iconRoundBtn";
+import { useConnectionsUrlParams } from "../api/queries/connections";
 import { ConnectionsFilters as cf } from "../api/types";
 
 interface IconFilterElemProps {
@@ -41,18 +42,14 @@ const filtersMap: { [x: string]: IconFilterElemProps } = {
 };
 
 export default function Dashboard() {
-  const [search, setSearch] = useState<string>("");
-  const [filters, setFilters] = useState<cf[]>([]);
-  const onFilterClick = useCallback(
-    (e: cf) =>
-      setFilters((prev) => {
-        if (prev.includes(e)) {
-          return prev.filter((f) => f !== e);
-        }
-        return [...prev, e];
-      }),
-    [setFilters]
-  );
+  const [params, setParams] = useConnectionsUrlParams();
+  const [search, setSearch] = useState<string>(params.search || "");
+  const [filter, setFilter] = useState<cf>(params.filter || cf.all);
+  const currentFilter = filtersMap[filter];
+  const onSearch = () => {
+    setParams({ ...params, search, filter } as unknown as URLSearchParamsInit);
+    document.body.focus();
+  };
   return (
     <div className="p-12">
       <section>
@@ -67,29 +64,25 @@ export default function Dashboard() {
               onChange={(e) => setSearch(e.target.value)}
               value={search}
             />
-            {filters.map((f) => {
-              const props = filtersMap[f as cf];
-              return (
-                <IconFilterElem
-                  key={f}
-                  sm
-                  onClick={() => onFilterClick(f)}
-                  {...props}
-                />
-              );
-            })}
+            {currentFilter && (
+              <IconFilterElem
+                sm
+                onClick={() => setFilter(cf.all)}
+                {...currentFilter}
+              />
+            )}
             {search.length !== 0 && (
               <div className="search-popup absolute w-full mt-48 left-0 rounded-md shadow-md p-4 bg-neutral-100 z-10 hidden">
                 <div className="flex items-center justify-evenly pb-4 w-full">
                   {Object.entries(filtersMap).map(([key, props]) => (
                     <IconFilterElem
                       key={key}
-                      onClick={(e) => onFilterClick(key as unknown as cf)}
+                      onClick={(e) => setFilter(key as unknown as cf)}
                       {...props}
                     />
                   ))}
                 </div>
-                <TextButton label="search" />
+                <TextButton label="search" onClick={onSearch} />
               </div>
             )}
           </div>
