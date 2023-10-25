@@ -44,16 +44,19 @@ const filtersMap: { [x: string]: IconFilterElemProps } = {
 export default function Dashboard() {
   const [params, setParams] = useConnectionsUrlParams();
   const [search, setSearch] = useState<string>(params.search || "");
-  const [filter, setFilter] = useState<cf>(params.filter || cf.all);
+  const filter: cf = params.filter || cf.all;
   const currentFilter = filtersMap[filter];
-  const onSearch = () => {
-    setParams({ ...params, search, filter } as unknown as URLSearchParamsInit);
+  const onSearch = (_filter?: cf) => {
+    setParams({
+      ...params,
+      search,
+      filter: _filter || filter,
+    } as unknown as URLSearchParamsInit);
     (document.activeElement as HTMLElement)?.blur();
   };
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     if (e.target.value.length === 0) {
-      setFilter(cf.all);
       setParams({
         ...params,
         search: "",
@@ -85,7 +88,7 @@ export default function Dashboard() {
             {currentFilter && (
               <IconFilterElem
                 sm
-                onClick={() => setFilter(cf.all)}
+                onClick={() => onSearch(cf.all)}
                 {...currentFilter}
               />
             )}
@@ -95,12 +98,12 @@ export default function Dashboard() {
                   {Object.entries(filtersMap).map(([key, props]) => (
                     <IconFilterElem
                       key={key}
-                      onClick={(e) => setFilter(key as unknown as cf)}
+                      onClick={(e) => onSearch(key as unknown as cf)}
                       {...props}
                     />
                   ))}
                 </div>
-                <TextButton label="search" onClick={onSearch} />
+                <TextButton label="search" onClick={() => onSearch()} />
               </div>
             )}
           </div>
