@@ -1,0 +1,39 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - docs
+  workflow_dispatch:
+
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: plantuml
+    steps:
+      - name: Checkout code 🛎️
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            docs
+
+      - name: Render MkDocs+PlantUML 🐳📖
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/docs -u $UID:$GID ghcr.io/maagan-michael/mkdocs-plantuml build
+
+      - name: Upload Artifacts 📁
+        uses: actions/upload-pages-artifact@v2
+        with:
+          name: net-n-docs
+          path: _site
+
+      - name: Deploy to GitHub Pages 📚
+        uses: actions/deploy-pages@v2
+        with:
+          artifact_name: net-n-docs
