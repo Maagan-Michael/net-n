@@ -76,15 +76,16 @@ class ConnectionsOutput(BaseModel):
 
 class ListFilterEnum(str, Enum):
     """to filter down connections search results"""
-    all = "all"
-    customer = "customer"
-    address = "address"
-    enabled = "enabled"
-    disabled = "disabled"
-    up = "up"
-    down = "down"
-    port = "port"
-    switch = "switch"
+    all = "all",
+    customer = "customer",
+    customerId = "customerId",
+    address = "address",
+    enabled = "enabled",
+    disabled = "disabled",
+    up = "up",
+    down = "down",
+    port = "port",
+    switch = "switch",
 
 
 class ListSortEnum(str, Enum):
