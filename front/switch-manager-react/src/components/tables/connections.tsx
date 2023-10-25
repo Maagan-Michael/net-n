@@ -129,12 +129,12 @@ export function ConnectionsTable() {
   const { data, isLoading, fetchNextPage, isFetchingNextPage } =
     useConnectionsQuery(queryParams);
   const onReady = useInfiniteScroller(
-    () => !isLoading && !isFetchingNextPage && fetchNextPage()
+    () => !isLoading && !isFetchingNextPage && fetchNextPage(),
+    {
+      threshold: 0.8,
+    }
   );
-  if (!data || data.pages.length === 0) {
-    return <div>no data</div>;
-  }
-  const pagesContent: ConnectionOutput[] = data.pages.reduce(
+  const pagesContent: ConnectionOutput[] = (data?.pages || []).reduce(
     (r: ConnectionOutput[], page: ConnectionsOutput) => [
       ...page.connections,
       ...r,

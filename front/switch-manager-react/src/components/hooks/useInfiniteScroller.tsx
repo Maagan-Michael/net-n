@@ -1,6 +1,9 @@
 import { useCallback, useRef, useEffect } from "react";
 
-export default function useInfiniteScroller(callback?: () => void) {
+export default function useInfiniteScroller(
+  callback?: () => void,
+  { rootMargin, threshold }: IntersectionObserverInit = {}
+) {
   const ref = useRef<HTMLDivElement>(null);
   const observer = useRef<IntersectionObserver | null>(null);
   const onReady = useCallback(
@@ -23,14 +26,14 @@ export default function useInfiniteScroller(callback?: () => void) {
           },
           {
             root: null,
-            rootMargin: "0px",
-            threshold: 0.1,
+            rootMargin,
+            threshold,
           }
         );
         observer.current.observe(el);
       }
     },
-    [callback]
+    [callback, rootMargin, threshold]
   );
   useEffect(() => {
     return () => {

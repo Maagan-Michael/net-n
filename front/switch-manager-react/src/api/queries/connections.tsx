@@ -15,7 +15,6 @@ const fetchConnections = async (params: ConnectionsListQueryInput) => {
     page: page.toString(),
     limit: limit.toString(),
   }).toString();
-  console.log(queryString);
   const res = await fetch(
     `${process.env.REACT_APP_API_URL}/api/v1/connections?${queryString}`
   );

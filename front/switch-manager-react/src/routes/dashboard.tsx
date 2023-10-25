@@ -48,20 +48,37 @@ export default function Dashboard() {
   const currentFilter = filtersMap[filter];
   const onSearch = () => {
     setParams({ ...params, search, filter } as unknown as URLSearchParamsInit);
-    document.body.focus();
   };
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    if (e.target.value.length === 0) {
+      setFilter(cf.all);
+      setParams({
+        ...params,
+        search: "",
+        filter: cf.all,
+      } as unknown as URLSearchParamsInit);
+    }
+  };
+  const searchActive =
+    params.search && params.search.length > 0 && search.length !== 0;
   return (
     <div className="p-12">
       <section>
         <h1 className="font-thin text-3xl">SwitchManager</h1>
         <section>
           <div className="rounded-md bg-neutral-100 w-[440px] mt-6 flex items-center gap-x-1 px-2 shadow relative [&>.search-popup]:focus-within:block">
-            <Search className={clsx("w-12 h-12", "text-red-400")} />
+            <Search
+              className={clsx(
+                "w-12 h-12",
+                searchActive ? "text-blue-400" : "text-red-400"
+              )}
+            />
             <input
               type="search"
               placeholder="search..."
               className="bg-transparent outline-none text-sm grow"
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={onChange}
               value={search}
             />
             {currentFilter && (
