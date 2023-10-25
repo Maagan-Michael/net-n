@@ -23,7 +23,15 @@ const fetchConnections = async (params: ConnectionsListQueryInput) => {
 
 export function useConnectionsQuery(params: ConnectionsListQueryInput) {
   return useInfiniteQuery<ConnectionsOutput>(
-    "connections",
+    [
+      "connections",
+      {
+        filters: params.filter,
+        sort: params.sort,
+        order: params.order,
+        search: params.search,
+      },
+    ],
     () => fetchConnections(params),
     {
       getNextPageParam: (lastPage) => {
