@@ -48,6 +48,7 @@ export default function Dashboard() {
   const currentFilter = filtersMap[filter];
   const onSearch = () => {
     setParams({ ...params, search, filter } as unknown as URLSearchParamsInit);
+    (document.activeElement as HTMLElement)?.blur();
   };
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
