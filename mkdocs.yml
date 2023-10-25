@@ -1,0 +1,23 @@
+site_name: Net-N - microISP management solution
+repo_name: https://github.com/MaaganMichael/net-n
+site_description: Micro ISP implementation to ease network connectivity - tenancy correlation management
+site_dir: _site
+theme:
+  name: material
+nav:
+  - 'Architecture': 'architecure/main.md'
+  - 'Data Flow': 'backend/datasync.md'
+plugins:
+  - search
+  - build_plantuml:
+      render: 'local' # or "local" for local rendering
+      bin_path: '/usr/local/bin/plantuml' # ignored when render: server
+      server: 'http://www.plantuml.com/plantuml' # official plantuml server
+      disable_ssl_certificate_validation: true # for self-signed and invalid certs
+      output_format: 'svg' # or "png"
+      diagram_root: 'docs/diagrams' # should reside under docs_dir
+      output_folder: 'out'
+      input_folder: 'src'
+      input_extensions: ''
+markdown_extensions:
+  - plantuml_markdown
