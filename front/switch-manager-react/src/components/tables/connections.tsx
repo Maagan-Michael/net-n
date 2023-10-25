@@ -6,8 +6,15 @@ import { ReactComponent as Network } from "../icons/network.svg";
 import { ReactComponent as Customer } from "../icons/customer.svg";
 import { ReactComponent as Calandar } from "../icons/calandar.svg";
 import Toggle from "../inputs/toggle";
-import { ConnectionOutput } from "../../api/types";
+import {
+  ConnectionOutput,
+  ConnectionsOutput,
+  ConnectionsFilters,
+  OrderBy,
+  ListSortEnum,
+} from "../../api/types";
 import { useConnectionsQuery } from "../../api/queries/connections";
+import { useSearchParams } from "react-router-dom";
 import useInfiniteScroller from "../hooks/useInfiniteScroller";
 
 export const TableHeaderCell = ({
@@ -114,17 +121,46 @@ export const Row = ({
   );
 };
 
+const LoadingRow = () => (
+  <div className="w-full h-14 grid grid-flow-col grid-cols-12 gap-x-12">
+    <div className="h-full rounded-md bg-neutral-100 col-span-10"></div>
+    <div className="h-full rounded-md bg-neutral-100 grow col-span-2"></div>
+  </div>
+);
+
 export function ConnectionsTable() {
-  const { data, isLoading } = useConnectionsQuery();
-  const onReady = useInfiniteScroller();
-  if (isLoading) {
-    return <div>loading...</div>;
-  }
+  const [searchParams] = useSearchParams();
+  const limit = Number(searchParams.get("limit")) || 10;
+  const { data, isLoading, fetchNextPage, isFetchingNextPage } =
+    useConnectionsQuery({
+      filter:
+        ConnectionsFilters[
+          (searchParams.get("filter") as keyof typeof ConnectionsFilters) ||
+            ConnectionsFilters.all
+        ],
+      sort: ListSortEnum[
+        (searchParams.get("sort") as keyof typeof ListSortEnum) ||
+          ListSortEnum.con
+      ],
+      order:
+        OrderBy[
+          (searchParams.get("order") as keyof typeof OrderBy) || OrderBy.asc
+        ],
+      search: searchParams.get("search") || undefined,
+      page: Number(searchParams.get("page")) || 0,
+      limit,
+    });
+  const onReady = useInfiniteScroller(
+    () => !isLoading && !isFetchingNextPage && fetchNextPage()
+  );
   if (!data || data.pages.length === 0) {
     return <div>no data</div>;
   }
   const pagesContent: ConnectionOutput[] = data.pages.reduce(
-    (r, page) => [...page.connections, ...r],
+    (r: ConnectionOutput[], page: ConnectionsOutput) => [
+      ...page.connections,
+      ...r,
+    ],
     []
   );
   return (
@@ -135,6 +171,13 @@ export function ConnectionsTable() {
         renderRow={Row}
         onReady={onReady}
       />
+      {(isFetchingNextPage || isLoading) && (
+        <div className="flex flex-col gap-y-8 mt-8 animate-pulse">
+          {[...Array(limit)].map((i, idx) => (
+            <LoadingRow key={idx} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

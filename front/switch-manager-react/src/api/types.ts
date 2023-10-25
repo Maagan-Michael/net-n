@@ -47,3 +47,25 @@ export enum ConnectionsFilters {
     port = "port",
     switch = "switch",
 }
+
+export enum OrderBy {
+    asc = "asc",
+    desc = "desc",
+}
+
+export enum ListSortEnum {
+    con = "con",
+    fullname = "name",
+    customerId = "cid",
+    address = "address",
+    switch = "switch",
+}
+
+export interface ConnectionsListQueryInput {
+    page?: number
+    limit?: number
+    search?: string
+    sort?: ListSortEnum
+    order?: OrderBy
+    filter?: ConnectionsFilters
+}

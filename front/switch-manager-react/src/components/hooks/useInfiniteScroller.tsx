@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, useEffect } from "react";
+import { useCallback, useRef, useEffect } from "react";
 
 export default function useInfiniteScroller(callback?: () => void) {
   const ref = useRef<HTMLDivElement>(null);
