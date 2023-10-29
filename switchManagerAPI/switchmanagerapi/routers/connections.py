@@ -26,7 +26,7 @@ async def listConnections(input: ConnectionListInput = Depends()):
 @router.get("/{id}", response_model=ConnectionOutput)
 async def getConnection(id: str):
     """return a connection"""
-    return ConnectionOutput()
+    return createMockConnection()
 
 
 @router.post("/upsert", response_model=BatchConnectionOutput)
