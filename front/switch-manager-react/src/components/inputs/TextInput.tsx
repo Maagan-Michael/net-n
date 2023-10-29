@@ -1,11 +1,17 @@
+import { UseFormRegister } from "react-hook-form";
+
 export interface TextInputProps
   extends Partial<JSX.IntrinsicElements["input"]> {
   label: string;
+  name: string;
+  register: UseFormRegister<any>;
 }
 
 export default function TextInput({
   label,
   className,
+  register,
+  name,
   required,
   ...props
 }: TextInputProps): JSX.Element {
@@ -20,6 +26,7 @@ export default function TextInput({
           type="text"
           className="bg-transparent outline-none w-full text-sm"
           required={required}
+          {...register(name, { required })}
         />
       </div>
     </div>
