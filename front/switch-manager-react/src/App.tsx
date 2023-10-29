@@ -1,7 +1,8 @@
 import { QueryClientProvider, QueryClient } from "react-query";
 import Dashboard from "./routes/dashboard";
-import { createBrowserRouter, Router, RouterProvider } from "react-router-dom";
-import { ConnectionsTable } from "./components/tables/connections";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Connections from "./routes/connections";
+import Connection from "./routes/connections/connection";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -11,7 +12,13 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <ConnectionsTable />,
+        element: <Connections />,
+        children: [
+          {
+            path: "/connections/:id",
+            element: <Connection />,
+          },
+        ],
       },
     ],
   },

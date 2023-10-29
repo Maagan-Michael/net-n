@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 export interface TableProps<T extends { id: string }> {
   data: T[];
   renderRow: ({ data }: React.PropsWithChildren<{ data: T }>) => JSX.Element;
