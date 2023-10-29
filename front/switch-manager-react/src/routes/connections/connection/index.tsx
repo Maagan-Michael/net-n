@@ -9,9 +9,14 @@ function ConnectionForm({ data, goBack }: { data: any; goBack: () => void }) {
   const { register, handleSubmit } = useForm({
     defaultValues: data,
   });
-  console.log(data);
   return (
-    <form className="relative w-[600px] h-[500px] bg-white rounded-md z-10 shadow-md flex justify-evenly p-4">
+    <form
+      className="relative w-[600px] h-[500px] bg-white rounded-md z-10 shadow-md flex justify-evenly p-4"
+      onSubmit={handleSubmit((d) => {
+        console.log(d);
+        goBack();
+      })}
+    >
       <div className="p-4 w-1/2">
         <h3 className="font-bold text-2xl">technical options</h3>
         <div className="flex flex-col gap-y-2 mt-4">
@@ -72,7 +77,6 @@ function ConnectionForm({ data, goBack }: { data: any; goBack: () => void }) {
       <TextButton
         className="absolute bg-blue-400 w-8/12 bottom-8 left-2/12"
         label="save"
-        onClick={goBack}
       />
     </form>
   );
