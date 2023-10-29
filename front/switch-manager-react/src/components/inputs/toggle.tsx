@@ -1,5 +1,5 @@
+import clsx from "clsx";
 import { MouseEventHandler } from "react";
-import { ReactComponent as ToggleOff } from "../icons/toggleOff.svg";
 import { ReactComponent as ToggleOn } from "../icons/toggleOn.svg";
 
 export default function Toggle({
@@ -7,11 +7,13 @@ export default function Toggle({
   name,
   toggled,
   onChange,
+  className = "w-9",
 }: {
   label?: string;
   name: string;
   toggled: boolean;
   onChange?: MouseEventHandler<HTMLDivElement>;
+  className?: string;
 }) {
   return (
     <div onMouseDown={onChange}>
@@ -22,9 +24,13 @@ export default function Toggle({
       )}
       <input type="checkbox" id={name} name={name} hidden />
       {toggled ? (
-        <ToggleOn className="w-9 fill-green-400" />
+        <ToggleOn
+          className={clsx("cursor-pointer fill-green-400", className)}
+        />
       ) : (
-        <ToggleOff className="w-9 fill-red-500" />
+        <ToggleOn
+          className={clsx("cursor-pointer fill-red-500 rotate-180", className)}
+        />
       )}
     </div>
   );

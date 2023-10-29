@@ -1,17 +1,18 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { useConnectionQuery } from "../../../api/queries/getConnection";
 import { useCallback } from "react";
 import TextButton from "../../../components/inputs/textBtn";
 import TextInput from "../../../components/inputs/TextInput";
+import Toggle from "../../../components/inputs/toggle";
 
 function ConnectionForm({ data, goBack }: { data: any; goBack: () => void }) {
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, control } = useForm({
     defaultValues: data,
   });
   return (
     <form
-      className="relative w-[600px] h-[500px] bg-white rounded-md z-10 shadow-md flex justify-evenly p-4"
+      className="relative w-[600px] h-[440px] bg-white rounded-md z-10 shadow-md flex justify-evenly p-4"
       onSubmit={handleSubmit((d) => {
         console.log(d);
         goBack();
@@ -20,12 +21,28 @@ function ConnectionForm({ data, goBack }: { data: any; goBack: () => void }) {
       <div className="p-4 w-1/2">
         <h3 className="font-bold text-2xl">technical options</h3>
         <div className="flex flex-col gap-y-2 mt-4">
-          <TextInput
-            register={register}
-            name="switch.name"
-            label="ppp"
-            required
-          />
+          <div className="flex flex-row gap-x-2 justify-between items-end">
+            <TextInput
+              register={register}
+              name="switch.name"
+              label="ppp"
+              required
+              className="grow"
+            />
+            <Controller
+              control={control}
+              name="toggled"
+              render={({ field: { value, onChange } }) => (
+                <Toggle
+                  label=""
+                  name="toggled"
+                  className="w-12"
+                  toggled={value}
+                  onChange={(e) => onChange(!value)}
+                />
+              )}
+            />
+          </div>
           <TextInput
             register={register}
             name="toggleDate"

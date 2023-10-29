@@ -1,3 +1,4 @@
+import { clsx } from "clsx";
 import { UseFormRegister } from "react-hook-form";
 
 export interface TextInputProps
@@ -16,15 +17,15 @@ export default function TextInput({
   ...props
 }: TextInputProps): JSX.Element {
   return (
-    <div className="[&>label]:focus-within:text-blue-400">
-      <label htmlFor={label} className="font-thin text-sm">
+    <div className={clsx("[&>label]:focus-within:text-blue-400", className)}>
+      <label htmlFor={label} className="font-thin text-xs">
         {label}
         {required ? "*" : ""}
       </label>
-      <div className="bg-neutral-100 rounded-md p-2 mt-1" id={label}>
+      <div className="bg-neutral-100 rounded py-1 px-2 w-full" id={label}>
         <input
           type="text"
-          className="bg-transparent outline-none w-full text-sm"
+          className="bg-transparent outline-none w-full text-xs"
           required={required}
           {...register(name, { required })}
         />
