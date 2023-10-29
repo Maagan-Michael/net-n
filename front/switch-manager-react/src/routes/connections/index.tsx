@@ -4,7 +4,7 @@ import { ConnectionOutput, ConnectionsOutput } from "../../api/types";
 import {
   useConnectionsQuery,
   useConnectionsUrlParams,
-} from "../../api/queries/connections";
+} from "../../api/queries/getConnections";
 import useInfiniteScroller from "../../components/hooks/useInfiniteScroller";
 import Header from "./header";
 import Row from "./row";

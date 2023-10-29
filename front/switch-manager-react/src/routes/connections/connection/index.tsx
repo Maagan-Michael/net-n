@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { useConnectionQuery } from "../../../api/queries/connections";
+import { useConnectionQuery } from "../../../api/queries/getConnection";
 import { useCallback } from "react";
 import TextButton from "../../../components/inputs/textBtn";
 import TextInput from "../../../components/inputs/TextInput";

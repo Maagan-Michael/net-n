@@ -8,7 +8,7 @@ import { ReactComponent as House } from "../components/icons/house.svg";
 import { ReactComponent as Network } from "../components/icons/network.svg";
 import { ReactComponent as Computer } from "../components/icons/computer.svg";
 import IconRoundBtn from "../components/inputs/iconRoundBtn";
-import { useConnectionsUrlParams } from "../api/queries/connections";
+import { useConnectionsUrlParams } from "../api/queries/getConnections";
 import { ConnectionsFilters as cf } from "../api/types";
 
 interface IconFilterElemProps {
