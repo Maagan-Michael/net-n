@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import TextButton from "../../../components/inputs/textBtn";
 import TextInput from "../../../components/inputs/TextInput";
 import Toggle from "../../../components/inputs/toggle";
+import { ReactComponent as Cross } from "../../../components/icons/cross.svg";
 
 function ConnectionForm({ data, goBack }: { data: any; goBack: () => void }) {
   const { register, handleSubmit, control } = useForm({
@@ -18,6 +19,10 @@ function ConnectionForm({ data, goBack }: { data: any; goBack: () => void }) {
         goBack();
       })}
     >
+      <Cross
+        className="absolute w-6 h-6 top-4 right-4 cursor-pointer hover:opacity-60 transition-all"
+        onClick={goBack}
+      />
       <div className="grid grid-cols-11 justify-evenly p-4">
         <div className="p-4 col-span-5">
           <h3 className="font-bold text-2xl">technical options</h3>
