@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as ComputerIcon } from "../../components/icons/computer.svg";
+import { ReactComponent as Ethernet } from "../../components/icons/ethernet.svg";
 import Toggle from "../../components/inputs/toggle";
 import { ConnectionOutput } from "../../api/types";
 import { useCallback } from "react";
@@ -26,7 +27,6 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
     adapter,
     isUp,
   } = data;
-  //const [mutate] = useConnectionUpdateMutation();
   const navigate = useNavigate();
   const onclick = useCallback(() => {
     navigate(`/connections/${id}${window.location.search}`);
@@ -60,7 +60,12 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
       </div>
       <div className="h-full rounded-md bg-neutral-100 p-4 grid grid-flow-col items-center justify-between col-span-2 border-2 border-neutral-100 transition-colors">
         <div className="flex items-center">
-          <Toggle name="toggle connexion" toggled={toggled} />
+          <Ethernet
+            className={clsx(
+              "w-7 h-7",
+              toggled ? "text-green-400" : "text-red-500"
+            )}
+          />
         </div>
         <span>{adapter}</span>
         <ComputerIcon
