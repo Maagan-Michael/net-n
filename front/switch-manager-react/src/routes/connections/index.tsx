@@ -11,7 +11,7 @@ import Row from "./row";
 import LoadingRow from "./loadingRow";
 
 function Connections() {
-  const [queryParams] = useConnectionsUrlParams();
+  const [queryParams, setParams] = useConnectionsUrlParams();
   const { data, isLoading, fetchNextPage, isFetchingNextPage } =
     useConnectionsQuery(queryParams);
   const onReady = useInfiniteScroller(
@@ -31,7 +31,13 @@ function Connections() {
     <div>
       <Table
         data={pagesContent || []}
-        renderHeader={<Header />}
+        renderHeader={
+          <Header
+            sort={queryParams.sort}
+            order={queryParams.order}
+            setSearch={setParams}
+          />
+        }
         renderRow={Row}
         onReady={onReady}
       />

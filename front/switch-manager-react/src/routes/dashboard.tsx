@@ -48,20 +48,18 @@ export default function Dashboard() {
   const currentFilter = filtersMap[filter];
   const onSearch = (_filter?: cf) => {
     setParams({
-      ...params,
       search,
       filter: _filter || filter,
-    } as unknown as URLSearchParamsInit);
+    });
     (document.activeElement as HTMLElement)?.blur();
   };
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     if (e.target.value.length === 0) {
       setParams({
-        ...params,
         search: "",
         filter: cf.all,
-      } as unknown as URLSearchParamsInit);
+      });
     }
   };
   const searchActive =

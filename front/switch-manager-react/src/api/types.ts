@@ -55,8 +55,8 @@ export enum OrderBy {
 
 export enum ListSortEnum {
     con = "con",
-    fullname = "name",
-    customerId = "cid",
+    name = "name",
+    cid = "cid",
     address = "address",
     switch = "switch",
 }
@@ -65,8 +65,8 @@ export interface ConnectionsListQueryInput {
     page?: number
     limit?: number
     search?: string
-    sort?: ListSortEnum
-    order?: OrderBy
+    sort: ListSortEnum
+    order: OrderBy
     filter?: ConnectionsFilters
 }
 

@@ -6,7 +6,7 @@ import {
   ListSortEnum,
   OrderBy,
 } from "../types";
-import { SetURLSearchParams, useSearchParams } from "react-router-dom";
+import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
 
 const fetchConnections = async (params: ConnectionsListQueryInput) => {
   const { page = 0, limit = 10 } = params;
@@ -44,12 +44,17 @@ export function useConnectionsQuery(params: ConnectionsListQueryInput) {
   );
 }
 
+export type setSearchType = (
+  params: Partial<ConnectionsListQueryInput>
+) => void;
+
 export function useConnectionsUrlParams(): [
   ConnectionsListQueryInput,
-  SetURLSearchParams
+  setSearchType
 ] {
   const [searchParams, setSearchParams] = useSearchParams();
-  const ParsedParameters: ConnectionsListQueryInput = {
+  const search = searchParams.get("search");
+  const parsed: ConnectionsListQueryInput = {
     filter:
       ConnectionsFilters[
         (searchParams.get("filter") as keyof typeof ConnectionsFilters) ||
@@ -63,9 +68,15 @@ export function useConnectionsUrlParams(): [
       OrderBy[
         (searchParams.get("order") as keyof typeof OrderBy) || OrderBy.asc
       ],
-    search: searchParams.get("search") || undefined,
+    ...(search ? { search } : {}),
     page: Number(searchParams.get("page")) || 0,
     limit: Number(searchParams.get("limit")) || 10,
   };
-  return [ParsedParameters, setSearchParams];
+  const _setSearch: setSearchType = (params) => {
+    setSearchParams({
+      ...parsed,
+      ...params,
+    } as unknown as URLSearchParamsInit);
+  };
+  return [parsed, _setSearch];
 }
