@@ -12,87 +12,92 @@ function ConnectionForm({ data, goBack }: { data: any; goBack: () => void }) {
   });
   return (
     <form
-      className="relative w-[600px] h-[440px] bg-white rounded-md z-10 shadow-md flex justify-evenly p-4"
+      className="relative w-[600px] h-[440px] bg-white rounded-md z-10 shadow-md"
       onSubmit={handleSubmit((d) => {
         console.log(d);
         goBack();
       })}
     >
-      <div className="p-4 w-1/2">
-        <h3 className="font-bold text-2xl">technical options</h3>
-        <div className="flex flex-col gap-y-2 mt-4">
-          <div className="flex flex-row gap-x-2 justify-between items-end">
+      <div className="grid grid-cols-11 justify-evenly p-4">
+        <div className="p-4 col-span-5">
+          <h3 className="font-bold text-2xl">technical options</h3>
+          <div className="flex flex-col gap-y-2 mt-4 h-full">
+            <div className="flex flex-row gap-x-2 justify-between items-end">
+              <TextInput
+                register={register}
+                name="switch.name"
+                label="ppp"
+                required
+                className="grow"
+              />
+              <Controller
+                control={control}
+                name="toggled"
+                render={({ field: { value, onChange } }) => (
+                  <Toggle
+                    label=""
+                    name="toggled"
+                    className="w-12"
+                    toggled={value}
+                    onChange={(e) => onChange(!value)}
+                  />
+                )}
+              />
+            </div>
             <TextInput
               register={register}
-              name="switch.name"
-              label="ppp"
-              required
-              className="grow"
+              name="toggleDate"
+              label="scheduled activation / deactivation"
             />
-            <Controller
-              control={control}
-              name="toggled"
-              render={({ field: { value, onChange } }) => (
-                <Toggle
-                  label=""
-                  name="toggled"
-                  className="w-12"
-                  toggled={value}
-                  onChange={(e) => onChange(!value)}
-                />
-              )}
-            />
-          </div>
-          <TextInput
-            register={register}
-            name="toggleDate"
-            label="scheduled activation / deactivation"
-          />
-          <div className="flex flex-row gap-x-2">
-            <TextInput
-              register={register}
-              name="switch.gpsLat"
-              label="latitude"
-            />
-            <TextInput
-              register={register}
-              name="switch.gpsLong"
-              label="longitude"
-            />
+            <div className="flex flex-row gap-x-2">
+              <TextInput
+                register={register}
+                name="switch.gpsLat"
+                label="latitude"
+              />
+              <TextInput
+                register={register}
+                name="switch.gpsLong"
+                label="longitude"
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="p-4">
-        <h3 className="font-bold text-2xl">customer details</h3>
-        <div className="flex flex-col gap-y-2 mt-4">
-          <TextInput
-            register={register}
-            name="customer.firstname"
-            label="firstname"
-            required
-          />
-          <TextInput
-            register={register}
-            name="customer.lastname"
-            label="lastname"
-            required
-          />
-          <TextInput
-            register={register}
-            name="customer.type"
-            label="type"
-            required
-          />
-          <TextInput
-            register={register}
-            name="customer.address"
-            label="address"
-            required
-          />
+        <div className="relative col-span-1 px-4 py-20">
+          <div className="absolute bg-neutral-100 rounded-full w-2 h-4/6 block"></div>
+        </div>
+        <div className="p-4 col-span-5">
+          <h3 className="font-bold text-2xl">customer details</h3>
+          <div className="flex flex-col gap-y-2 mt-4">
+            <TextInput
+              register={register}
+              name="customer.firstname"
+              label="firstname"
+              required
+            />
+            <TextInput
+              register={register}
+              name="customer.lastname"
+              label="lastname"
+              required
+            />
+            <TextInput
+              register={register}
+              name="customer.type"
+              label="type"
+              required
+            />
+            <TextInput
+              register={register}
+              name="customer.address"
+              label="address"
+              required
+            />
+          </div>
         </div>
       </div>
       <TextButton
-        className="absolute bg-blue-400 w-8/12 bottom-8 left-2/12"
+        className="absolute bg-blue-400 w-6/12 bottom-8 left-1/2 transform -translate-x-1/2"
         label="save"
       />
     </form>

@@ -23,15 +23,13 @@ export default function Toggle({
         </label>
       )}
       <input type="checkbox" id={name} name={name} hidden />
-      {toggled ? (
-        <ToggleOn
-          className={clsx("cursor-pointer fill-green-400", className)}
-        />
-      ) : (
-        <ToggleOn
-          className={clsx("cursor-pointer fill-red-500 rotate-180", className)}
-        />
-      )}
+      <ToggleOn
+        className={clsx(
+          "cursor-pointer transition-colors",
+          className,
+          toggled ? "fill-green-400" : "rotate-180 fill-red-500"
+        )}
+      />
     </div>
   );
 }
