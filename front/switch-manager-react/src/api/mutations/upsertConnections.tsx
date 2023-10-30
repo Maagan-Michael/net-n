@@ -1,5 +1,5 @@
 import { useMutation } from "react-query";
-import { ConnectionInput } from "../types";
+import { ConnectionInput, ConnectionOutput, BatcheableOutput } from "../types";
 
 const upsertConnections = async (params: ConnectionInput) => {
   const res = await fetch(

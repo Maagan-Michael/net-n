@@ -26,9 +26,10 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
     adapter,
     isUp,
   } = data;
+  //const [mutate] = useConnectionUpdateMutation();
   const navigate = useNavigate();
   const onclick = useCallback(() => {
-    navigate(`/connections/${id}`);
+    navigate(`/connections/${id}${window.location.search}`);
   }, [navigate, id]);
   return (
     <div className="w-full h-14 text-xs text-center grid grid-flow-col grid-cols-12 gap-x-12 [&>*]:hover:border-blue-300 cursor-pointer">

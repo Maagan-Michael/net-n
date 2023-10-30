@@ -100,3 +100,13 @@ export interface ConnectionInput {
     adapter?: string
     speed?: number
 }
+
+export interface BatchError {
+    id: string
+    error: string
+}
+
+export interface BatcheableOutput<T> {
+    items: T[]
+    errors: BatchError[]
+}
