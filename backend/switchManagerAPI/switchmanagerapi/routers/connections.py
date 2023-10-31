@@ -3,6 +3,10 @@ from typing import Union
 from ..models.factories import BatchedDeleteOutput
 from ..models.connection import BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput
 from ..tests.mockups import createMockConnection
+from ..db.schemas.connections import DBConnection
+from ..db.schemas.switches import DBSwitch
+from ..db.schemas.customers import DBCustomer
+from ..db import get_db
 
 router = APIRouter(
     tags=["v1", "connections"],
@@ -12,12 +16,21 @@ router = APIRouter(
 
 # connections CRUD
 
+# createMockConnection() for i in range(10)
+
 
 @router.get("/", response_model=ConnectionsOutput)
-async def listConnections(input: ConnectionListInput = Depends()):
+async def listConnections(input: ConnectionListInput = Depends(), db=Depends(get_db)):
     """return a paginated list of connections"""
+
+    connections = db.select(DBConnection)
+    if (input.search.length > 0):
+        # if (input.filter):
+        connections = connections.filter(DBConnection.name.like(input.search))
+    connections = connections.join(DBSwitch).join(DBCustomer).limit(
+        input.limit).offset(input.page * input.limit).all()
     return ConnectionsOutput(
-        connections=[createMockConnection() for i in range(10)],
+        connections,
         hasPrevious=False,
         hasNext=True,
     )
