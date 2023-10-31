@@ -10,6 +10,7 @@ python = "^3.11"
 fastapi = "^0.103.2"
 uvicorn = "^0.23.2"
 pydantic = "^2.4.2"
+sqlalchemy = "^2.0.22"
 
 [tool.poetry.group.dev.dependencies]
 faker = "^19.11.0"
