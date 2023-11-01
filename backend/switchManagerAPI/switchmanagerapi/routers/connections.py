@@ -8,6 +8,7 @@ from ..db.schemas.connections import DBConnection
 from ..db.schemas.switches import DBSwitch
 from ..db.schemas.customers import DBCustomer
 from ..db import get_db
+from ..db.factories import upsert, batchDelete
 
 router = APIRouter(
     tags=["v1", "connections"],
@@ -89,7 +90,9 @@ async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUp
         else:
             existing = Connection(**input)
         try:
-            items.append(existing.model_validate())
+            existing.model_validate()
+            upsert(db, existing)
+            items.append(existing)
         except Exception as e:
             # todo sanitize error message
             errors.append(BatchError(id=connection.id, error=e))
@@ -100,12 +103,7 @@ async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUp
 async def deleteConnection(ids: list[str],  db=Depends(get_db)):
     """delete a connection"""
     errors = []
-    items = []
-    for id in ids:
-        try:
-            db.delete(DBConnection).where(DBConnection.id == id).first()
-            items.append(id)
-        except Exception as e:
-            # todo sanitize error message
-            errors.append(BatchError(id=id, error=e))
+    items = ids
+    # todo check for errors ?
+    batchDelete(db, DBConnection, ids)
     return BatchedDeleteOutput(items, errors)
