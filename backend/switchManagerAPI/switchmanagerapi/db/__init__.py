@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, exc
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -14,10 +14,19 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-def get_db():
+async def get_db_session():
     """get database session"""
-    db = SessionLocal()
+    session = SessionLocal()
     try:
-        yield db
+        yield session
+        await session.commit()
+    except exc.SQLAlchemyError as e:
+        await session.rollback()
+        raise e
     finally:
-        db.close()
+        session.close()
+
+
+def create_db():
+    """create database"""
+    Base.metadata.create_all(bind=engine)

@@ -1,10 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from typing import Optional, Union
-from ..models.factories import BatchError, BatchedDeleteOutput
+from ..models.factories import BatchedDeleteOutput
 from ..models.switch import Switch, BatchedSwitchOutput, UpsertSwitchInput
-from ..db import get_db
-from ..db.schemas.switches import DBSwitch
-from ..db.factories import upsert, batchDelete
+from ..db.factories import SwitchRepository
 
 router = APIRouter(
     tags=["v1", "switches"],
@@ -16,49 +14,26 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[Switch])
-async def listSwitches(search: Optional[str] = None, db=Depends(get_db)):
+async def listSwitches(search: Optional[str], repo: SwitchRepository):
     """return a list of switches"""
-    if search and search != "":
-        return db.select(DBSwitch).filter(DBSwitch.name.like(search)).all()
-    return db.select(DBSwitch).all()
+    return repo.list(search)
 
 
 @router.get("/{id}", response_model=Switch)
-async def getSwitch(id: int, db=Depends(get_db)):
+async def getSwitch(id: int, repo: SwitchRepository):
     """return a switch"""
-    return db.select(DBSwitch).filter(DBSwitch.id == id).first()
+    return repo.get(id)
 
 
 @router.post("/upsert", response_model=BatchedSwitchOutput)
-async def upsertSwitch(input: Union[UpsertSwitchInput, list[UpsertSwitchInput]], db=Depends(get_db)):
+async def upsertSwitch(input: Union[UpsertSwitchInput, list[UpsertSwitchInput]], repo: SwitchRepository):
     """upsert or udpate one || multiple switch(s)"""
-    items = []
-    errors = []
-    if not isinstance(input, list):
-        input = [input]
-    for switch in input:
-        existing = None
-        if switch.id:
-            existing = db.select(DBSwitch).filter(
-                DBSwitch.id == switch.id).first()
-        if existing:
-            existing = Switch(
-                **existing,
-                **switch
-            )
-        else:
-            existing = Switch(**switch)
-        try:
-            existing.model_validate()
-            upsert(db, existing)
-            items.append(existing)
-        except Exception as e:
-            errors.append(BatchError(id=switch.id, error=e))
-    return BatchedSwitchOutput(items=[Switch()], errors=[])
+    [items, errors] = repo.batch_upsert(input)
+    return BatchedSwitchOutput(items, errors)
 
 
 @router.post("/delete", response_model=BatchedDeleteOutput)
-async def deleteSwitch(ids: list[str], db=Depends(get_db)):
+async def deleteSwitch(ids: list[str], repo: SwitchRepository):
     """delete a switch"""
-    batchDelete(db, DBSwitch, ids)
-    return BatchedDeleteOutput(items=ids, errors=[])
+    items = repo.delete(ids)
+    return BatchedDeleteOutput(items, errors=[])

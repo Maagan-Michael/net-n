@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from switchmanagerapi.routers import connections, customers, switches
+from .db import create_db
 
 origins = [
     "http://localhost:3000",
@@ -23,6 +24,12 @@ app.add_middleware(
 app.include_router(connections.router)
 app.include_router(customers.router)
 app.include_router(switches.router)
+
+
+@app.on_event("startup")
+def on_startup():
+    """Run on startup"""
+    create_db()
 
 
 def main():

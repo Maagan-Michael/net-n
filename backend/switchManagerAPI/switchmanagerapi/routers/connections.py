@@ -1,14 +1,13 @@
 from fastapi import APIRouter, Depends
 from typing import Union
 from sqlalchemy import or_, desc, asc, all_
-from ..models.factories import BatchError, BatchedDeleteOutput
-from ..models.connection import BatchConnectionOutput, Connection, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListSortEnum
-from ..tests.mockups import createMockConnection
+from ..models.factories import BatchedDeleteOutput
+from ..models.connection import BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListSortEnum
 from ..db.schemas.connections import DBConnection
 from ..db.schemas.switches import DBSwitch
 from ..db.schemas.customers import DBCustomer
-from ..db import get_db
-from ..db.factories import upsert, batchDelete
+from ..db import get_db_session
+from ..db.factories import ConnectionRepository
 
 router = APIRouter(
     tags=["v1", "connections"],
@@ -17,7 +16,7 @@ router = APIRouter(
 )
 
 # connections CRUD
-
+# from ..tests.mockups import createMockConnection
 # createMockConnection() for i in range(10)
 
 sortEnumMap = {
@@ -30,7 +29,7 @@ sortEnumMap = {
 
 
 @router.get("/", response_model=ConnectionsOutput)
-async def listConnections(input: ConnectionListInput = Depends(), db=Depends(get_db)):
+async def listConnections(input: ConnectionListInput = Depends(), db=Depends(get_db_session)):
     """return a paginated list of connections"""
 
     connections = db.select(DBConnection).join(DBSwitch).join(DBCustomer).limit(
@@ -66,44 +65,21 @@ async def listConnections(input: ConnectionListInput = Depends(), db=Depends(get
 
 
 @router.get("/{id}", response_model=ConnectionOutput)
-async def getConnection(id: str, db=Depends(get_db)):
-    return db.select(DBConnection).where(DBConnection.id == id).join(DBSwitch).join(DBCustomer).first()
+async def getConnection(id: str, db=Depends(get_db_session)):
+    return db.select(DBConnection).where(DBConnection.id == id).join(DBSwitch, DBCustomer).first()
 
 
 @router.post("/upsert", response_model=BatchConnectionOutput)
-async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUpsertInput]], db=Depends(get_db)):
+async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUpsertInput]], repo: ConnectionRepository):
     """upsert or udpate one || multiple connections"""
-    errors = []
-    items = []
-    if not isinstance(input, list):
-        input = [input]
-    for connection in input:
-        existing = None
-        if (connection.id):
-            existing = db.select(DBConnection).where(
-                DBConnection.id == connection.id).first()
-        if existing:
-            existing = Connection(
-                **existing,
-                **input,
-            )
-        else:
-            existing = Connection(**input)
-        try:
-            existing.model_validate()
-            upsert(db, existing)
-            items.append(existing)
-        except Exception as e:
-            # todo sanitize error message
-            errors.append(BatchError(id=connection.id, error=e))
+    [items, errors] = repo.batch_upsert(input)
     return BatchConnectionOutput(items, errors)
 
 
 @router.post("/delete", response_model=BatchedDeleteOutput)
-async def deleteConnection(ids: list[str],  db=Depends(get_db)):
+async def deleteConnection(ids: list[str], repo: ConnectionRepository):
     """delete a connection"""
     errors = []
-    items = ids
+    items = repo.delete(ids)
     # todo check for errors ?
-    batchDelete(db, DBConnection, ids)
     return BatchedDeleteOutput(items, errors)
