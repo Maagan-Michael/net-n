@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Enum
 from sqlalchemy.orm import relationship
-from .db import Base
+from .. import Base
 
 
 class DBConnection(Base):
@@ -18,5 +18,7 @@ class DBConnection(Base):
     switchId = Column(Integer, ForeignKey("switches.id"), index=True)
     customerId = Column(Integer, ForeignKey("customers.id"), index=True)
 
-    switch = relationship("DBSwitch", back_populates="connections")
-    customer = relationship("DBCustomer", back_populates="connections")
+    switch = relationship(
+        "DBSwitch", back_populates="connections", foreign_keys=[switchId])
+    customer = relationship(
+        "DBCustomer", back_populates="connections", foreign_keys=[customerId])

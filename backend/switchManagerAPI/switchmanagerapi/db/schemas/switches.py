@@ -1,6 +1,6 @@
 from sqlalchemy import Float, Column, Integer, String
 from sqlalchemy.orm import relationship
-from .db import Base
+from .. import Base
 
 
 class DBSwitch(Base):

@@ -1,6 +1,6 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from .db import Base
+from .. import Base
 
 
 class DBCustomer(Base):
