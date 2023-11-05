@@ -27,9 +27,9 @@ app.include_router(switches.router)
 
 
 @app.on_event("startup")
-def on_startup():
+async def on_startup():
     """Run on startup"""
-    create_db()
+    await create_db()
 
 
 def main():

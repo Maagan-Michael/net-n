@@ -34,5 +34,4 @@ async def upsertCustomer(input: Union[UpsertCustomerInput, list[UpsertCustomerIn
 @router.post("/delete", response_model=BatchedDeleteOutput)
 async def deleteCustomer(ids: list[str], repo: CustomerRepository):
     """delete a customer"""
-    items = repo.delete(ids)
-    return BatchedDeleteOutput(items, errors=[])
+    return repo.delete(ids)

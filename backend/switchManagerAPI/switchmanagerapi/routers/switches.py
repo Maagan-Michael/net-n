@@ -34,6 +34,5 @@ async def upsertSwitch(input: Union[UpsertSwitchInput, list[UpsertSwitchInput]],
 
 @router.post("/delete", response_model=BatchedDeleteOutput)
 async def deleteSwitch(ids: list[str], repo: SwitchRepository):
-    """delete a switch"""
-    items = repo.delete(ids)
-    return BatchedDeleteOutput(items, errors=[])
+    """delete switch(es)"""
+    return repo.delete(ids)

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
-from typing import Union
-from sqlalchemy import or_, desc, asc, all_
-from ..models.factories import BatchedDeleteOutput
+from typing import List, Union
+from sqlalchemy import Column, or_, select
+from ..models.factories import BatchedDeleteOutput, OrderBy
 from ..models.connection import BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListSortEnum
 from ..db.schemas.connections import DBConnection
 from ..db.schemas.switches import DBSwitch
@@ -19,7 +19,7 @@ router = APIRouter(
 # from ..tests.mockups import createMockConnection
 # createMockConnection() for i in range(10)
 
-sortEnumMap = {
+sortEnumMap: dict[ListSortEnum, List[Column[any]]] = {
     ListSortEnum.con: [DBConnection.id],
     ListSortEnum.customerId: [DBConnection.customerId],
     ListSortEnum.fullname: [DBCustomer.lastname, DBCustomer.firstname],
@@ -31,34 +31,39 @@ sortEnumMap = {
 @router.get("/", response_model=ConnectionsOutput)
 async def listConnections(input: ConnectionListInput = Depends(), db=Depends(get_db_session)):
     """return a paginated list of connections"""
-
-    connections = db.select(DBConnection).join(DBSwitch).join(DBCustomer).limit(
-        input.limit).offset(input.page * input.limit)
-    if (input.search.length > 0):
+    filters = []
+    if (input.search and len(input.search) > 0):
         if (input.filter):
             # filtered search
-            connections = connections.filter(
-                DBConnection[input.filter].like(input.search)
-            )
+            filters = [DBConnection[input.filter].like(input.search)]
         else:
             # general search
-            connections = connections.filter(
+            filters = [
                 or_(
                     DBConnection.name.like(input.search),
                     DBConnection.port.like(input.search),
-                    DBConnection.customerId.customerId.like(input.search),
+                    DBConnection.customerId.like(input.search),
                     # todo handle spaces in search for firstname + lastname
                     DBConnection.customer.firstname.like(input.search),
                     DBConnection.customer.lastname.like(input.search),
                     DBConnection.customer.address.like(input.search),
                     DBConnection.switch.name.like(input.search),
                 )
-            )
-    connections = connections.sort(
-        **DBConnection[sortEnumMap[input.sortBy]]
-    ).all()
+            ]
+    obFields = sortEnumMap[input.sort]
+    orderBy = [e.desc() for e in obFields] if input.order == OrderBy.desc else [
+        e.asc() for e in obFields]
+    q = (
+        select(DBConnection)
+        .join(DBSwitch)
+        .join(DBCustomer)
+        .filter(*filters)
+        .order_by(*orderBy)
+        .limit(input.limit)
+        .offset(input.page * input.limit)
+    )
     return ConnectionsOutput(
-        connections,
+        connections=q,
         hasPrevious=False,
         hasNext=True,
     )
@@ -66,7 +71,7 @@ async def listConnections(input: ConnectionListInput = Depends(), db=Depends(get
 
 @router.get("/{id}", response_model=ConnectionOutput)
 async def getConnection(id: str, db=Depends(get_db_session)):
-    return db.select(DBConnection).where(DBConnection.id == id).join(DBSwitch, DBCustomer).first()
+    return db.select(DBConnection).where(DBConnection.id == id).join(DBConnection.switch).join(DBConnection.customer).first()
 
 
 @router.post("/upsert", response_model=BatchConnectionOutput)
@@ -79,7 +84,4 @@ async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUp
 @router.post("/delete", response_model=BatchedDeleteOutput)
 async def deleteConnection(ids: list[str], repo: ConnectionRepository):
     """delete a connection"""
-    errors = []
-    items = repo.delete(ids)
-    # todo check for errors ?
-    return BatchedDeleteOutput(items, errors)
+    return repo.delete(ids)

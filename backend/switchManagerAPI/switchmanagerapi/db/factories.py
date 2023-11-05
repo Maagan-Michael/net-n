@@ -1,10 +1,11 @@
 from pydantic import BaseModel
 from typing import Callable, Generic, TypeVar, List, Annotated, Union
-from fastapi import Depends
-from ..models.factories import BatchError
-from sqlalchemy.orm import Session
+from fastapi import Depends, HTTPException, status
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from . import Base, get_db_session
 
+from ..models.factories import BatchError, BatchedDeleteOutput
 from .schemas.connections import DBConnection
 from .schemas.switches import DBSwitch
 from .schemas.customers import DBCustomer
@@ -19,14 +20,19 @@ PydanticModel = TypeVar("PydanticModel", bound=BaseModel)
 class DatabaseRepository(Generic[Model]):
     """common repository for crud operations on models"""
 
-    def __init__(self, session: Session, model: Model, validator: PydanticModel) -> None:
+    def __init__(self, session: AsyncSession, model: Model, validator: PydanticModel) -> None:
         self.session = session
         self.model = model
         self.validator = validator
 
-    def get(self, id: str) -> Model:
+    async def get(self, id: str) -> Model:
         """return a model"""
-        return self.session.select(self.model).where(self.model.id == id).first()
+        res = await self.session.scalar(select(self.model).where(self.model.id == id).first())
+        if (res is None):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                details=f"not found"
+            )
 
     def list(self, search: str = None) -> list[Model]:
         """return a list of models"""
@@ -70,14 +76,14 @@ class DatabaseRepository(Generic[Model]):
         """batch delete model(s)"""
         self.session.delete(self.model).where(self.model.id.in_(ids))
         self.session.commit()
-        return ids
+        return BatchedDeleteOutput(items=ids, errors=[])
 
 
 def get_repository(
     model: type[Base],
     validator: type[BaseModel],
-) -> Callable[[Session], DatabaseRepository]:
-    def func(session: Session = Depends(get_db_session)):
+) -> Callable[[AsyncSession], DatabaseRepository]:
+    def func(session: AsyncSession = Depends(get_db_session)):
         return DatabaseRepository(model, validator, session)
 
     return func
