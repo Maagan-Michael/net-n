@@ -1,6 +1,6 @@
 from datetime import datetime
 from faker import Faker
-from ..models.connection import ConnectionOutput
+from ..models.connection import Connection
 from ..models.switch import Switch
 from ..models.customer import Customer
 import random
@@ -30,9 +30,9 @@ def createMockSwitch() -> Switch:
     )
 
 
-def createMockConnection() -> ConnectionOutput:
+def createMockConnection(switchId: str, customerId: str) -> Connection:
     try:
-        return ConnectionOutput(
+        return Connection(
             name=f"{fake.word()[0:3].upper()}{fake.ean(length=8)[0:3]}",
             id=fake.uuid4(),
             port=fake.port_number(),
@@ -42,8 +42,8 @@ def createMockConnection() -> ConnectionOutput:
             isUp=bool(random.getrandbits(1)),
             toggled=bool(random.getrandbits(1)),
             adapter="snmp",
-            switch=createMockSwitch(),
-            customer=createMockCustomer(),
+            switchId=switchId,
+            customerId=customerId
         )
     except Exception as e:
         print(e)
