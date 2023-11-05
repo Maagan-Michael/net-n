@@ -3,6 +3,7 @@ from faker import Faker
 from ..models.connection import Connection
 from ..models.switch import Switch
 from ..models.customer import Customer
+from ..db import get_db_session, create_db, drop_db
 import random
 
 fake = Faker()
@@ -47,3 +48,13 @@ def createMockConnection(switchId: str, customerId: str) -> Connection:
         )
     except Exception as e:
         print(e)
+
+
+async def generateMockupDB():
+    drop_db()
+    create_db()
+    customers = [createMockCustomer() for x in range(0, 50)]
+    switches = [createMockSwitch() for x in range(0, 10)]
+    connections = [
+        createMockConnection(switches[random.randint(0, 9)].id, customers[x].id) for x in range(0, 50)]
+    # to be continued

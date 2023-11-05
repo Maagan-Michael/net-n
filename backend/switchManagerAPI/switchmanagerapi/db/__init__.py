@@ -33,3 +33,10 @@ async def create_db() -> None:
     engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+
+async def drop_db() -> None:
+    """drop database"""
+    engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
