@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Callable, Generic, TypeVar, List, Annotated, Union
 from fastapi import Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from . import Base, get_db_session
 
@@ -20,33 +20,38 @@ PydanticModel = TypeVar("PydanticModel", bound=BaseModel)
 class DatabaseRepository(Generic[Model]):
     """common repository for crud operations on models"""
 
-    def __init__(self, session: AsyncSession, model: Model, validator: PydanticModel) -> None:
+    def __init__(self, session: AsyncSession, schema: Model, model: PydanticModel) -> None:
         self.session = session
+        self.schema = schema
         self.model = model
-        self.validator = validator
 
     async def get(self, id: str) -> Model:
         """return a model"""
-        res = await self.session.scalar(select(self.model).where(self.model.id == id).first())
+        res = await self.session.scalar(select(self.schema).where(self.schema.id == id).limit(1))
         if (res is None):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 details=f"not found"
             )
+        return Model(res[0])
 
-    def list(self, search: str = None) -> list[Model]:
+    async def list(self, search: str = None) -> list[Model]:
         """return a list of models"""
+        q = None
         if search and search != "":
-            return self.session.select(self.model).filter(self.model.name.like(search)).all()
-        return self.session.select(self.model).all()
+            q = await self.session.scalars(
+                select(self.schema).filter(self.schema.name.like(search)))
+        else:
+            q = await self.session.scalars(select(self.schema))
+        return [Model(e) for e in q]
 
-    def upsert(self, model: Model) -> Model:
-        self.session.merge(model)
-        self.session.commit()
-        self.session.refresh(model)
+    async def upsert(self, model: Model) -> Model:
+        await self.session.merge(model)
+        await self.session.commit()
+        await self.session.refresh(model)
         return model
 
-    def batch_upsert(self, inputs: Union[Model, List[Model]]) -> (List[Model], List[BatchError]):
+    async def batch_upsert(self, inputs: Union[Model, List[Model]]) -> (List[Model], List[BatchError]):
         """upsert multiple model(s)"""
         if not isinstance(inputs, list):
             inputs = [inputs]
@@ -55,36 +60,37 @@ class DatabaseRepository(Generic[Model]):
         for input in inputs:
             existing = None
             if input.id:
-                existing = self.session.select(Model).filter(
-                    Model.id == input.id).first()
+                existing = await self.session.scalar(select(self.schema).filter(self.schema.id == input.id))
             if existing:
-                existing = self.validator(
+                existing = self.model(
                     **existing,
                     **input
                 )
             else:
-                existing = self.validator(**input)
+                existing = self.model(**input)
             try:
                 existing.model_validate()
-                # upsert(db, existing)
+                self.upsert(existing)
                 items.append(existing)
             except Exception as e:
                 errors.append(BatchError(id=input.id, error=e))
         return (items, errors)
 
-    def delete(self, ids: List[str]) -> List[str]:
+    async def delete(self, ids: List[str]) -> BatchedDeleteOutput:
         """batch delete model(s)"""
-        self.session.delete(self.model).where(self.model.id.in_(ids))
-        self.session.commit()
+        await self.session.execute(
+            delete(self.schema)
+            .where(self.schema.id.in_(ids))
+        )
         return BatchedDeleteOutput(items=ids, errors=[])
 
 
 def get_repository(
-    model: type[Base],
-    validator: type[BaseModel],
+    schema: type[Base],
+    model: type[BaseModel],
 ) -> Callable[[AsyncSession], DatabaseRepository]:
     def func(session: AsyncSession = Depends(get_db_session)):
-        return DatabaseRepository(model, validator, session)
+        return DatabaseRepository(schema=schema, model=model, session=session)
 
     return func
 

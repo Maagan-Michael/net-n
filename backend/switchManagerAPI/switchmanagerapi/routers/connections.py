@@ -63,24 +63,29 @@ async def listConnections(input: ConnectionListInput = Depends(), db: AsyncSessi
         .limit(input.limit)
         .offset(input.page * input.limit)
     )
+    # todo : compute hasPrevious and hasNext
+    hasPrevious = input.page > 0
     return ConnectionsOutput(
         connections=[
             DBConnection(e) for e in q
         ],
-        hasPrevious=False,
         hasNext=True,
+        hasPrevious=hasPrevious,
     )
 
 
 @router.get("/{id}", response_model=ConnectionOutput)
 async def getConnection(id: str, db: AsyncSession = Depends(get_db_session)):
-    return db.scalar(
+    q = db.scalar(
         select(DBConnection)
         .where(DBConnection.id == id)
         .join(DBSwitch)
         .join(DBCustomer)
         .limit(1)
     )
+    if q is not None:
+        return ConnectionOutput(q)
+    return None
 
 
 @router.post("/upsert", response_model=BatchConnectionOutput)
