@@ -70,7 +70,7 @@ class DatabaseRepository(Generic[Model]):
                 existing = self.model(**input)
             try:
                 existing.model_validate()
-                self.upsert(existing)
+                await self.upsert(existing)
                 items.append(existing)
             except Exception as e:
                 errors.append(BatchError(id=input.id, error=e))

@@ -1,8 +1,6 @@
 from fastapi import APIRouter, Depends
 from typing import List, Union
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import Column, or_, select
-from ..db import get_db_session
 from ..models.factories import BatchedDeleteOutput, OrderBy
 from ..models.connection import BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListSortEnum
 from ..db.schemas.connections import DBConnection
@@ -30,7 +28,7 @@ sortEnumMap: dict[ListSortEnum, List[Column[any]]] = {
 
 
 @router.get("/", response_model=ConnectionsOutput)
-async def listConnections(input: ConnectionListInput = Depends(), db: AsyncSession = Depends(get_db_session)):
+async def listConnections(repo: ConnectionRepository, input: ConnectionListInput = Depends()):
     """return a paginated list of connections"""
     filters = []
     if (input.search and len(input.search) > 0):
@@ -54,7 +52,7 @@ async def listConnections(input: ConnectionListInput = Depends(), db: AsyncSessi
     obFields = sortEnumMap[input.sort]
     orderBy = [e.desc() for e in obFields] if input.order == OrderBy.desc else [
         e.asc() for e in obFields]
-    q = await db.scalars(
+    q = await repo.session.scalars(
         select(DBConnection)
         .join(DBSwitch)
         .join(DBCustomer)
@@ -75,8 +73,8 @@ async def listConnections(input: ConnectionListInput = Depends(), db: AsyncSessi
 
 
 @router.get("/{id}", response_model=ConnectionOutput)
-async def getConnection(id: str, db: AsyncSession = Depends(get_db_session)):
-    q = db.scalar(
+async def getConnection(id: str, repo: ConnectionRepository):
+    q = repo.session.scalar(
         select(DBConnection)
         .where(DBConnection.id == id)
         .join(DBSwitch)
