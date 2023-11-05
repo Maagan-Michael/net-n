@@ -58,16 +58,18 @@ async def listConnections(repo: ConnectionRepository, input: ConnectionListInput
         .join(DBCustomer)
         .filter(*filters)
         .order_by(*orderBy)
-        .limit(input.limit)
+        .limit(input.limit + 1)
         .offset(input.page * input.limit)
     )
-    # todo : compute hasPrevious and hasNext
+    # todo : compute hasPrevious
+    res = [DBConnection(e) for e in q]
     hasPrevious = input.page > 0
+    hasNext = len(res) > input.limit
+    if (hasNext):
+        res.pop()
     return ConnectionsOutput(
-        connections=[
-            DBConnection(e) for e in q
-        ],
-        hasNext=True,
+        connections=res,
+        hasNext=hasNext,
         hasPrevious=hasPrevious,
     )
 
