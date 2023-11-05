@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends
 from typing import List, Union
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import Column, or_, select
+from ..db import get_db_session
 from ..models.factories import BatchedDeleteOutput, OrderBy
 from ..models.connection import BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListSortEnum
 from ..db.schemas.connections import DBConnection
 from ..db.schemas.switches import DBSwitch
 from ..db.schemas.customers import DBCustomer
-from ..db import get_db_session
 from ..db.factories import ConnectionRepository
 
 router = APIRouter(
@@ -29,7 +30,7 @@ sortEnumMap: dict[ListSortEnum, List[Column[any]]] = {
 
 
 @router.get("/", response_model=ConnectionsOutput)
-async def listConnections(input: ConnectionListInput = Depends(), db=Depends(get_db_session)):
+async def listConnections(input: ConnectionListInput = Depends(), db: AsyncSession = Depends(get_db_session)):
     """return a paginated list of connections"""
     filters = []
     if (input.search and len(input.search) > 0):
@@ -53,7 +54,7 @@ async def listConnections(input: ConnectionListInput = Depends(), db=Depends(get
     obFields = sortEnumMap[input.sort]
     orderBy = [e.desc() for e in obFields] if input.order == OrderBy.desc else [
         e.asc() for e in obFields]
-    q = (
+    q = await db.scalars(
         select(DBConnection)
         .join(DBSwitch)
         .join(DBCustomer)
@@ -63,15 +64,23 @@ async def listConnections(input: ConnectionListInput = Depends(), db=Depends(get
         .offset(input.page * input.limit)
     )
     return ConnectionsOutput(
-        connections=q,
+        connections=[
+            DBConnection(e) for e in q
+        ],
         hasPrevious=False,
         hasNext=True,
     )
 
 
 @router.get("/{id}", response_model=ConnectionOutput)
-async def getConnection(id: str, db=Depends(get_db_session)):
-    return db.select(DBConnection).where(DBConnection.id == id).join(DBConnection.switch).join(DBConnection.customer).first()
+async def getConnection(id: str, db: AsyncSession = Depends(get_db_session)):
+    return db.scalar(
+        select(DBConnection)
+        .where(DBConnection.id == id)
+        .join(DBSwitch)
+        .join(DBCustomer)
+        .limit(1)
+    )
 
 
 @router.post("/upsert", response_model=BatchConnectionOutput)

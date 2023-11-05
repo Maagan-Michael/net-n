@@ -25,7 +25,7 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
             await session.rollback()
             raise e
         finally:
-            session.close()
+            await session.close()
 
 
 async def create_db() -> None:
