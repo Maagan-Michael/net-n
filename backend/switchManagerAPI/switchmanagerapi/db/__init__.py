@@ -1,6 +1,7 @@
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import exc
+from contextlib import asynccontextmanager
 from collections.abc import AsyncGenerator
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -14,6 +15,22 @@ Base = declarative_base()
 
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
+    """get database session"""
+    engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
+    factory = async_sessionmaker(engine)
+    async with factory() as session:
+        try:
+            yield session
+            await session.commit()
+        except exc.SQLAlchemyError as e:
+            await session.rollback()
+            raise e
+        finally:
+            await session.close()
+
+
+@asynccontextmanager
+async def get_context_db_session():
     """get database session"""
     engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
     factory = async_sessionmaker(engine)

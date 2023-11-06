@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class OrderBy(str, Enum):
@@ -16,6 +16,8 @@ class BatchError(BaseModel):
 
 def batcheableOutputFactory(model):
     """return a batcheable output model"""
+    model_config = ConfigDict(from_attributes=True)
+
     class BatcheableOutputModel(BaseModel):
         """batcheable output model"""
         items: list[model] = []

@@ -6,7 +6,7 @@ from .. import Base
 class DBSwitch(Base):
     __tablename__ = "switches"
 
-    id = Column(Integer, primary_key=True, index=True, unique=True)
+    id = Column(String, primary_key=True, index=True, unique=True)
     ip = Column(String, index=False)
     gpsLat = Column(Float, index=True)
     gpsLong = Column(Float, index=True)

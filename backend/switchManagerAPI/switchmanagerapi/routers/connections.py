@@ -52,17 +52,18 @@ async def listConnections(repo: ConnectionRepository, input: ConnectionListInput
     obFields = sortEnumMap[input.sort]
     orderBy = [e.desc() for e in obFields] if input.order == OrderBy.desc else [
         e.asc() for e in obFields]
-    q = await repo.session.scalars(
-        select(DBConnection)
-        .join(DBSwitch)
-        .join(DBCustomer)
-        .filter(*filters)
-        .order_by(*orderBy)
-        .limit(input.limit + 1)
-        .offset(input.page * input.limit)
-    )
+    stm = (select(DBConnection)
+           .join(DBConnection.customer)
+           .join(DBConnection.switch)
+           .filter(*filters)
+           .order_by(*orderBy)
+           .limit(input.limit + 1)
+           .offset(input.page * input.limit))
+    print(stm)
+    q = await repo.session.scalars(stm)
     # todo : compute hasPrevious
-    res = [DBConnection(e) for e in q]
+    res = [ConnectionOutput.model_construct(e) for e in q]
+    print(res)
     hasPrevious = input.page > 0
     hasNext = len(res) > input.limit
     if (hasNext):
@@ -79,8 +80,8 @@ async def getConnection(id: str, repo: ConnectionRepository):
     q = repo.session.scalar(
         select(DBConnection)
         .where(DBConnection.id == id)
-        .join(DBSwitch)
-        .join(DBCustomer)
+        .join(DBConnection.customer)
+        .join(DBConnection.switch)
         .limit(1)
     )
     if q is not None:

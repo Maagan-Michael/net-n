@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, ConfigDict, Field, validator
 from .customer import Customer
 from .switch import Switch
 from .factories import OrderBy, batcheableOutputFactory
@@ -41,9 +41,10 @@ class IConnection(IConnectionBase):
 # Database
 class Connection(IConnection):
     """Connection Database model"""
+    model_config = ConfigDict(from_attributes=True)
     # relationships
-    switchId: int = 0
-    customerId: int = 0
+    switchId: str
+    customerId: str
 
 # API
 # outputs
@@ -54,8 +55,8 @@ class Connection(IConnection):
 class ConnectionOutput(IConnection):
     """Connection model API output"""
     # relationships
-    switch: Switch = None
-    customer: Customer = None
+    switch: Switch
+    customer: Customer
 
 
 # upsert

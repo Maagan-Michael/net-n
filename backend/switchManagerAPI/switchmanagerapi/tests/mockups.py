@@ -3,7 +3,9 @@ from faker import Faker
 from ..models.connection import Connection
 from ..models.switch import Switch
 from ..models.customer import Customer
-from ..db import get_db_session, create_db, drop_db
+from ..db import create_db, drop_db, get_context_db_session
+from ..db.schemas import DBConnection, DBSwitch, DBCustomer
+from sqlalchemy import insert
 import random
 
 fake = Faker()
@@ -51,10 +53,13 @@ def createMockConnection(switchId: str, customerId: str) -> Connection:
 
 
 async def generateMockupDB():
-    drop_db()
-    create_db()
-    customers = [createMockCustomer() for x in range(0, 50)]
-    switches = [createMockSwitch() for x in range(0, 10)]
+    await drop_db()
+    await create_db()
+    customers = [createMockCustomer().model_dump() for x in range(0, 50)]
+    switches = [createMockSwitch().model_dump() for x in range(0, 10)]
     connections = [
-        createMockConnection(switches[random.randint(0, 9)].id, customers[x].id) for x in range(0, 50)]
-    # to be continued
+        createMockConnection(switches[random.randint(0, 9)]["id"], customers[x]["id"]).model_dump() for x in range(0, 50)]
+    async with get_context_db_session() as session:
+        await session.execute(insert(DBCustomer).values(customers))
+        await session.execute(insert(DBSwitch).values(switches))
+        await session.execute(insert(DBConnection).values(connections))

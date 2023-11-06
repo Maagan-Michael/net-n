@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from switchmanagerapi.routers import connections, customers, switches
-from .db import create_db
+from .tests.mockups import generateMockupDB
 
 origins = [
     "http://localhost:3000",
@@ -29,7 +29,8 @@ app.include_router(switches.router)
 @app.on_event("startup")
 async def on_startup():
     """Run on startup"""
-    await create_db()
+    # await create_db()asyncio
+    await generateMockupDB()
 
 
 def main():
