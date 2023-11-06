@@ -8,10 +8,14 @@ import {
 } from "../types";
 import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
 
-const fetchConnections = async (params: ConnectionsListQueryInput) => {
-  const { page = 0, limit = 10 } = params;
+const fetchConnections = async ({
+  pageParam,
+}: {
+  pageParam: ConnectionsListQueryInput;
+}) => {
+  const { page = 0, limit = 10 } = pageParam;
   const queryString = new URLSearchParams({
-    ...params,
+    ...pageParam,
     page: page.toString(),
     limit: limit.toString(),
   }).toString();
@@ -32,11 +36,11 @@ export function useConnectionsQuery(params: ConnectionsListQueryInput) {
         search: params.search,
       },
     ],
-    () => fetchConnections(params),
+    ({ pageParam = params }) => fetchConnections({ pageParam }),
     {
-      getNextPageParam: (lastPage) => {
+      getNextPageParam: (lastPage, pages) => {
         if (lastPage.hasNext) {
-          return { ...params, page: (params.page || 0) + 1 };
+          return { ...params, page: pages.length };
         }
         return undefined;
       },
