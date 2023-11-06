@@ -1,7 +1,10 @@
 from fastapi import APIRouter, Depends
 from typing import List, Union
 from sqlalchemy import Column, or_, select
+from sqlalchemy.orm import contains_eager
 from ..models.factories import BatchedDeleteOutput, OrderBy
+from ..models.customer import Customer
+from ..models.switch import Switch
 from ..models.connection import BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListSortEnum
 from ..db.schemas.connections import DBConnection
 from ..db.schemas.switches import DBSwitch
@@ -52,18 +55,26 @@ async def listConnections(repo: ConnectionRepository, input: ConnectionListInput
     obFields = sortEnumMap[input.sort]
     orderBy = [e.desc() for e in obFields] if input.order == OrderBy.desc else [
         e.asc() for e in obFields]
-    stm = (select(DBConnection)
-           .join(DBConnection.customer)
-           .join(DBConnection.switch)
-           .filter(*filters)
-           .order_by(*orderBy)
-           .limit(input.limit + 1)
-           .offset(input.page * input.limit))
-    print(stm)
+    stm = (
+        select(DBConnection)
+        .join(DBConnection.customer)
+        .join(DBConnection.switch)
+        .options(contains_eager(DBConnection.customer), contains_eager(DBConnection.switch))
+        .filter(*filters)
+        .order_by(*orderBy)
+        .limit(input.limit + 1)
+        .offset(input.page * input.limit)
+        .execution_options(populate_existing=True)
+    )
     q = await repo.session.scalars(stm)
     # todo : compute hasPrevious
-    res = [ConnectionOutput.model_construct(e) for e in q]
-    print(res)
+    res = []
+    for e in q:
+        switch = Switch.model_construct(**e.switch.__dict__)
+        customer = Customer.model_construct(**e.customer.__dict__)
+        _merged = {**e.__dict__, "switch": switch, "customer": customer}
+        connection = ConnectionOutput.model_construct(**_merged)
+        res.append(connection)
     hasPrevious = input.page > 0
     hasNext = len(res) > input.limit
     if (hasNext):

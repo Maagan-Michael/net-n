@@ -53,6 +53,7 @@ class Connection(IConnection):
 
 
 class ConnectionOutput(IConnection):
+    model_config = ConfigDict(from_attributes=True)
     """Connection model API output"""
     # relationships
     switch: Switch
