@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from typing import List, Optional, Union
-from sqlalchemy import Column, or_, select
+from sqlalchemy import Column, or_, select, and_
 from sqlalchemy.orm import contains_eager
 from ..models.factories import BatchedDeleteOutput, OrderBy
 from ..models.customer import Customer
@@ -44,37 +44,42 @@ def getFilterStm(search: Optional[str], filter: ListFilterEnum):
         filters.append(DBConnection.isUp == False)
 
     if (search and len(search) > 0):
-        search = f"%{re.escape(search)}%"
-        if (filter == ListFilterEnum.customer):
-            # customer search
-            filters.append(
-                or_(
-                    DBCustomer.firstname.like(search),
-                    DBCustomer.lastname.like(search),
-                )
-            )
-        elif (filter == ListFilterEnum.customerId):
-            filters.append(DBConnection.customerId.like(search))
+        search = [re.escape(e) for e in search.strip().split(" ")]
+        wc = len(search)
+        orSearch = "%(" + "|".join(search) + \
+            ")%" if wc > 1 else "%" + search[0] + "%"
+        andSearch = "%" + "%".join(search) + "%"
+        if (filter == ListFilterEnum.customerId):
+            filters.append(DBConnection.customerId.like(orSearch))
         elif (filter == ListFilterEnum.address):
-            filters.append(DBCustomer.address.like(search))
+            filters.append(DBCustomer.address.like(andSearch))
         elif (filter == ListFilterEnum.port):
-            filters.append(DBConnection.port.like(search))
+            filters.append(DBConnection.port.like(orSearch))
         elif (filter == ListFilterEnum.switch):
-            filters.append(DBSwitch.name.like(search))
+            filters.append(DBSwitch.name.like(orSearch))
         else:
-            # general search
-            filters.append(
-                or_(
-                    DBConnection.name.like(search),
-                    DBConnection.port.like(search),
-                    DBConnection.customerId.like(search),
-                    # todo handle spaces in search for firstname + lastname
-                    DBCustomer.firstname.like(search),
-                    DBCustomer.lastname.like(search),
-                    DBCustomer.address.like(search),
-                    DBSwitch.name.like(search),
+            if (filter == ListFilterEnum.customer):
+                operator = and_ if wc > 1 else or_
+                filters.append(
+                    operator(
+                        DBCustomer.firstname.like(orSearch),
+                        DBCustomer.lastname.like(orSearch),
+                    )
                 )
-            )
+            else:
+                # general search
+                filters.append(
+                    or_(
+                        DBConnection.name.like(orSearch),
+                        DBConnection.port.like(orSearch),
+                        DBConnection.customerId.like(orSearch),
+                        # todo handle spaces in orSearch for firstname + lastname
+                        DBCustomer.firstname.like(orSearch),
+                        DBCustomer.lastname.like(orSearch),
+                        DBCustomer.address.like(orSearch),
+                        DBSwitch.name.like(orSearch),
+                    )
+                )
     return filters
 
 
