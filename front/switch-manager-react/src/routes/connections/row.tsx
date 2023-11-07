@@ -39,7 +39,7 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
       >
         <div className="col-span-1">{name}</div>
         <div className="col-span-2">
-          {customer.firstname} {customer.lastname}
+          {customer.lastname} {customer.firstname}
         </div>
         <div className="col-span-1">{customer.id}</div>
         <div className="col-span-2">
