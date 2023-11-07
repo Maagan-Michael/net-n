@@ -1,15 +1,16 @@
 from fastapi import APIRouter, Depends
-from typing import List, Union
+from typing import List, Optional, Union
 from sqlalchemy import Column, or_, select
 from sqlalchemy.orm import contains_eager
 from ..models.factories import BatchedDeleteOutput, OrderBy
 from ..models.customer import Customer
 from ..models.switch import Switch
-from ..models.connection import BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListSortEnum
+from ..models.connection import BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListFilterEnum, ListSortEnum
 from ..db.schemas.connections import DBConnection
 from ..db.schemas.switches import DBSwitch
 from ..db.schemas.customers import DBCustomer
 from ..db.factories import ConnectionRepository
+import re
 
 router = APIRouter(
     tags=["v1", "connections"],
@@ -30,28 +31,57 @@ sortEnumMap: dict[ListSortEnum, List[Column[any]]] = {
 }
 
 
+def getFilterStm(search: Optional[str], filter: ListFilterEnum):
+    filters = []
+    # status filters
+    if (filter == ListFilterEnum.enabled):
+        filters.append(DBConnection.toggled == True)
+    elif (filter == ListFilterEnum.disabled):
+        filters.append(DBConnection.toggled == False)
+    elif (filter == ListFilterEnum.up):
+        filters.append(DBConnection.isUp == True)
+    elif (filter == ListFilterEnum.down):
+        filters.append(DBConnection.isUp == False)
+
+    if (search and len(search) > 0):
+        search = f"%{re.escape(search)}%"
+        if (filter == ListFilterEnum.customer):
+            # customer search
+            filters.append(
+                or_(
+                    DBCustomer.firstname.like(search),
+                    DBCustomer.lastname.like(search),
+                )
+            )
+        elif (filter == ListFilterEnum.customerId):
+            filters.append(DBConnection.customerId.like(search))
+        elif (filter == ListFilterEnum.address):
+            filters.append(DBCustomer.address.like(search))
+        elif (filter == ListFilterEnum.port):
+            filters.append(DBConnection.port.like(search))
+        elif (filter == ListFilterEnum.switch):
+            filters.append(DBSwitch.name.like(search))
+        else:
+            # general search
+            filters.append(
+                or_(
+                    DBConnection.name.like(search),
+                    DBConnection.port.like(search),
+                    DBConnection.customerId.like(search),
+                    # todo handle spaces in search for firstname + lastname
+                    DBCustomer.firstname.like(search),
+                    DBCustomer.lastname.like(search),
+                    DBCustomer.address.like(search),
+                    DBSwitch.name.like(search),
+                )
+            )
+    return filters
+
+
 @router.get("/", response_model=ConnectionsOutput)
 async def listConnections(repo: ConnectionRepository, input: ConnectionListInput = Depends()):
     """return a paginated list of connections"""
-    filters = []
-    if (input.search and len(input.search) > 0):
-        if (input.filter):
-            # filtered search
-            filters = [DBConnection[input.filter].like(input.search)]
-        else:
-            # general search
-            filters = [
-                or_(
-                    DBConnection.name.like(input.search),
-                    DBConnection.port.like(input.search),
-                    DBConnection.customerId.like(input.search),
-                    # todo handle spaces in search for firstname + lastname
-                    DBConnection.customer.firstname.like(input.search),
-                    DBConnection.customer.lastname.like(input.search),
-                    DBConnection.customer.address.like(input.search),
-                    DBConnection.switch.name.like(input.search),
-                )
-            ]
+    filters = getFilterStm(input.search, input.filter)
     obFields = sortEnumMap[input.sort]
     orderBy = [e.desc() for e in obFields] if input.order == OrderBy.desc else [
         e.asc() for e in obFields]
