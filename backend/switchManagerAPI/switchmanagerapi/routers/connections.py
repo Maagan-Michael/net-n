@@ -22,7 +22,7 @@ router = APIRouter(
 # createMockConnection() for i in range(10)
 
 sortEnumMap: dict[ListSortEnum, List[Column[any]]] = {
-    ListSortEnum.con: [DBConnection.id],
+    ListSortEnum.con: [DBConnection.name],
     ListSortEnum.customerId: [DBConnection.customerId],
     ListSortEnum.fullname: [DBCustomer.lastname, DBCustomer.firstname],
     ListSortEnum.address: [DBCustomer.address],
