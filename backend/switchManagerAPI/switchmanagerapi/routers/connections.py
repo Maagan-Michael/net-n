@@ -100,10 +100,7 @@ async def listConnections(repo: ConnectionRepository, input: ConnectionListInput
     # todo : compute hasPrevious
     res = []
     for e in q:
-        switch = Switch.model_construct(**e.switch.__dict__)
-        customer = Customer.model_construct(**e.customer.__dict__)
-        _merged = {**e.__dict__, "switch": switch, "customer": customer}
-        connection = ConnectionOutput.model_construct(**_merged)
+        connection = ConnectionOutput.model_construct(**e.__dict__)
         res.append(connection)
     hasPrevious = input.page > 0
     hasNext = len(res) > input.limit
@@ -118,15 +115,17 @@ async def listConnections(repo: ConnectionRepository, input: ConnectionListInput
 
 @router.get("/{id}", response_model=ConnectionOutput)
 async def getConnection(id: str, repo: ConnectionRepository):
-    q = repo.session.scalar(
+    q = await repo.session.scalar(
         select(DBConnection)
-        .where(DBConnection.id == id)
         .join(DBConnection.customer)
         .join(DBConnection.switch)
+        .options(contains_eager(DBConnection.customer), contains_eager(DBConnection.switch))
+        .where(DBConnection.id == id)
+        .execution_options(populate_existing=True)
         .limit(1)
     )
     if q is not None:
-        return ConnectionOutput(q)
+        return ConnectionOutput.model_construct(**q.__dict__)
     return None
 
 
