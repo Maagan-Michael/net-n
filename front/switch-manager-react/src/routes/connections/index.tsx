@@ -22,8 +22,8 @@ function Connections() {
   );
   const pagesContent: ConnectionOutput[] = (data?.pages || []).reduce(
     (r: ConnectionOutput[], page: ConnectionsOutput) => [
-      ...page.connections,
       ...r,
+      ...page.connections,
     ],
     []
   );
