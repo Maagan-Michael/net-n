@@ -46,38 +46,38 @@ def getFilterStm(search: Optional[str], filter: ListFilterEnum):
     if (search and len(search) > 0):
         search = [re.escape(e) for e in search.strip().split(" ")]
         wc = len(search)
-        orSearch = "%(" + "|".join(search) + \
-            ")%" if wc > 1 else "%" + search[0] + "%"
-        andSearch = "%" + "%".join(search) + "%"
+        orSearch = f"*({'|'.join(search)})*" if wc > 1 else f"*{search[0]}*"
+        andSearch = f"*{'*'.join(search)}*"
         if (filter == ListFilterEnum.customerId):
-            filters.append(DBConnection.customerId.like(orSearch))
+            filters.append(DBConnection.customerId.regexp_match(orSearch))
         elif (filter == ListFilterEnum.address):
-            filters.append(DBCustomer.address.like(andSearch))
+            filters.append(DBCustomer.address.regexp_match(andSearch))
         elif (filter == ListFilterEnum.port):
-            filters.append(DBConnection.port.like(orSearch))
+            filters.append(DBConnection.port.regexp_match(orSearch))
         elif (filter == ListFilterEnum.switch):
-            filters.append(DBSwitch.name.like(orSearch))
+            filters.append(DBSwitch.name.regexp_match(orSearch))
         else:
             if (filter == ListFilterEnum.customer):
                 operator = and_ if wc > 1 else or_
+                print(orSearch)
                 filters.append(
                     operator(
-                        DBCustomer.firstname.like(orSearch),
-                        DBCustomer.lastname.like(orSearch),
+                        DBCustomer.firstname.regexp_match(orSearch),
+                        DBCustomer.lastname.regexp_match(orSearch),
                     )
                 )
             else:
                 # general search
                 filters.append(
                     or_(
-                        DBConnection.name.like(orSearch),
-                        DBConnection.port.like(orSearch),
-                        DBConnection.customerId.like(orSearch),
+                        DBConnection.name.regexp_match(orSearch),
+                        DBConnection.port.regexp_match(orSearch),
+                        DBConnection.customerId.regexp_match(orSearch),
                         # todo handle spaces in orSearch for firstname + lastname
-                        DBCustomer.firstname.like(orSearch),
-                        DBCustomer.lastname.like(orSearch),
-                        DBCustomer.address.like(orSearch),
-                        DBSwitch.name.like(orSearch),
+                        DBCustomer.firstname.regexp_match(orSearch),
+                        DBCustomer.lastname.regexp_match(orSearch),
+                        DBCustomer.address.regexp_match(andSearch),
+                        DBSwitch.name.regexp_match(orSearch),
                     )
                 )
     return filters
