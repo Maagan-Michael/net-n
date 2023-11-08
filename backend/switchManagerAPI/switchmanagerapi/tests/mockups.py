@@ -36,11 +36,13 @@ def createMockSwitch() -> Switch:
 
 
 def createMockConnection(switchId: str, customerId: str) -> Connection:
+    port = fake.port_number()
     try:
         return Connection(
             id=fake.uuid4(),
             name=f"{fake.word()[0:3].upper()}{fake.ean(length=8)[0:3]}",
-            port=fake.port_number(),
+            port=port,
+            strPort=f"{port}",
             toggleDate=random.choice([None, fake.date_time_between(
                 start_date=datetime.now(), end_date="+1y")]),
             type=random.choice(["copper", "fiber"]),

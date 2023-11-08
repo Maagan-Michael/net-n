@@ -43,6 +43,8 @@ class Connection(IConnection):
     """Connection Database model"""
     model_config = ConfigDict(from_attributes=True)
     # relationships
+    strPort: str = Field(
+        default="", description="port number string projection on the switch (searchable)")
     switchId: str
     customerId: int
 

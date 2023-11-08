@@ -51,7 +51,7 @@ def getFilterStm(search: Optional[str], filter: ListFilterEnum):
         elif (filter == ListFilterEnum.address):
             filters.append(DBCustomer.address.op('~')(andSearch))
         elif (filter == ListFilterEnum.port):
-            filters.append(DBConnection.port.op('~')(orSearch))
+            filters.append(DBConnection.strPort.op('~')(orSearch))
         elif (filter == ListFilterEnum.switch):
             filters.append(DBSwitch.name.op('~')(orSearch))
         else:
@@ -66,18 +66,16 @@ def getFilterStm(search: Optional[str], filter: ListFilterEnum):
                 )
             else:
                 # general search
-                filters.append(
-                    or_(
-                        DBConnection.name.op('~')(orSearch),
-                        # DBConnection.port.op('~')(orSearch),
-                        DBCustomer.idstr.op('~')(orSearch),
-                        # todo handle spaces in orSearch for firstname + lastname
-                        DBCustomer.firstname.op('~')(orSearch),
-                        DBCustomer.lastname.op('~')(orSearch),
-                        DBCustomer.address.op('~')(andSearch),
-                        DBSwitch.name.op('~')(orSearch),
-                    )
-                )
+                filters.append(or_(
+                    DBConnection.name.op('~')(orSearch),
+                    DBCustomer.idstr.op('~')(orSearch),
+                    DBConnection.strPort.op('~')(orSearch),
+                    # todo handle spaces in orSearch for firstname + lastname
+                    DBCustomer.firstname.op('~')(orSearch),
+                    DBCustomer.lastname.op('~')(orSearch),
+                    DBCustomer.address.op('~')(andSearch),
+                    DBSwitch.name.op('~')(orSearch),
+                ))
     return filters
 
 

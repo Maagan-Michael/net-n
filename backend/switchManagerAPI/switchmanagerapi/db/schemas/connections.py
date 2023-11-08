@@ -9,6 +9,7 @@ class DBConnection(Base):
 
     id = Column(UUID, primary_key=True, index=True, unique=True)
     name = Column(String, index=True, unique=True)
+    strPort = Column(String, index=True)
     port = Column(Integer, index=True)
     toggled = Column(Boolean, index=True)
     toggleDate = Column(DateTime, index=True)
