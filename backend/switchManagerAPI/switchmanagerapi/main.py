@@ -31,7 +31,7 @@ async def on_startup():
     """Run on startup"""
     pass
     # await create_db()
-    await generateMockupDB()
+    # await generateMockupDB()
 
 
 def main():
