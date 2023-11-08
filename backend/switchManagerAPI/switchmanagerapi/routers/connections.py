@@ -47,34 +47,34 @@ def getFilterStm(search: Optional[str], filter: ListFilterEnum):
         orSearch = f".*({'|'.join(search)}).*" if wc > 1 else f".*{search[0]}.*"
         andSearch = f".*{'.*'.join(search)}.*"
         if (filter == ListFilterEnum.customerId):
-            filters.append(DBCustomer.idstr.op('~')(orSearch))
+            filters.append(DBCustomer.idstr.op('~*')(orSearch))
         elif (filter == ListFilterEnum.address):
-            filters.append(DBCustomer.address.op('~')(andSearch))
+            filters.append(DBCustomer.address.op('~*')(andSearch))
         elif (filter == ListFilterEnum.port):
-            filters.append(DBConnection.strPort.op('~')(orSearch))
+            filters.append(DBConnection.strPort.op('~*')(orSearch))
         elif (filter == ListFilterEnum.switch):
-            filters.append(DBSwitch.name.op('~')(orSearch))
+            filters.append(DBSwitch.name.op('~*')(orSearch))
         else:
             if (filter == ListFilterEnum.customer):
                 operator = and_ if wc > 1 else or_
                 print(orSearch)
                 filters.append(
                     operator(
-                        DBCustomer.firstname.op('~')(orSearch),
-                        DBCustomer.lastname.op('~')(orSearch),
+                        DBCustomer.firstname.op('~*')(orSearch),
+                        DBCustomer.lastname.op('~*')(orSearch),
                     )
                 )
             else:
                 # general search
                 filters.append(or_(
-                    DBConnection.name.op('~')(orSearch),
-                    DBCustomer.idstr.op('~')(orSearch),
-                    DBConnection.strPort.op('~')(orSearch),
+                    DBConnection.name.op('~*')(orSearch),
+                    DBCustomer.idstr.op('~*')(orSearch),
+                    DBConnection.strPort.op('~*')(orSearch),
                     # todo handle spaces in orSearch for firstname + lastname
-                    DBCustomer.firstname.op('~')(orSearch),
-                    DBCustomer.lastname.op('~')(orSearch),
-                    DBCustomer.address.op('~')(andSearch),
-                    DBSwitch.name.op('~')(orSearch),
+                    DBCustomer.firstname.op('~*')(orSearch),
+                    DBCustomer.lastname.op('~*')(orSearch),
+                    DBCustomer.address.op('~*')(andSearch),
+                    DBSwitch.name.op('~*')(orSearch),
                 ))
     return filters
 
