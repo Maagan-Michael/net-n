@@ -3,8 +3,6 @@ from typing import List, Optional, Union
 from sqlalchemy import Column, or_, select, and_
 from sqlalchemy.orm import contains_eager
 from ..models.factories import BatchedDeleteOutput, OrderBy
-from ..models.customer import Customer
-from ..models.switch import Switch
 from ..models.connection import BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListFilterEnum, ListSortEnum
 from ..db.schemas.connections import DBConnection
 from ..db.schemas.switches import DBSwitch
@@ -46,38 +44,38 @@ def getFilterStm(search: Optional[str], filter: ListFilterEnum):
     if (search and len(search) > 0):
         search = [re.escape(e) for e in search.strip().split(" ")]
         wc = len(search)
-        orSearch = f"*({'|'.join(search)})*" if wc > 1 else f"*{search[0]}*"
-        andSearch = f"*{'*'.join(search)}*"
+        orSearch = f".*({'|'.join(search)}).*" if wc > 1 else f".*{search[0]}.*"
+        andSearch = f".*{'.*'.join(search)}.*"
         if (filter == ListFilterEnum.customerId):
-            filters.append(DBConnection.customerId.regexp_match(orSearch))
+            filters.append(DBCustomer.idstr.op('~')(orSearch))
         elif (filter == ListFilterEnum.address):
-            filters.append(DBCustomer.address.regexp_match(andSearch))
+            filters.append(DBCustomer.address.op('~')(andSearch))
         elif (filter == ListFilterEnum.port):
-            filters.append(DBConnection.port.regexp_match(orSearch))
+            filters.append(DBConnection.port.op('~')(orSearch))
         elif (filter == ListFilterEnum.switch):
-            filters.append(DBSwitch.name.regexp_match(orSearch))
+            filters.append(DBSwitch.name.op('~')(orSearch))
         else:
             if (filter == ListFilterEnum.customer):
                 operator = and_ if wc > 1 else or_
                 print(orSearch)
                 filters.append(
                     operator(
-                        DBCustomer.firstname.regexp_match(orSearch),
-                        DBCustomer.lastname.regexp_match(orSearch),
+                        DBCustomer.firstname.op('~')(orSearch),
+                        DBCustomer.lastname.op('~')(orSearch),
                     )
                 )
             else:
                 # general search
                 filters.append(
                     or_(
-                        DBConnection.name.regexp_match(orSearch),
-                        DBConnection.port.regexp_match(orSearch),
-                        DBConnection.customerId.regexp_match(orSearch),
+                        DBConnection.name.op('~')(orSearch),
+                        # DBConnection.port.op('~')(orSearch),
+                        DBCustomer.idstr.op('~')(orSearch),
                         # todo handle spaces in orSearch for firstname + lastname
-                        DBCustomer.firstname.regexp_match(orSearch),
-                        DBCustomer.lastname.regexp_match(orSearch),
-                        DBCustomer.address.regexp_match(andSearch),
-                        DBSwitch.name.regexp_match(orSearch),
+                        DBCustomer.firstname.op('~')(orSearch),
+                        DBCustomer.lastname.op('~')(orSearch),
+                        DBCustomer.address.op('~')(andSearch),
+                        DBSwitch.name.op('~')(orSearch),
                     )
                 )
     return filters

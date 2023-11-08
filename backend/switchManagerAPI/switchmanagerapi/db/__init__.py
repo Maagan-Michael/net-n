@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import (
 
 # using sqlite in dev environment, but will change to postgresql in production
 ### dev environment only ###
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:password@0.0.0.0/switchMDB"
+SQLALCHEMY_DATABASE_URL = "postgresql+asyncpg://postgres:password@0.0.0.0:5432/postgres"
 Base = declarative_base()
 
 

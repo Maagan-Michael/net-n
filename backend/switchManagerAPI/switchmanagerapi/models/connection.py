@@ -44,7 +44,7 @@ class Connection(IConnection):
     model_config = ConfigDict(from_attributes=True)
     # relationships
     switchId: str
-    customerId: str
+    customerId: int
 
 # API
 # outputs

@@ -16,7 +16,7 @@ class DBConnection(Base):
     isUp = Column(Boolean, index=True)
     adapter = Column(String, index=True)
     speed = Column(Integer, index=False)
-    switchId = Column(Integer, ForeignKey("switches.id"), index=True)
+    switchId = Column(UUID, ForeignKey("switches.id"), index=True)
     customerId = Column(Integer, ForeignKey("customers.id"), index=True)
 
     switch = relationship(

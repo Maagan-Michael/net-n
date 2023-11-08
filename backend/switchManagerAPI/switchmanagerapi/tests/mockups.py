@@ -2,7 +2,7 @@ from datetime import datetime
 from faker import Faker
 from ..models.connection import Connection
 from ..models.switch import Switch
-from ..models.customer import Customer
+from ..models.customer import InternalCustomer
 from ..db import create_db, drop_db, get_context_db_session
 from ..db.schemas import DBConnection, DBSwitch, DBCustomer
 from sqlalchemy import insert
@@ -12,9 +12,11 @@ fake = Faker()
 Faker.seed(random.randint(0, 1000))
 
 
-def createMockCustomer() -> Customer:
-    return Customer(
-        id=fake.ean(length=8),
+def createMockCustomer() -> InternalCustomer:
+    id = fake.ean(length=8)
+    return InternalCustomer(
+        id=id,
+        idstr=str(id),
         firstname=fake.first_name(),
         lastname=fake.last_name(),
         type=random.choice(["haverim", fake.company()]),
@@ -36,8 +38,8 @@ def createMockSwitch() -> Switch:
 def createMockConnection(switchId: str, customerId: str) -> Connection:
     try:
         return Connection(
-            name=f"{fake.word()[0:3].upper()}{fake.ean(length=8)[0:3]}",
             id=fake.uuid4(),
+            name=f"{fake.word()[0:3].upper()}{fake.ean(length=8)[0:3]}",
             port=fake.port_number(),
             toggleDate=random.choice([None, fake.date_time_between(
                 start_date=datetime.now(), end_date="+1y")]),
