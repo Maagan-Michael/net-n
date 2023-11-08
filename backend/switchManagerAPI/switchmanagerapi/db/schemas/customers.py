@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, String
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from .. import Base
 
@@ -6,7 +7,7 @@ from .. import Base
 class DBCustomer(Base):
     __tablename__ = "customers"
 
-    id = Column(String, primary_key=True, index=True, unique=True)
+    id = Column(UUID, primary_key=True, index=True, unique=True)
     firstname = Column(String, index=True)
     lastname = Column(String, index=True)
     type = Column(String, index=True)

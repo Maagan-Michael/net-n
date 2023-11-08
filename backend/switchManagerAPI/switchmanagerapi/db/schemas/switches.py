@@ -1,12 +1,13 @@
-from sqlalchemy import Float, Column, Integer, String
+from sqlalchemy import Float, Column, String
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID
 from .. import Base
 
 
 class DBSwitch(Base):
     __tablename__ = "switches"
 
-    id = Column(String, primary_key=True, index=True, unique=True)
+    id = Column(UUID, primary_key=True, index=True, unique=True)
     ip = Column(String, index=False)
     gpsLat = Column(Float, index=True)
     gpsLong = Column(Float, index=True)

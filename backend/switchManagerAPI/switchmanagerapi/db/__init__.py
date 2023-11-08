@@ -9,8 +9,8 @@ from sqlalchemy.ext.asyncio import (
 )
 
 # using sqlite in dev environment, but will change to postgresql in production
-SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///./sql_app.db"
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
+### dev environment only ###
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:password@0.0.0.0/switchMDB"
 Base = declarative_base()
 
 
