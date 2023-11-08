@@ -57,7 +57,6 @@ def getFilterStm(search: Optional[str], filter: ListFilterEnum):
         else:
             if (filter == ListFilterEnum.customer):
                 operator = and_ if wc > 1 else or_
-                print(orSearch)
                 filters.append(
                     operator(
                         DBCustomer.firstname.op('~*')(orSearch),

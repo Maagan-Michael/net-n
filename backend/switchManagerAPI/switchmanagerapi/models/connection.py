@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-from pydantic import BaseModel, ConfigDict, Field, validator
+from pydantic import BaseModel, ConfigDict, Field, validator, computed_field, UUID4
 from .customer import Customer
 from .switch import Switch
 from .factories import OrderBy, batcheableOutputFactory
@@ -11,7 +11,8 @@ from .factories import OrderBy, batcheableOutputFactory
 
 class IConnectionBase(BaseModel):
     """Base Connection model interface"""
-    id: str = Field(min_length=3, max_length=255, description="connection id")
+    id: UUID4 = Field(min_length=3, max_length=255,
+                      description="connection id")
     name: str = Field(min_length=3, max_length=255,
                       description="connection name")
     port: int = Field(default=0, min=0, max=65535,
@@ -43,8 +44,11 @@ class Connection(IConnection):
     """Connection Database model"""
     model_config = ConfigDict(from_attributes=True)
     # relationships
-    strPort: str = Field(
-        default="", description="port number string projection on the switch (searchable)")
+
+    @computed_field(return_type=str)
+    @property
+    def strPort(self):
+        return f"{self.port}"
     switchId: str
     customerId: int
 

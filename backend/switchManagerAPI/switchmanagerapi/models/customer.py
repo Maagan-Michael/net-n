@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, computed_field
 from .factories import batcheableOutputFactory
 
 # Database
@@ -17,8 +17,10 @@ class Customer(BaseModel):
 
 
 class InternalCustomer(Customer):
-    idstr: str = Field(min_length=1, max_length=255,
-                       description="id string projection")
+    @computed_field(return_type=str)
+    @property
+    def idstr(self):
+        return f"{self.id}"
 
 
 # API
