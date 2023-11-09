@@ -44,7 +44,10 @@ def getFilterStm(search: Optional[str], filter: ListFilterEnum):
     if (search and len(search) > 0):
         search = [re.escape(e) for e in search.strip().split(" ")]
         wc = len(search)
-        orSearch = f".*({'|'.join(search)}).*" if wc > 1 else f".*{search[0]}.*"
+        isMultiWord = wc > 1
+        orSearch = "(^|{\s}?)" + \
+            f"({'|'.join(search)}).*" if wc > 1 else f".*{search[0]}.*"
+        print(orSearch)
         andSearch = f".*{'.*'.join(search)}.*"
         if (filter == ListFilterEnum.customerId):
             filters.append(DBCustomer.idstr.op('~*')(orSearch))
@@ -56,15 +59,29 @@ def getFilterStm(search: Optional[str], filter: ListFilterEnum):
             filters.append(DBSwitch.name.op('~*')(orSearch))
         else:
             if (filter == ListFilterEnum.customer):
-                operator = and_ if wc > 1 else or_
+                operator = and_ if isMultiWord else or_
                 filters.append(
                     operator(
                         DBCustomer.firstname.op('~*')(orSearch),
                         DBCustomer.lastname.op('~*')(orSearch),
                     )
                 )
-            else:
+            elif (isMultiWord):
                 # general search
+                filters.append(
+                    or_(
+                        and_(
+                            DBCustomer.firstname.op('~*')(orSearch),
+                            DBCustomer.lastname.op('~*')(orSearch),
+                        ),
+                        DBCustomer.address.op('~*')(andSearch),
+                        and_(
+                            DBSwitch.name.op('~*')(orSearch),
+                            DBConnection.strPort.op('~*')(orSearch),
+                        )
+                    )
+                )
+            else:
                 filters.append(or_(
                     DBConnection.name.op('~*')(orSearch),
                     DBCustomer.idstr.op('~*')(orSearch),
