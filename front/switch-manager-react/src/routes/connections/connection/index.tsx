@@ -1,6 +1,11 @@
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { useConnectionQuery } from "../../../api/queries/getConnection";
+import {
+  ConnectionInput,
+  SwitchInput,
+  CustomerInput,
+} from "../../../api/types";
 import { useCallback } from "react";
 import TextButton from "../../../components/inputs/textBtn";
 import TextInput from "../../../components/inputs/TextInput";
@@ -20,8 +25,43 @@ function ConnectionForm({ data, goBack }: { data: any; goBack: () => void }) {
     <form
       className="relative w-[600px] h-[440px] bg-white rounded-md z-10 shadow-md"
       onSubmit={handleSubmit((d) => {
-        console.log(d);
-        console.log(dirtyFields);
+        const { switch: dsw, customer: dcustomer, ...dcon } = dirtyFields;
+        const input: {
+          sw?: SwitchInput;
+          customer?: CustomerInput;
+          con?: ConnectionInput;
+        } = {
+          sw: undefined,
+          customer: undefined,
+          con: undefined,
+        };
+        // generate inputs with only touched fields
+        if (dsw) {
+          let sw: SwitchInput = { id: d.switch.id };
+          Object.keys(dsw).forEach((k) => {
+            //@ts-ignore
+            sw[k] = d.switch[k as keyof SwitchInput];
+          });
+          input.sw = sw;
+        }
+        if (dcustomer) {
+          let customer: CustomerInput = { id: d.customer.id };
+          Object.keys(dcustomer).forEach((k) => {
+            //@ts-ignore
+            customer[k] = d.customer[k as keyof CustomerInput];
+          });
+          input.customer = customer;
+        }
+        const dconKeys = Object.keys(dcon);
+        if (dconKeys.length) {
+          let con: ConnectionInput = { id: d.id };
+          Object.keys(dcon).forEach((k) => {
+            //@ts-ignore
+            con[k] = d.customer[k as keyof CustomerInput];
+          });
+          input.con = con;
+        }
+        console.log(input);
         //goBack();
       })}
     >
