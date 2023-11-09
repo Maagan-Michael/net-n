@@ -1,6 +1,8 @@
 import clsx from "clsx";
-import { FunctionComponent, useState } from "react";
-import { Outlet, URLSearchParamsInit } from "react-router-dom";
+import { FunctionComponent, useCallback, useState } from "react";
+import { Outlet } from "react-router-dom";
+import useTimeout from "../components/hooks/useTimeout";
+import { useEffect } from "react";
 import { ReactComponent as Search } from "../components/icons/search.svg";
 import TextButton from "../components/inputs/textBtn";
 import { ReactComponent as Customer } from "../components/icons/customer.svg";
@@ -44,15 +46,19 @@ const filtersMap: { [x: string]: IconFilterElemProps } = {
 export default function Dashboard() {
   const [params, setParams] = useConnectionsUrlParams();
   const [search, setSearch] = useState<string>(params.search || "");
+  const createTimeout = useTimeout();
   const filter: cf = params.filter || cf.all;
   const currentFilter = filtersMap[filter];
-  const onSearch = (_filter?: cf) => {
-    setParams({
-      search,
-      filter: _filter || filter,
-    });
-    (document.activeElement as HTMLElement)?.blur();
-  };
+  const onSearch = useCallback(
+    (_filter?: cf, blur: boolean = true) => {
+      setParams({
+        search,
+        filter: _filter || filter,
+      });
+      blur && (document.activeElement as HTMLElement)?.blur();
+    },
+    [filter, search, setParams]
+  );
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     if (e.target.value.length === 0) {
@@ -62,6 +68,9 @@ export default function Dashboard() {
       });
     }
   };
+  useEffect(() => {
+    createTimeout(() => onSearch(undefined, false), 500);
+  }, [createTimeout, onSearch, search]);
   const searchActive =
     params.search && params.search.length > 0 && search.length !== 0;
   return (

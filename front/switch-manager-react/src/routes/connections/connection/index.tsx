@@ -8,7 +8,12 @@ import Toggle from "../../../components/inputs/toggle";
 import { ReactComponent as Cross } from "../../../components/icons/cross.svg";
 
 function ConnectionForm({ data, goBack }: { data: any; goBack: () => void }) {
-  const { register, handleSubmit, control } = useForm({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { dirtyFields },
+  } = useForm({
     defaultValues: data,
   });
   return (
@@ -16,7 +21,8 @@ function ConnectionForm({ data, goBack }: { data: any; goBack: () => void }) {
       className="relative w-[600px] h-[440px] bg-white rounded-md z-10 shadow-md"
       onSubmit={handleSubmit((d) => {
         console.log(d);
-        goBack();
+        console.log(dirtyFields);
+        //goBack();
       })}
     >
       <Cross
@@ -30,7 +36,7 @@ function ConnectionForm({ data, goBack }: { data: any; goBack: () => void }) {
             <div className="flex flex-row gap-x-2 justify-between items-end">
               <TextInput
                 register={register}
-                name="switch.name"
+                name="name"
                 label="ppp"
                 required
                 className="grow"
