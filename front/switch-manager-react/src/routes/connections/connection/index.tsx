@@ -41,6 +41,14 @@ function ConnectionForm({ data, goBack }: { data: any; goBack: () => void }) {
                 required
                 className="grow"
               />
+              <TextInput
+                register={register}
+                name="port"
+                type="number"
+                label="port"
+                required
+                className="w-24"
+              />
               <Controller
                 control={control}
                 name="toggled"
