@@ -56,7 +56,7 @@ function ConnectionForm({ data, goBack }: { data: any; goBack: () => void }) {
                   <Toggle
                     label=""
                     name="toggled"
-                    className="w-12"
+                    className="w-9 mb-1"
                     toggled={value}
                     onChange={(e) => onChange(!value)}
                   />
