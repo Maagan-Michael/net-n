@@ -123,7 +123,10 @@ export default function Connection() {
   }
   const { data, isLoading } = useConnectionQuery({ id });
   const navigate = useNavigate();
-  const goBack = useCallback(() => navigate(-1), [navigate]);
+  const goBack = useCallback(
+    () => navigate(`/${window.location.search}`),
+    [navigate]
+  );
   if (isLoading) {
     return <div>loading...</div>;
   }

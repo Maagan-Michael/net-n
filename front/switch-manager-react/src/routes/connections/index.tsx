@@ -12,7 +12,7 @@ import LoadingRow from "./loadingRow";
 
 function Connections() {
   const [queryParams, setParams] = useConnectionsUrlParams();
-  const { data, isLoading, fetchNextPage, isFetchingNextPage } =
+  const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useConnectionsQuery(queryParams);
   const onReady = useInfiniteScroller(
     () => !isLoading && !isFetchingNextPage && fetchNextPage(),
@@ -46,6 +46,16 @@ function Connections() {
           {[...Array(queryParams.limit)].map((i, idx) => (
             <LoadingRow key={idx} />
           ))}
+        </div>
+      )}
+      {!isLoading && pagesContent.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-y-4 mt-8">
+          <h3 className="font-bold text-xl">no connections found</h3>
+        </div>
+      )}
+      {!isLoading && pagesContent.length > 0 && !hasNextPage && (
+        <div className="flex flex-col items-center justify-center gap-y-4 mt-8">
+          <h3 className="font-bold text-md">no more connections</h3>
         </div>
       )}
       <Outlet />
