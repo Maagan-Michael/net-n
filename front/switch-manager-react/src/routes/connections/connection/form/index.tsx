@@ -87,7 +87,7 @@ export default function ConnectionForm({
           bodyClassName: "text-black text-sm font-sans",
           closeButton: CloseButton,
         });
-        //goBack();
+        goBack();
       }
     }
   }, [isLoading, response, goBack]);
