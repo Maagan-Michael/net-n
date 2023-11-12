@@ -7,6 +7,9 @@ export const upsertCustomers = async (params: CustomerInput) => {
     {
       method: "POST",
       body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+      },
     }
   );
   return res.json();

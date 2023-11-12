@@ -7,6 +7,9 @@ export const upsertConnections = async (params: ConnectionInput) => {
     {
       method: "POST",
       body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+      },
     }
   );
   return res.json();

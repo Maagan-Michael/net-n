@@ -7,6 +7,9 @@ export const upsertSwitches = async (params: SwitchInput) => {
     {
       method: "POST",
       body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+      },
     }
   );
   return res.json();
