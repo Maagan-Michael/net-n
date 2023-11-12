@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Callable, Generic, TypeVar, List, Annotated, Union
 from fastapi import Depends, HTTPException, status
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from . import Base, get_db_session
@@ -46,9 +47,11 @@ class DatabaseRepository(Generic[Model]):
         return [Model(e) for e in q]
 
     async def upsert(self, model: Model) -> Model:
-        await self.session.merge(model)
-        await self.session.commit()
-        await self.session.refresh(model)
+        await self.session.execute(
+            insert(self.schema)
+            .values(model.model_dump(exclude_unset=True))
+            .on_conflict_do_update(index_elements=[self.schema.id], set_=model.model_dump(exclude_unset=True, exclude={"id"}))
+        )
         return model
 
     async def batch_upsert(self, inputs: Union[Model, List[Model]]) -> (List[Model], List[BatchError]):
@@ -60,20 +63,25 @@ class DatabaseRepository(Generic[Model]):
         for input in inputs:
             existing = None
             if input.id:
-                existing = await self.session.scalar(select(self.schema).filter(self.schema.id == input.id))
-            if existing:
-                existing = self.model(
-                    **existing,
-                    **input
+                existing = await self.session.scalar(
+                    select(self.schema)
+                    .filter(self.schema.id == input.id)
+                    .limit(1)
                 )
+            if existing:
+                existing = {
+                    **existing.__dict__,
+                    **input.model_dump(exclude_unset=True)
+                }
             else:
-                existing = self.model(**input)
+                existing = input
             try:
-                existing.model_validate()
+                existing = self.model.model_validate(existing)
                 await self.upsert(existing)
                 items.append(existing)
             except Exception as e:
-                errors.append(BatchError(id=input.id, error=e))
+                errors.append(BatchError.model_construct(
+                    id=input.id, error=str(e)))
         return (items, errors)
 
     async def delete(self, ids: List[str]) -> BatchedDeleteOutput:
@@ -82,7 +90,7 @@ class DatabaseRepository(Generic[Model]):
             delete(self.schema)
             .where(self.schema.id.in_(ids))
         )
-        return BatchedDeleteOutput(items=ids, errors=[])
+        return BatchedDeleteOutput.model_construct(items=ids, errors=[])
 
 
 def get_repository(

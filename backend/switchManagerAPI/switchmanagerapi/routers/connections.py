@@ -149,8 +149,8 @@ async def getConnection(id: str, repo: ConnectionRepository):
 @router.post("/upsert", response_model=BatchConnectionOutput)
 async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUpsertInput]], repo: ConnectionRepository):
     """upsert or udpate one || multiple connections"""
-    [items, errors] = repo.batch_upsert(input)
-    return BatchConnectionOutput(items, errors)
+    [items, errors] = await repo.batch_upsert(input)
+    return BatchConnectionOutput.model_construct(items=items, errors=errors)
 
 
 @router.post("/delete", response_model=BatchedDeleteOutput)

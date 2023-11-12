@@ -49,7 +49,7 @@ class Connection(IConnection):
     @property
     def strPort(self):
         return f"{self.port}"
-    switchId: str
+    switchId: UUID4
     customerId: int
 
 # API
@@ -127,5 +127,5 @@ class ConnectionUpsertInput(BaseModel):
     isUp: Optional[bool] = None
     adapter: Optional[str] = None
     speed: Optional[int] = None
-    switchId: Optional[int] = None
+    switchId: Optional[UUID4] = None
     customerId: Optional[int] = None

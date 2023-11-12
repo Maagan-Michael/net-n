@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, UUID4
 
 
 class OrderBy(str, Enum):
@@ -10,7 +10,7 @@ class OrderBy(str, Enum):
 
 class BatchError(BaseModel):
     """Batch error model"""
-    id: str = ""
+    id: str | int | UUID4 = ""
     error: str = ""
 
 

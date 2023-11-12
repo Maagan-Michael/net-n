@@ -34,7 +34,7 @@ BatchedSwitchOutput = batcheableOutputFactory(Switch)
 
 
 class UpsertSwitchInput(BaseModel):
-    id: Optional[str] = None
+    id: Optional[UUID4] = None
     ip: Optional[str] = None
     gpsLat: Optional[float] = None
     gpsLong: Optional[float] = None

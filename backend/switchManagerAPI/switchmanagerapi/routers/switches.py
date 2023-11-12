@@ -28,8 +28,8 @@ async def getSwitch(id: int, repo: SwitchRepository):
 @router.post("/upsert", response_model=BatchedSwitchOutput)
 async def upsertSwitch(input: Union[UpsertSwitchInput, list[UpsertSwitchInput]], repo: SwitchRepository):
     """upsert or udpate one || multiple switch(s)"""
-    [items, errors] = repo.batch_upsert(input)
-    return BatchedSwitchOutput(items, errors)
+    [items, errors] = await repo.batch_upsert(input)
+    return BatchedSwitchOutput.model_construct(items=items, errors=errors)
 
 
 @router.post("/delete", response_model=BatchedDeleteOutput)
