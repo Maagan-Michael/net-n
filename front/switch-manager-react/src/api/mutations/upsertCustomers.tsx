@@ -1,7 +1,7 @@
 import { useMutation } from "react-query";
 import { CustomerInput } from "../types";
 
-const upsertConnections = async (params: CustomerInput) => {
+export const upsertCustomers = async (params: CustomerInput) => {
   const res = await fetch(
     `${process.env.REACT_APP_API_URL}/api/v1/customers/upsert`,
     {
@@ -12,6 +12,6 @@ const upsertConnections = async (params: CustomerInput) => {
   return res.json();
 };
 
-export function useConnectionUpdateMutation() {
-  return useMutation((params: CustomerInput) => upsertConnections(params));
+export function useCustomersUpdateMutation() {
+  return useMutation((params: CustomerInput) => upsertCustomers(params));
 }

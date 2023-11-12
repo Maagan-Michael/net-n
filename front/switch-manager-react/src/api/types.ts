@@ -110,3 +110,9 @@ export interface BatcheableOutput<T> {
     items: T[]
     errors: BatchError[]
 }
+
+export interface fullConnectionUpdateInput {
+    sw?: SwitchInput;
+    customer?: CustomerInput;
+    con?: ConnectionInput;
+}

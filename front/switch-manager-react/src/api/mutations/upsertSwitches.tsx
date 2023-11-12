@@ -1,7 +1,7 @@
 import { useMutation } from "react-query";
 import { SwitchInput } from "../types";
 
-const upserSwitches = async (params: SwitchInput) => {
+export const upsertSwitches = async (params: SwitchInput) => {
   const res = await fetch(
     `${process.env.REACT_APP_API_URL}/api/v1/customers/upsert`,
     {
@@ -13,5 +13,5 @@ const upserSwitches = async (params: SwitchInput) => {
 };
 
 export function useSwitchUpdateMutation() {
-  return useMutation((params: SwitchInput) => upserSwitches(params));
+  return useMutation((params: SwitchInput) => upsertSwitches(params));
 }
