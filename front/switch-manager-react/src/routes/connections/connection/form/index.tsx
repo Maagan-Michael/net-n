@@ -10,6 +10,8 @@ import { ReactComponent as Cross } from "../../../../components/icons/cross.svg"
 import CustomerSection from "./CustomerSection";
 import TechnicalSection from "./TechnicalSection";
 import { useUpsertFullConnection } from "../../../../api/mutations/upsertFullConnection";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 function getTouchedValues<T extends Record<string, any>>(
   data?: Record<string, any>,
@@ -62,11 +64,22 @@ export default function ConnectionForm({
     register,
     handleSubmit,
     control,
-    formState: { dirtyFields },
+    formState: { dirtyFields, isDirty },
   } = useForm({
     defaultValues: data,
   });
-  const { mutate, isLoading } = useUpsertFullConnection();
+  const { mutate, isLoading, data: response } = useUpsertFullConnection();
+  useEffect(() => {
+    if (!isLoading && response) {
+      if (response.errors.length) {
+        toast.error("an error has occured");
+        console.error(response.errors);
+      } else {
+        toast.success("connection updated");
+        goBack();
+      }
+    }
+  }, [isLoading, response, goBack]);
   return (
     <form
       className="relative w-[600px] h-[440px] bg-white rounded-md z-10 shadow-md"
@@ -78,11 +91,8 @@ export default function ConnectionForm({
           con: getTouchedValues<ConnectionInput>(d, dcon),
         };
         input = cleanInput(input);
-        if (input) {
-          console.log(input);
-          mutate(input);
-        }
-        //goBack();
+        if (!input) return;
+        mutate(input);
       })}
     >
       <Cross
@@ -97,7 +107,7 @@ export default function ConnectionForm({
       <TextButton
         className="absolute bg-blue-400 w-6/12 bottom-8 left-1/2 transform -translate-x-1/2"
         label="save"
-        disabled={isLoading}
+        disabled={isLoading || !isDirty}
       />
     </form>
   );

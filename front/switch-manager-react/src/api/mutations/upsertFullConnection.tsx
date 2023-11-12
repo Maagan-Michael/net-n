@@ -16,7 +16,17 @@ const upsertFullConnection = async (params: fullConnectionUpdateInput) => {
   if (sw) {
     promises.push(upsertSwitches(sw));
   }
-  return Promise.all(promises);
+  return Promise.all(promises).then((res) => {
+    return res.reduce(
+      (acc, cur) => {
+        return {
+          items: [...acc.items, ...cur.items],
+          errors: [...acc.errors, ...cur.errors],
+        };
+      },
+      { items: [], errors: [] }
+    );
+  });
 };
 
 export function useUpsertFullConnection() {

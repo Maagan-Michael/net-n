@@ -12,7 +12,7 @@ export default function TextButton({
   return (
     <button
       className={clsx(
-        "text-white px-4 py-2 rounded-md hover:shadow-md font-light hover:bg-blue-300 transition-all",
+        "text-white px-4 py-2 rounded-md hover:enabled:shadow-md font-light hover:enabled:bg-blue-300 disabled:bg-neutral-100 transition-all",
         className
       )}
       {...props}
