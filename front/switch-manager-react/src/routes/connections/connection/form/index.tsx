@@ -10,8 +10,8 @@ import { ReactComponent as Cross } from "../../../../components/icons/cross.svg"
 import CustomerSection from "./CustomerSection";
 import TechnicalSection from "./TechnicalSection";
 import { useUpsertFullConnection } from "../../../../api/mutations/upsertFullConnection";
-import { useEffect } from "react";
-import { toast } from "react-toastify";
+import { MouseEventHandler, useEffect } from "react";
+import { toast, CloseButtonProps } from "react-toastify";
 
 function getTouchedValues<T extends Record<string, any>>(
   data?: Record<string, any>,
@@ -53,6 +53,13 @@ const Separator = () => (
   </div>
 );
 
+const CloseButton = ({ closeToast }: CloseButtonProps) => (
+  <Cross
+    className="absolute w-6 h-6 top-5 right-4 cursor-pointer hover:opacity-60 transition-all text-black"
+    onClick={closeToast as unknown as MouseEventHandler<SVGElement>}
+  />
+);
+
 export default function ConnectionForm({
   data,
   goBack,
@@ -75,8 +82,12 @@ export default function ConnectionForm({
         toast.error("an error has occured");
         console.error(response.errors);
       } else {
-        toast.success("connection updated");
-        goBack();
+        toast.success("connection updated", {
+          className: "bg-neutral-100 rounded-md",
+          bodyClassName: "text-black text-sm font-sans",
+          closeButton: CloseButton,
+        });
+        //goBack();
       }
     }
   }, [isLoading, response, goBack]);
