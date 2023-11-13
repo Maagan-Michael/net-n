@@ -10,6 +10,7 @@ import TextInput, {
 import Toggle from "../../../../components/inputs/toggle";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import clsx from "clsx";
 
 const TechnicalSection = ({
   register,
@@ -54,23 +55,32 @@ const TechnicalSection = ({
       <Controller
         control={control}
         name="toggleDate"
-        render={({ field: { value, onChange } }) => (
-          <DatePicker
-            selected={new Date(value)}
-            onChange={(date: Date) => onChange(date)}
-            minDate={new Date()}
-            // timeFormat="HH:mm"
-            // timeIntervals={15}
-            // timeCaption="time"
-            // dateFormat="MMMM d, yyyy h:mm aa"
-            customInput={
-              <TextInputWithRef
-                name=""
-                label="scheduled activation / deactivation"
-              />
-            }
-          />
-        )}
+        render={({ field: { value, onChange } }) => {
+          const date = new Date(value);
+          date.setHours(0, 0, 0, 0);
+          date.setMinutes(0, 0, 0);
+          return (
+            <DatePicker
+              selected={date}
+              onChange={(date: Date) => onChange(date)}
+              minDate={new Date()}
+              calendarClassName="rounded-md shadow-md"
+              dayClassName={(_date) => {
+                // not working (overloaded by css)
+                return clsx(
+                  "text-xs font-sans",
+                  date.getTime() === _date.getTime() && "bg-blue-400 text-white"
+                );
+              }}
+              customInput={
+                <TextInputWithRef
+                  name=""
+                  label="scheduled activation / deactivation"
+                />
+              }
+            />
+          );
+        }}
       />
       {/* <TextInput
         register={register}
