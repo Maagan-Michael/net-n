@@ -1,11 +1,12 @@
 import { clsx } from "clsx";
 import { UseFormRegister } from "react-hook-form";
+import { forwardRef } from "react";
 
 export interface TextInputProps
   extends Partial<JSX.IntrinsicElements["input"]> {
   label: string;
   name: string;
-  register: UseFormRegister<any>;
+  register?: UseFormRegister<any>;
 }
 
 export default function TextInput({
@@ -16,6 +17,7 @@ export default function TextInput({
   required,
   ...props
 }: TextInputProps): JSX.Element {
+  const _extraProps = register ? register(name, { required }) : {};
   return (
     <div className={clsx("[&>label]:focus-within:text-blue-400", className)}>
       <label htmlFor={label} className="font-thin text-xs">
@@ -27,9 +29,14 @@ export default function TextInput({
           type="text"
           className="bg-transparent outline-none w-full text-xs"
           required={required}
-          {...register(name, { required })}
+          {..._extraProps}
+          {...props}
         />
       </div>
     </div>
   );
 }
+
+export const TextInputWithRef = forwardRef<HTMLInputElement, TextInputProps>(
+  (props, ref) => <TextInput {...props} ref={ref} />
+);
