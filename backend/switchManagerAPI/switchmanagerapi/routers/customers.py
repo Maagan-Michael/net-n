@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 from typing import Optional, Union
-from ..models.factories import BatchedDeleteOutput
-from ..models.customer import Customer, BatchedCustomerOutput, UpsertCustomerInput
+from ..models import BatchedDeleteOutput, Customer, BatchedCustomerOutput, UpsertCustomerInput
 from ..db.factories import CustomerRepository
 
 router = APIRouter(

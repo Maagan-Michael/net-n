@@ -2,12 +2,9 @@ from fastapi import APIRouter, Depends
 from typing import List, Optional, Union
 from sqlalchemy import Column, or_, select, and_
 from sqlalchemy.orm import contains_eager
-from ..models.factories import BatchedDeleteOutput, OrderBy
-from ..models.connection import BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListFilterEnum, ListSortEnum
-from ..db.schemas.connections import DBConnection
-from ..db.schemas.switches import DBSwitch
-from ..db.schemas.customers import DBCustomer
-from ..db.factories import ConnectionRepository
+from ..models import BatchedDeleteOutput, OrderBy, \
+    BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListFilterEnum, ListSortEnum
+from ..db import DBConnection, DBSwitch, DBCustomer, ConnectionRepository
 import re
 
 router = APIRouter(

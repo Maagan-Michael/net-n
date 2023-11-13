@@ -6,13 +6,8 @@ from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from . import Base, get_db_session
 
-from ..models.factories import BatchError, BatchedDeleteOutput
-from .schemas.connections import DBConnection
-from .schemas.switches import DBSwitch
-from .schemas.customers import DBCustomer
-from ..models.connection import Connection
-from ..models.switch import Switch
-from ..models.customer import Customer
+from ..models import BatchError, BatchedDeleteOutput, Connection, Switch, Customer
+from .schemas import DBConnection, DBSwitch, DBCustomer
 
 Model = TypeVar("Model", bound=Base)
 PydanticModel = TypeVar("PydanticModel", bound=BaseModel)
