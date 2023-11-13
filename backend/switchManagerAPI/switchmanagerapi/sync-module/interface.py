@@ -7,14 +7,21 @@ from abc import abstractmethod
 
 
 class ISyncModule:
-    def __init__(self):
-        pass
+    def __init__(self, map: dict):
+        self.map = map
 
     def compare(self, local: Customer, source: Customer) -> bool:
         """compare local / source customer"""
         if (local == source):
             return False
         return True
+
+    def mapSourceToLocal(self, source: dict) -> Customer:
+        """map source customer to local customer"""
+        res = {}
+        for k, v in self.map.items():
+            res[k] = source[v]
+        return Customer.model_validate(**res)
 
     @abstractmethod
     async def fetchFromSource(self) -> List[Customer]:

@@ -6,8 +6,8 @@ from ..db import get_context_mapped_db_session, AutoMapBase
 
 
 class SQLSyncModule(ISyncModule):
-    def __init__(self, url: str, table: str):
-        super().__init__()
+    def __init__(self, url: str, table: str, map: dict):
+        super().__init__(map)
         self.url = url
         self.external_table = table
 
@@ -17,5 +17,5 @@ class SQLSyncModule(ISyncModule):
         scalars = await session.scalars(select(table)).all()
         res: List[Customer] = []
         for e in scalars:
-            res.append(Customer.model_validate(**e.__dict__))
+            res.append(self.mapSourceToLocal(e.__dict__))
         return res
