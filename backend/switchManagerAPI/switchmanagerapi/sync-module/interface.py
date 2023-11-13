@@ -10,7 +10,6 @@ class ISyncModule:
     def __init__(self):
         pass
 
-    @abstractmethod
     def compare(self, local: Customer, source: Customer) -> bool:
         """compare local / source customer"""
         if (local == source):
