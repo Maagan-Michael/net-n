@@ -4,13 +4,9 @@ import {
   Control,
   FieldValues,
 } from "react-hook-form";
-import TextInput, {
-  TextInputWithRef,
-} from "../../../../components/inputs/TextInput";
+import TextInput from "../../../../components/inputs/TextInput";
 import Toggle from "../../../../components/inputs/toggle";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import clsx from "clsx";
+import DatePicker from "../../../../components/inputs/datePicker";
 
 const TechnicalSection = ({
   register,
@@ -52,41 +48,7 @@ const TechnicalSection = ({
           )}
         />
       </div>
-      <Controller
-        control={control}
-        name="toggleDate"
-        render={({ field: { value, onChange } }) => {
-          const date = new Date(value);
-          date.setHours(0, 0, 0, 0);
-          date.setMinutes(0, 0, 0);
-          return (
-            <DatePicker
-              selected={date}
-              onChange={(date: Date) => onChange(date)}
-              minDate={new Date()}
-              calendarClassName="rounded-md shadow-md"
-              dayClassName={(_date) => {
-                // not working (overloaded by css)
-                return clsx(
-                  "text-xs font-sans",
-                  date.getTime() === _date.getTime() && "bg-blue-400 text-white"
-                );
-              }}
-              customInput={
-                <TextInputWithRef
-                  name=""
-                  label="scheduled activation / deactivation"
-                />
-              }
-            />
-          );
-        }}
-      />
-      {/* <TextInput
-        register={register}
-        name="toggleDate"
-        label="scheduled activation / deactivation"
-      /> */}
+      <DatePicker control={control} />
       <div className="flex flex-row gap-x-2">
         <TextInput register={register} name="switch.gpsLat" label="latitude" />
         <TextInput
