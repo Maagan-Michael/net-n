@@ -13,7 +13,7 @@ export default function IconRoundBtn({
   return (
     <button
       className={clsx(
-        "rounded-full text-md uppercase font-thin tracking-wide bg-white shadow hover:shadow-md flex items-center justify-center cursor-pointer transition-all",
+        "rounded-full text-md uppercase font-thin tracking-wide bg-white shadow hover:shadow-md active:enabled:shadow-inner flex items-center justify-center cursor-pointer transition-all",
         className
       )}
       onClick={onClick}

@@ -3,17 +3,22 @@ import {
   UseFormRegister,
   Control,
   FieldValues,
+  UseFormSetValue,
 } from "react-hook-form";
 import TextInput from "../../../../components/inputs/TextInput";
 import Toggle from "../../../../components/inputs/toggle";
 import DatePicker from "../../../../components/inputs/datePicker";
+import { ReactComponent as GPS } from "../../../../components/icons/gps.svg";
+import IconRoundBtn from "../../../../components/inputs/iconRoundBtn";
 
 const TechnicalSection = ({
   register,
   control,
+  setValue,
 }: {
   register: UseFormRegister<any>;
   control: Control<FieldValues>;
+  setValue: UseFormSetValue<any>;
 }) => (
   <div className="p-4 col-span-5">
     <h3 className="font-bold text-2xl">technical options</h3>
@@ -49,7 +54,26 @@ const TechnicalSection = ({
         />
       </div>
       <DatePicker control={control} />
-      <div className="flex flex-row gap-x-2">
+      <div className="flex flex-row gap-x-2 items-center justify-between">
+        <IconRoundBtn
+          icon={<GPS className="w-4 h-4" />}
+          className="w-12 h-8 self-end text-blue-500"
+          onClick={(e) =>
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                setValue("switch.gpsLat", position.coords.latitude, {
+                  shouldDirty: true,
+                });
+                setValue("switch.gpsLong", position.coords.longitude, {
+                  shouldDirty: true,
+                });
+              },
+              (err) => {
+                console.error(err);
+              }
+            )
+          }
+        />
         <TextInput register={register} name="switch.gpsLat" label="latitude" />
         <TextInput
           register={register}

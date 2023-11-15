@@ -72,6 +72,7 @@ export default function ConnectionForm({
     handleSubmit,
     control,
     formState: { dirtyFields, isDirty },
+    setValue,
   } = useForm({
     defaultValues: data,
   });
@@ -111,7 +112,11 @@ export default function ConnectionForm({
         onClick={goBack}
       />
       <div className="grid grid-cols-11 justify-evenly p-4">
-        <TechnicalSection register={register} control={control} />
+        <TechnicalSection
+          register={register}
+          control={control}
+          setValue={setValue}
+        />
         <Separator />
         <CustomerSection register={register} />
       </div>
