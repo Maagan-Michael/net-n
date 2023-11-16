@@ -32,16 +32,37 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
     navigate(`/connections/${id}${window.location.search}`);
   }, [navigate, id]);
   return (
-    <div className="w-full h-16 lg:h-14 text-xs text-center grid grid-flow-col grid-cols-12 md:gap-x-4 lg:gap-x-12 [&>*]:hover:border-blue-300 cursor-pointer">
+    <div className="w-full h-16 lg:h-14 text-xs text-center grid grid-flow-col grid-cols-12 md:gap-x-4 lg:gap-x-8 xl:gap-x-12 [&>*]:hover:border-blue-300 cursor-pointer">
       <div
-        className="h-full rounded-md bg-neutral-100 grid grid-flow-col items-center grid-cols-11 col-span-12 md:col-span-10 border-2 border-neutral-100 transition-colors"
+        className="h-full rounded-md bg-neutral-100 grid grid-flow-col items-center grid-cols-11 col-span-12 lg:col-span-10 border-2 border-neutral-100 transition-colors"
         onClick={onclick}
       >
-        <div className="col-span-1">{name}</div>
-        <div className="col-span-2">
-          {customer.lastname} {customer.firstname}
+        <div className="col-span-2 md:col-span-1 flex flex-col items-center justify-center">
+          <span>{name}</span>
+          <div className="flex items-center gap-x-2 lg:hidden">
+            <Ethernet
+              className={clsx(
+                "w-4 h-4",
+                toggled ? "text-green-400" : "text-red-500"
+              )}
+            />
+            <ComputerIcon
+              className={clsx(
+                "w-4 h-4",
+                isUp ? "text-green-400" : "text-red-500"
+              )}
+            />
+          </div>
         </div>
-        <div className="col-span-2 lg:col-span-1">{customer.id}</div>
+        <div className="col-span-2 flex flex-col">
+          <span>
+            {customer.lastname} {customer.firstname}
+          </span>
+          <span className="md:hidden">ID: {customer.id}</span>
+        </div>
+        <div className="hidden md:block col-span-2 lg:col-span-1">
+          {customer.id}
+        </div>
         <div className="col-span-2 flex flex-col">
           <span>{sw.name}</span>
           <span>
@@ -58,10 +79,10 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
             <span>N / A</span>
           )}
         </div>
-        <div className="col-span-2">{customer.address}</div>
+        <div className="col-span-3 md:col-span-2">{customer.address}</div>
         <div className="hidden lg:block col-span-1">{customer.type}</div>
       </div>
-      <div className="hidden h-full rounded-md bg-neutral-100 p-4 md:grid grid-flow-col items-center justify-between col-span-2 border-2 border-neutral-100 transition-colors">
+      <div className="hidden h-full rounded-md bg-neutral-100 p-4 lg:grid grid-flow-col items-center justify-between col-span-2 border-2 border-neutral-100 transition-colors">
         <div className="flex items-center">
           <Ethernet
             className={clsx(

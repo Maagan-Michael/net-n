@@ -76,14 +76,14 @@ export const TableHeaderCell = ({
 };
 
 const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
-  <div className="h-full text-xs text-center grid grid-flow-col grid-cols-12 w-full md:gap-x-4 lg:gap-x-12">
-    <div className="h-full grid grid-flow-col items-center grid-cols-11 col-span-12 md:col-span-10">
+  <div className="h-full text-xs text-center grid grid-flow-col grid-cols-12 w-full md:gap-x-4 lg:gap-x-8 xl:gap-x-12">
+    <div className="h-full grid grid-flow-col items-center grid-cols-11 col-span-12 lg:col-span-10">
       <TableHeaderCell
         sort={sort}
         order={order}
         title="ppp"
         separate
-        classname="col-span-1"
+        classname="col-span-2 md:col-span-1"
         sortValue={ListSortEnum.con}
         setSearch={setSearch}
       />
@@ -104,7 +104,7 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         sortValue={ListSortEnum.cid}
         title="ID"
         separate
-        classname="col-span-2 lg:col-span-1"
+        classname="hidden md:flex col-span-2 lg:col-span-1"
         setSearch={setSearch}
       />
       <TableHeaderCell
@@ -147,7 +147,7 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         setSearch={setSearch}
       />
     </div>
-    <div className="hidden h-full grid grid-flow-col items-center md:flex col-span-2">
+    <div className="hidden h-full grid grid-flow-col items-center lg:flex col-span-2">
       <TableHeaderCell
         sort={sort}
         order={order}
