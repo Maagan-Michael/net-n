@@ -52,7 +52,7 @@ export const TableHeaderCell = ({
       onClick={onClick}
       key={title}
       className={clsx(
-        "relative h-12 border-b-2 border-neutral-100 flex items-center justify-center",
+        "relative h-12 border-b-2 border-neutral-100 flex items-center justify-center w-full",
         classname,
         canSort
           ? isSort
@@ -76,8 +76,8 @@ export const TableHeaderCell = ({
 };
 
 const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
-  <div className="h-14 text-xs text-center grid grid-flow-col grid-cols-12 w-full gap-x-12">
-    <div className="h-full grid grid-flow-col items-center grid-cols-11 col-span-10">
+  <div className="h-full text-xs text-center grid grid-flow-col grid-cols-12 w-full md:gap-x-4 lg:gap-x-12">
+    <div className="h-full grid grid-flow-col items-center grid-cols-11 col-span-12 md:col-span-10">
       <TableHeaderCell
         sort={sort}
         order={order}
@@ -104,7 +104,7 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         sortValue={ListSortEnum.cid}
         title="ID"
         separate
-        classname="col-span-1"
+        classname="col-span-2 lg:col-span-1"
         setSearch={setSearch}
       />
       <TableHeaderCell
@@ -134,7 +134,7 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         sortValue={ListSortEnum.address}
         title="address"
         separate
-        classname="col-span-2"
+        classname="col-span-3 md:col-span-2"
         setSearch={setSearch}
       >
         <House className="w-6 h-6" />
@@ -143,11 +143,11 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         sort={sort}
         order={order}
         title="type"
-        classname="col-span-1"
+        classname="hidden lg:flex col-span-1"
         setSearch={setSearch}
       />
     </div>
-    <div className="h-full grid grid-flow-col items-center col-span-2">
+    <div className="hidden h-full grid grid-flow-col items-center md:flex col-span-2">
       <TableHeaderCell
         sort={sort}
         order={order}

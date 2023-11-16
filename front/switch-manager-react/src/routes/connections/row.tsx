@@ -32,33 +32,36 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
     navigate(`/connections/${id}${window.location.search}`);
   }, [navigate, id]);
   return (
-    <div className="w-full h-14 text-xs text-center grid grid-flow-col grid-cols-12 gap-x-12 [&>*]:hover:border-blue-300 cursor-pointer">
+    <div className="w-full h-16 lg:h-14 text-xs text-center grid grid-flow-col grid-cols-12 md:gap-x-4 lg:gap-x-12 [&>*]:hover:border-blue-300 cursor-pointer">
       <div
-        className="h-full rounded-md bg-neutral-100 grid grid-flow-col items-center grid-cols-11 col-span-10 border-2 border-neutral-100 transition-colors"
+        className="h-full rounded-md bg-neutral-100 grid grid-flow-col items-center grid-cols-11 col-span-12 md:col-span-10 border-2 border-neutral-100 transition-colors"
         onClick={onclick}
       >
         <div className="col-span-1">{name}</div>
         <div className="col-span-2">
           {customer.lastname} {customer.firstname}
         </div>
-        <div className="col-span-1">{customer.id}</div>
-        <div className="col-span-2">
-          {sw.name} ({sw.ip}) : {port}
+        <div className="col-span-2 lg:col-span-1">{customer.id}</div>
+        <div className="col-span-2 flex flex-col">
+          <span>{sw.name}</span>
+          <span>
+            {sw.ip}:{port}
+          </span>
         </div>
         <div className="col-span-2 flex flex-col items-center gap-x-2 justify-center">
           {toggleDate ? (
             <span>
               <DateStatus toggled={toggled} />
-              <span>{toggleDate}</span>
+              <span>{new Date(toggleDate).toLocaleDateString()}</span>
             </span>
           ) : (
             <span>N / A</span>
           )}
         </div>
         <div className="col-span-2">{customer.address}</div>
-        <div className="col-span-1">{customer.type}</div>
+        <div className="hidden lg:block col-span-1">{customer.type}</div>
       </div>
-      <div className="h-full rounded-md bg-neutral-100 p-4 grid grid-flow-col items-center justify-between col-span-2 border-2 border-neutral-100 transition-colors">
+      <div className="hidden h-full rounded-md bg-neutral-100 p-4 md:grid grid-flow-col items-center justify-between col-span-2 border-2 border-neutral-100 transition-colors">
         <div className="flex items-center">
           <Ethernet
             className={clsx(

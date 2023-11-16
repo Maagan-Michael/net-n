@@ -19,7 +19,7 @@ export interface ConnectionOutput {
     id: string
     name: string
     toggled: boolean
-    toggleDate?: string
+    toggleDate?: Date
     type: string
     customer: CustomerOutput
     switch: SwitchOuput

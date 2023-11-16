@@ -17,7 +17,7 @@ export function Table({
 }: TableProps<any>) {
   return (
     <div className="w-full">
-      <section className="flex flex-col gap-y-8 pt-4">
+      <section className="flex flex-col gap-y-2 md:gap-y-4 lg:gap-y-8 pt-4">
         {renderHeader}
         {data.map((d, idx) => {
           if (idx === data.length - 1) {

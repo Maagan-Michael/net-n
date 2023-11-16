@@ -74,7 +74,7 @@ export default function Dashboard() {
   const searchActive =
     params.search && params.search.length > 0 && search.length !== 0;
   return (
-    <div className="p-12">
+    <div className="md:p-2 lg:p-8">
       <section>
         <h1 className="font-thin text-3xl">SwitchManager</h1>
         <section>
