@@ -93,10 +93,10 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         sortValue={ListSortEnum.name}
         title="customer"
         separate
-        classname="col-span-2"
+        classname="col-span-3 md:col-span-2"
         setSearch={setSearch}
       >
-        <Customer className="w-6 h-6" />
+        <Customer className="w-5 h-5 md:w-6 md:h-6" />
       </TableHeaderCell>
       <TableHeaderCell
         sort={sort}
@@ -113,20 +113,20 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         sortValue={ListSortEnum.switch}
         title="switch"
         separate
-        classname="col-span-2"
+        classname="col-span-3 md:col-span-2"
         setSearch={setSearch}
       >
-        <Network className="w-6 h-6" />
+        <Network className="w-5 h-5 md:w-6 md:h-6" />
       </TableHeaderCell>
       <TableHeaderCell
         sort={sort}
         order={order}
         title="date"
         separate
-        classname="col-span-2"
+        classname="hidden md:col-span-2"
         setSearch={setSearch}
       >
-        <Calandar className="w-6 h-6" />
+        <Calandar className="w-5 h-5 md:w-6 md:h-6" />
       </TableHeaderCell>
       <TableHeaderCell
         sort={sort}
@@ -137,7 +137,7 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         classname="col-span-3 md:col-span-2"
         setSearch={setSearch}
       >
-        <House className="w-6 h-6" />
+        <House className="w-5 h-5 md:w-6 md:h-6" />
       </TableHeaderCell>
       <TableHeaderCell
         sort={sort}

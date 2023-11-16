@@ -54,7 +54,7 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
             />
           </div>
         </div>
-        <div className="col-span-2 flex flex-col">
+        <div className="col-span-3 md:col-span-2 flex flex-col">
           <span>
             {customer.lastname} {customer.firstname}
           </span>
@@ -63,13 +63,13 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
         <div className="hidden md:block col-span-2 lg:col-span-1">
           {customer.id}
         </div>
-        <div className="col-span-2 flex flex-col">
+        <div className="col-span-3 md:col-span-2 flex flex-col break-words">
           <span>{sw.name}</span>
           <span>
             {sw.ip}:{port}
           </span>
         </div>
-        <div className="col-span-2 flex flex-col items-center gap-x-2 justify-center">
+        <div className="hidden col-span-2 md:flex flex-col items-center gap-x-2 justify-center">
           {toggleDate ? (
             <span>
               <DateStatus toggled={toggled} />

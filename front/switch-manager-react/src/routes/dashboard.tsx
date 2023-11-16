@@ -74,11 +74,11 @@ export default function Dashboard() {
   const searchActive =
     params.search && params.search.length > 0 && search.length !== 0;
   return (
-    <div className="md:p-2 lg:p-8">
-      <section>
-        <h1 className="font-thin text-3xl">SwitchManager</h1>
-        <section>
-          <div className="rounded-md bg-neutral-100 w-[440px] mt-6 flex items-center gap-x-1 px-2 shadow relative [&>.search-popup]:focus-within:block">
+    <div className="p-1 md:p-2 lg:p-8">
+      <section className="flex items-center gap-x-4 mt-4 md:block md:mt-0">
+        <h1 className="font-thin text-xl md:text-3xl">SwitchManager</h1>
+        <section className="grow md:w-[440px] md:mt-4 lg:mt-6">
+          <div className="rounded-md w-full bg-neutral-100 flex items-center gap-x-1 px-2 shadow relative [&>.search-popup]:focus-within:block">
             <Search
               className={clsx(
                 "w-12 h-12",

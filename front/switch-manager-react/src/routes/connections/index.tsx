@@ -54,7 +54,7 @@ function Connections() {
         </div>
       )}
       {!isLoading && pagesContent.length > 0 && !hasNextPage && (
-        <div className="flex flex-col items-center justify-center gap-y-4 mt-8">
+        <div className="flex flex-col items-center justify-center gap-y-4 mt-4 mb-4 md:mt-8 md:mb-8">
           <h3 className="font-bold text-md">no more connections</h3>
         </div>
       )}
