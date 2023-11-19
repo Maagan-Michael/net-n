@@ -25,7 +25,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "REACT_APP_API_URL=http://0.0.0.0:8000 vite",
+    "start": "VITE_API_URL=http://0.0.0.0:8000 vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "jest",

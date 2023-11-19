@@ -3,7 +3,7 @@ import { ConnectionInput } from "../types";
 
 export const upsertConnections = async (params: ConnectionInput) => {
   const res = await fetch(
-    `${import.meta.env.REACT_APP_API_URL}/api/v1/connections/upsert`,
+    `${import.meta.env.VITE_API_URL}/api/v1/connections/upsert`,
     {
       method: "POST",
       body: JSON.stringify(params),

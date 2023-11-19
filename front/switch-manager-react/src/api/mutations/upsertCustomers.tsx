@@ -3,7 +3,7 @@ import { CustomerInput } from "../types";
 
 export const upsertCustomers = async (params: CustomerInput) => {
   const res = await fetch(
-    `${import.meta.env.REACT_APP_API_URL}/api/v1/customers/upsert`,
+    `${import.meta.env.VITE_API_URL}/api/v1/customers/upsert`,
     {
       method: "POST",
       body: JSON.stringify(params),
