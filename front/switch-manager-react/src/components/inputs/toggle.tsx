@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { MouseEventHandler } from "react";
-import { ReactComponent as ToggleOn } from "../icons/toggleOn.svg";
+import ToggleOn from "@icons/toggleOn.svg?react";
 
 export default function Toggle({
   label,

@@ -1,5 +1,5 @@
 import { UseFormRegister } from "react-hook-form";
-import TextInput from "../../../../components/inputs/TextInput";
+import TextInput from "@components/inputs/TextInput";
 
 const CustomerSection = ({ register }: { register: UseFormRegister<any> }) => (
   <div className="p-4 col-span-5">

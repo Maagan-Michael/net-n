@@ -1,4 +1,5 @@
 import clsx from "clsx";
+
 export interface TextButtonProps
   extends Partial<JSX.IntrinsicElements["button"]> {
   label: string;

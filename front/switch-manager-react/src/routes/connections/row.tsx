@@ -1,9 +1,8 @@
 import clsx from "clsx";
 import { useNavigate } from "react-router-dom";
-import { ReactComponent as ComputerIcon } from "../../components/icons/computer.svg";
-import { ReactComponent as Ethernet } from "../../components/icons/ethernet.svg";
-import Toggle from "../../components/inputs/toggle";
-import { ConnectionOutput } from "../../api/types";
+import ComputerIcon from "@icons/computer.svg?react";
+import Ethernet from "@icons/ethernet.svg?react";
+import { ConnectionOutput } from "@api/types";
 import { useCallback } from "react";
 
 const DateStatus = ({ toggled }: { toggled: boolean }) => (

@@ -3,10 +3,10 @@ import {
   ReactDatePickerCustomHeaderProps,
 } from "react-datepicker";
 import { Controller, Control, FieldValues } from "react-hook-form";
-import { TextInputWithRef } from "./TextInput";
 import clsx from "clsx";
+import { TextInputWithRef } from "./TextInput";
+import Carret from "@icons/carret.svg?react";
 import "react-datepicker/dist/react-datepicker.css";
-import { ReactComponent as Carret } from "../icons/carret.svg";
 
 const DatePickerHeader = ({
   date,

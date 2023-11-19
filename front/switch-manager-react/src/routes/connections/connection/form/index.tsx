@@ -4,12 +4,12 @@ import {
   SwitchInput,
   CustomerInput,
   fullConnectionUpdateInput,
-} from "../../../../api/types";
-import TextButton from "../../../../components/inputs/textBtn";
-import { ReactComponent as Cross } from "../../../../components/icons/cross.svg";
+} from "@api/types";
+import TextButton from "@components/inputs/textBtn";
+import Cross from "@icons/cross.svg?react";
 import CustomerSection from "./CustomerSection";
 import TechnicalSection from "./TechnicalSection";
-import { useUpsertFullConnection } from "../../../../api/mutations/upsertFullConnection";
+import { useUpsertFullConnection } from "@api/mutations/upsertFullConnection";
 import { MouseEventHandler, useEffect } from "react";
 import { toast, CloseButtonProps } from "react-toastify";
 

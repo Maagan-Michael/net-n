@@ -5,11 +5,11 @@ import {
   FieldValues,
   UseFormSetValue,
 } from "react-hook-form";
-import TextInput from "../../../../components/inputs/TextInput";
-import Toggle from "../../../../components/inputs/toggle";
-import DatePicker from "../../../../components/inputs/datePicker";
-import { ReactComponent as GPS } from "../../../../components/icons/gps.svg";
-import IconRoundBtn from "../../../../components/inputs/iconRoundBtn";
+import TextInput from "@components/inputs/TextInput";
+import Toggle from "@components/inputs/toggle";
+import DatePicker from "@components/inputs/datePicker";
+import GPS from "@icons/gps.svg?react";
+import IconRoundBtn from "@components/inputs/iconRoundBtn";
 
 const TechnicalSection = ({
   register,

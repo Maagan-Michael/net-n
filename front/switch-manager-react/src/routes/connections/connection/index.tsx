@@ -1,7 +1,7 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useConnectionQuery } from "../../../api/queries/getConnection";
 import { useCallback } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import ConnectionForm from "./form";
+import { useConnectionQuery } from "@api/queries/getConnection";
 
 export default function Connection() {
   const { id } = useParams<{ id: string }>();

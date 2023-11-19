@@ -20,7 +20,7 @@ const fetchConnections = async ({
     limit: limit.toString(),
   }).toString();
   const res = await fetch(
-    `${process.env.REACT_APP_API_URL}/api/v1/connections?${queryString}`
+    `${import.meta.env.REACT_APP_API_URL}/api/v1/connections?${queryString}`
   );
   return res.json();
 };

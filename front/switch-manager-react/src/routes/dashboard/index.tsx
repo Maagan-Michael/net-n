@@ -1,17 +1,16 @@
+import { FunctionComponent, useEffect, useCallback, useState } from "react";
 import clsx from "clsx";
-import { FunctionComponent, useCallback, useState } from "react";
 import { Outlet } from "react-router-dom";
-import useTimeout from "../components/hooks/useTimeout";
-import { useEffect } from "react";
-import { ReactComponent as Search } from "../components/icons/search.svg";
-import TextButton from "../components/inputs/textBtn";
-import { ReactComponent as Customer } from "../components/icons/customer.svg";
-import { ReactComponent as House } from "../components/icons/house.svg";
-import { ReactComponent as Network } from "../components/icons/network.svg";
-import { ReactComponent as Computer } from "../components/icons/computer.svg";
-import IconRoundBtn from "../components/inputs/iconRoundBtn";
-import { useConnectionsUrlParams } from "../api/queries/getConnections";
-import { ConnectionsFilters as cf } from "../api/types";
+import useTimeout from "@/hooks/useTimeout";
+import TextButton from "@components/inputs/textBtn";
+import IconRoundBtn from "@components/inputs/iconRoundBtn";
+import Search from "@icons/search.svg?react";
+import Customer from "@icons/customer.svg?react";
+import House from "@icons/house.svg?react";
+import Network from "@icons/network.svg?react";
+import Computer from "@icons/computer.svg?react";
+import { useConnectionsUrlParams } from "@api/queries/getConnections";
+import { ConnectionsFilters as cf } from "@api/types";
 
 interface IconFilterElemProps {
   sm?: boolean;

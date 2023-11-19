@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
-import { Table } from "../../components/tables/generic";
-import { ConnectionOutput, ConnectionsOutput } from "../../api/types";
+import { Table } from "@components/tables/generic";
+import { ConnectionOutput, ConnectionsOutput } from "@api/types";
 import {
   useConnectionsQuery,
   useConnectionsUrlParams,
-} from "../../api/queries/getConnections";
-import useInfiniteScroller from "../../components/hooks/useInfiniteScroller";
+} from "@api/queries/getConnections";
+import useInfiniteScroller from "@hooks/useInfiniteScroller";
 import Header from "./header";
 import Row from "./row";
 import LoadingRow from "./loadingRow";

@@ -1,8 +1,8 @@
 import { QueryClientProvider, QueryClient } from "react-query";
-import Dashboard from "./routes/dashboard";
+import Dashboard from "@routes/dashboard";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Connections from "./routes/connections";
-import Connection from "./routes/connections/connection";
+import Connections from "@routes/connections";
+import Connection from "@routes/connections/connection";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 

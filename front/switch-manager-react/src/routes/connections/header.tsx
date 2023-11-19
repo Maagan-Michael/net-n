@@ -1,11 +1,11 @@
 import clsx from "clsx";
-import { TableSeparator } from "../../components/tables/generic";
-import { ReactComponent as House } from "../../components/icons/house.svg";
-import { ReactComponent as Network } from "../../components/icons/network.svg";
-import { ReactComponent as Customer } from "../../components/icons/customer.svg";
-import { ReactComponent as Calandar } from "../../components/icons/calandar.svg";
-import { ReactComponent as Carret } from "../../components/icons/carret.svg";
-import { ListSortEnum, OrderBy } from "../../api/types";
+import { TableSeparator } from "@components/tables/generic";
+import House from "@icons/house.svg?react";
+import Network from "@icons/network.svg?react";
+import Customer from "@icons/customer.svg?react";
+import Calandar from "@icons/calandar.svg?react";
+import Carret from "@icons/carret.svg?react";
+import { ListSortEnum, OrderBy } from "@api/types";
 
 interface TableHeaderProps {
   sort: ListSortEnum;
@@ -123,7 +123,7 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         order={order}
         title="date"
         separate
-        classname="hidden md:col-span-2"
+        classname="hidden md:flex col-span-2"
         setSearch={setSearch}
       >
         <Calandar className="w-5 h-5 md:w-6 md:h-6" />
