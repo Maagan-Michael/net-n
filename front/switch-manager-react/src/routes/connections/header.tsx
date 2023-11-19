@@ -1,11 +1,9 @@
-import clsx from "clsx";
-import { TableSeparator } from "@components/tables/generic";
 import House from "@icons/house.svg?react";
 import Network from "@icons/network.svg?react";
 import Customer from "@icons/customer.svg?react";
 import Calandar from "@icons/calandar.svg?react";
-import Carret from "@icons/carret.svg?react";
 import { ListSortEnum, OrderBy } from "@api/types";
+import { TableHeaderCell } from "./TableHeaderCell";
 
 interface TableHeaderProps {
   sort: ListSortEnum;
@@ -13,65 +11,12 @@ interface TableHeaderProps {
   setSearch: (params: any) => void;
 }
 
-interface TableHeaderCellProps extends TableHeaderProps {
+export interface TableHeaderCellProps extends TableHeaderProps {
   title: string;
   classname?: string;
   children?: React.ReactNode;
   sortValue?: ListSortEnum;
 }
-
-export const TableHeaderCell = ({
-  sort,
-  sortValue,
-  setSearch,
-  order,
-  title,
-  classname,
-  children,
-}: TableHeaderCellProps) => {
-  const canSort = sortValue !== undefined;
-  const isSort = canSort && sort === sortValue;
-  const isDesc = isSort && order === OrderBy.desc;
-  const onClick = () => {
-    if (canSort) {
-      if (isSort) {
-        return setSearch({
-          order: isDesc ? OrderBy.asc : OrderBy.desc,
-        });
-      }
-      return setSearch({
-        sort: sortValue,
-        order: OrderBy.asc,
-      });
-    }
-  };
-  return (
-    <div
-      onClick={onClick}
-      key={title}
-      className={clsx(
-        "relative h-12 border-b-2 border-neutral-100 flex items-center justify-center w-full [&:last-child>.separator]:hidden",
-        classname,
-        canSort
-          ? isSort
-            ? "cursor-pointer first:[&>svg]:opacity-100 first:[&>svg]:hover:animate-pulse"
-            : "cursor-pointer first:[&>svg]:opacity-30 [&>svg]:hover:opacity-100"
-          : "cursor-default",
-        isDesc && "first:[&>svg]:rotate-180"
-      )}
-    >
-      {canSort && (
-        <Carret className="mt-1 w-4 transition-all duration-300 transform opacity-0" />
-      )}
-      {children ? (
-        children
-      ) : (
-        <div className="font-light text-sm text-center">{title}</div>
-      )}
-      <TableSeparator />
-    </div>
-  );
-};
 
 const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
   <div className="h-full text-xs text-center grid grid-flow-col grid-cols-12 w-full md:gap-x-4 lg:gap-x-8 xl:gap-x-12">
