@@ -31,7 +31,7 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
     navigate(`/connections/${id}${window.location.search}`);
   }, [navigate, id]);
   return (
-    <div className="w-full h-16 lg:h-14 text-xs text-center grid grid-flow-col grid-cols-12 md:gap-x-4 lg:gap-x-8 xl:gap-x-12 [&>*]:hover:border-blue-300 cursor-pointer">
+    <div className="w-full h-16 lg:h-14 text-xs text-center grid grid-flow-col grid-cols-12 md:gap-x-4 lg:gap-x-8 [&>*]:hover:border-blue-300 cursor-pointer">
       <div
         className="h-full rounded-md bg-neutral-100 grid grid-flow-col items-center grid-cols-11 col-span-12 lg:col-span-10 border-2 border-neutral-100 transition-colors"
         onClick={onclick}

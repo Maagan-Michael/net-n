@@ -6,9 +6,9 @@ import {
   useConnectionsUrlParams,
 } from "@api/queries/getConnections";
 import useInfiniteScroller from "@hooks/useInfiniteScroller";
-import Header from "./header";
-import Row from "./row";
-import LoadingRow from "./loadingRow";
+import Header from "./table/header";
+import Row from "./table/row";
+import LoadingRow from "./table/loadingRow";
 
 function Connections() {
   const [queryParams, setParams] = useConnectionsUrlParams();
