@@ -6,7 +6,7 @@ export interface TableProps<T extends { id: string }> {
 }
 
 export const TableSeparator = () => (
-  <div className="absolute min-h-[60%] w-[2px] rounded-full bg-neutral-100 block top-[20%] right-0"></div>
+  <div className="separator absolute min-h-[60%] w-[2px] rounded-full bg-neutral-100 block top-[20%] right-0"></div>
 );
 
 export function Table({

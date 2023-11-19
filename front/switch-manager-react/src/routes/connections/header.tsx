@@ -15,7 +15,6 @@ interface TableHeaderProps {
 
 interface TableHeaderCellProps extends TableHeaderProps {
   title: string;
-  separate?: boolean;
   classname?: string;
   children?: React.ReactNode;
   sortValue?: ListSortEnum;
@@ -27,7 +26,6 @@ export const TableHeaderCell = ({
   setSearch,
   order,
   title,
-  separate,
   classname,
   children,
 }: TableHeaderCellProps) => {
@@ -52,7 +50,7 @@ export const TableHeaderCell = ({
       onClick={onClick}
       key={title}
       className={clsx(
-        "relative h-12 border-b-2 border-neutral-100 flex items-center justify-center w-full",
+        "relative h-12 border-b-2 border-neutral-100 flex items-center justify-center w-full [&:last-child>.separator]:hidden",
         classname,
         canSort
           ? isSort
@@ -70,7 +68,7 @@ export const TableHeaderCell = ({
       ) : (
         <div className="font-light text-sm text-center">{title}</div>
       )}
-      {separate && <TableSeparator />}
+      <TableSeparator />
     </div>
   );
 };
@@ -82,7 +80,6 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         sort={sort}
         order={order}
         title="ppp"
-        separate
         classname="col-span-2 md:col-span-1"
         sortValue={ListSortEnum.con}
         setSearch={setSearch}
@@ -92,7 +89,6 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         order={order}
         sortValue={ListSortEnum.name}
         title="customer"
-        separate
         classname="col-span-3 md:col-span-2"
         setSearch={setSearch}
       >
@@ -103,7 +99,6 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         order={order}
         sortValue={ListSortEnum.cid}
         title="ID"
-        separate
         classname="hidden md:flex col-span-2 lg:col-span-1"
         setSearch={setSearch}
       />
@@ -112,7 +107,6 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         order={order}
         sortValue={ListSortEnum.switch}
         title="switch"
-        separate
         classname="col-span-3 md:col-span-2"
         setSearch={setSearch}
       >
@@ -122,7 +116,6 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         sort={sort}
         order={order}
         title="date"
-        separate
         classname="hidden md:flex col-span-2"
         setSearch={setSearch}
       >
@@ -133,8 +126,7 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => (
         order={order}
         sortValue={ListSortEnum.address}
         title="address"
-        separate
-        classname="col-span-3 md:col-span-2"
+        classname="col-span-3 [&>.separator]:hidden lg:[&>.separator]:block md:col-span-2"
         setSearch={setSearch}
       >
         <House className="w-5 h-5 md:w-6 md:h-6" />
