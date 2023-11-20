@@ -18,7 +18,7 @@ export default function Connection() {
   // todo handle error
   // todo create proper loader component
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center">
+    <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-20">
       {isLoading ? (
         <div>loading...</div>
       ) : (

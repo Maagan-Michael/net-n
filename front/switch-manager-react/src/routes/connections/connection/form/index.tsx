@@ -48,7 +48,7 @@ function cleanInput<T extends Record<string, any>>(
 }
 
 const Separator = () => (
-  <div className="relative col-span-1 px-4 py-20">
+  <div className="relative col-span-1 px-4 py-20 hidden md:block">
     <div className="absolute bg-neutral-100 rounded-full w-2 h-4/6 block"></div>
   </div>
 );
@@ -94,7 +94,7 @@ export default function ConnectionForm({
   }, [isLoading, response, goBack]);
   return (
     <form
-      className="relative w-[600px] h-[440px] bg-white rounded-md z-10 shadow-md"
+      className="relative flex flex-col p-4 items-center w-11/12 md:w-[600px] md:h-[440px] bg-white rounded-md z-10 shadow-md overflow-scroll"
       onSubmit={handleSubmit((d) => {
         const { switch: dsw, customer: dcustomer, ...dcon } = dirtyFields;
         let input: fullConnectionUpdateInput | undefined = {
@@ -111,7 +111,7 @@ export default function ConnectionForm({
         className="absolute w-6 h-6 top-4 right-4 cursor-pointer hover:opacity-60 transition-all"
         onClick={goBack}
       />
-      <div className="grid grid-cols-11 justify-evenly p-4">
+      <div className="md:grid md:grid-cols-11 justify-evenly">
         <TechnicalSection
           register={register}
           control={control}
@@ -121,7 +121,7 @@ export default function ConnectionForm({
         <CustomerSection register={register} />
       </div>
       <TextButton
-        className="absolute bg-blue-400 w-6/12 bottom-8 left-1/2 transform -translate-x-1/2"
+        className="bg-blue-400 w-6/12 md:absolute md:bottom-8 md:left-1/2 md:transform md:-translate-x-1/2"
         label="save"
         disabled={isLoading || !isDirty}
       />
