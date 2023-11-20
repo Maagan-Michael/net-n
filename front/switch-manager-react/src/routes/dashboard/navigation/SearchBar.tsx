@@ -15,8 +15,10 @@ import { filtersMap, IconFilterElem } from "./filters";
 
 export const SearchBar = ({
   shouldFocus = false,
+  onSearchDone = () => {},
 }: {
   shouldFocus?: boolean;
+  onSearchDone?: () => void;
 }) => {
   const [params, setParams] = useConnectionsUrlParams();
   const [search, setSearch] = useState<string>(params.search || "");
@@ -43,12 +45,19 @@ export const SearchBar = ({
       });
     }
   };
+  const onSelect = useCallback(
+    (filter?: cf) => {
+      onSearch(filter);
+      onSearchDone();
+    },
+    [onSearch, onSearchDone]
+  );
   useEffect(() => {
-    createTimeout(() => onSearch(undefined, false), 500);
+    createTimeout(() => onSearch(undefined, false), 250);
   }, [createTimeout, onSearch, search]);
-  useLayoutEffect(() => {
-    shouldFocus && inputRef.current?.focus();
-  }, [shouldFocus]);
+  // useLayoutEffect(() => {
+  //   shouldFocus && inputRef.current?.focus();
+  // }, [shouldFocus]);
   const searchActive =
     params.search && params.search.length > 0 && search.length !== 0;
   return (
@@ -70,26 +79,26 @@ export const SearchBar = ({
       {currentFilter && (
         <IconFilterElem
           sm
-          onClick={() => onSearch(cf.all)}
+          onClick={() => onSelect(cf.all)}
           {...currentFilter}
         />
       )}
       {search.length !== 0 && (
         <div
           className={
-            "search-popup absolute w-full mb-4 lg:mb-0 bottom-full lg:bottom-[unset] lg:mt-48 left-0 rounded-md shadow-md p-4 bg-neutral-100 z-10 hidden"
+            "search-popup absolute w-full mb-4 lg:mb-0 bottom-full lg:bottom-[unset] lg:mt-32 left-0 rounded-md shadow-md p-4 bg-neutral-100 z-10 hidden"
           }
         >
-          <div className="flex items-center justify-evenly pb-4 w-full">
+          <div className="flex items-center justify-evenly w-full">
             {Object.entries(filtersMap).map(([key, props]) => (
               <IconFilterElem
                 key={key}
                 onClick={(e) => onSearch(key as unknown as cf)}
+                disabled={key === filter}
                 {...props}
               />
             ))}
           </div>
-          <TextButton label="search" onClick={() => onSearch()} />
         </div>
       )}
     </div>

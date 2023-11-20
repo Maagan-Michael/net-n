@@ -1,16 +1,19 @@
 import clsx from "clsx";
 
+export interface IconRoundBtnProps
+  extends React.HTMLAttributes<HTMLButtonElement> {
+  icon?: React.ReactNode;
+  text?: string;
+  className?: string;
+}
+
 export default function IconRoundBtn({
   icon,
   text,
   onClick,
   className,
-}: {
-  icon?: React.ReactNode;
-  onClick?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-  text?: string;
-  className?: string;
-}) {
+  ...props
+}: IconRoundBtnProps) {
   return (
     <button
       className={clsx(
@@ -18,6 +21,7 @@ export default function IconRoundBtn({
         className
       )}
       onClick={onClick}
+      {...props}
     >
       {icon ? icon : <span>{text}</span>}
     </button>
