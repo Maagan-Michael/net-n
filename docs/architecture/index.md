@@ -3,7 +3,7 @@
 ```plantuml
 @startuml
 !include <C4/C4_Container.puml>
-!theme C4_united from <C4/themes>
+!theme C4_united from https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/themes
 HIDE_STEREOTYPE()
 
 !define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
