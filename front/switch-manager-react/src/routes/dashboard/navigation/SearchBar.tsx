@@ -46,7 +46,7 @@ export const SearchBar = ({
     [onSearch, onSearchDone]
   );
   useEffect(() => {
-    createTimeout(() => onSearch(undefined, false), 250);
+    createTimeout(() => onSearch(undefined, false), 500);
   }, [createTimeout, onSearch, search]);
   // useLayoutEffect(() => {
   //   shouldFocus && inputRef.current?.focus();

@@ -26,7 +26,7 @@ export default function Navigation() {
         </h1>
         <section
           className={clsx(
-            "fixed w-full left-0 transition-all p-4 pr-16 lg:relative lg:grow lg:w-[440px] lg:mt-4",
+            "fixed w-full left-0 transition-all lg:transition-none p-4 pr-16 lg:relative lg:grow lg:w-[440px] lg:px-0 lg:py-2 lg:mt-1",
             open ? "bottom-0" : "-bottom-full"
           )}
         >
