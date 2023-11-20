@@ -38,5 +38,25 @@ export default function TextInput({
 }
 
 export const TextInputWithRef = forwardRef<HTMLInputElement, TextInputProps>(
-  (props, ref) => <TextInput {...props} ref={ref} />
+  ({ label, className, register, name, required, ...props }, ref) => {
+    const _extraProps = register ? register(name, { required }) : {};
+    return (
+      <div className={clsx("[&>label]:focus-within:text-blue-400", className)}>
+        <label htmlFor={label} className="font-thin text-xs">
+          {label}
+          {required ? "*" : ""}
+        </label>
+        <div className="bg-neutral-100 rounded py-1 px-2 w-full" id={label}>
+          <input
+            ref={ref}
+            type="text"
+            className="bg-transparent outline-none w-full text-xs"
+            required={required}
+            {..._extraProps}
+            {...props}
+          />
+        </div>
+      </div>
+    );
+  }
 );
