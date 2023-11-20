@@ -1,13 +1,6 @@
-import {
-  useEffect,
-  useCallback,
-  useState,
-  useRef,
-  useLayoutEffect,
-} from "react";
+import { useEffect, useCallback, useState, useRef } from "react";
 import clsx from "clsx";
 import useTimeout from "@/hooks/useTimeout";
-import TextButton from "@components/inputs/textBtn";
 import Search from "@icons/search.svg?react";
 import { useConnectionsUrlParams } from "@api/queries/getConnections";
 import { ConnectionsFilters as cf } from "@api/types";
@@ -61,7 +54,7 @@ export const SearchBar = ({
   const searchActive =
     params.search && params.search.length > 0 && search.length !== 0;
   return (
-    <div className="rounded-md w-full bg-neutral-100 flex items-center gap-x-1 px-2 shadow relative [&>.search-popup]:focus-within:block">
+    <div className="rounded-md w-full bg-white lg:bg-neutral-100 flex items-center gap-x-1 px-2 shadow relative [&>.search-popup]:focus-within:block">
       <Search
         className={clsx(
           "w-12 h-12",
@@ -76,7 +69,7 @@ export const SearchBar = ({
         value={search}
         ref={inputRef}
       />
-      {currentFilter && (
+      {currentFilter && search.length !== 0 && (
         <IconFilterElem
           sm
           onClick={() => onSelect(cf.all)}
@@ -86,7 +79,7 @@ export const SearchBar = ({
       {search.length !== 0 && (
         <div
           className={
-            "search-popup absolute w-full mb-4 lg:mb-0 bottom-full lg:bottom-[unset] lg:mt-32 left-0 rounded-md shadow-md p-4 bg-neutral-100 z-10 hidden"
+            "search-popup absolute w-full mb-4 lg:mb-0 bottom-full lg:bottom-[unset] lg:mt-32 left-0 rounded-md shadow-md p-4 bg-white lg:bg-neutral-100 z-10 hidden"
           }
         >
           <div className="flex items-center justify-evenly w-full">
