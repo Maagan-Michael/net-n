@@ -2,46 +2,53 @@
 
 ```plantuml
 @startuml
-!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/master/dist
+!include <C4/C4_Container.puml>
+!theme C4_united from <C4/themes>
+HIDE_STEREOTYPE()
 
-!includeurl AzurePuml/AzureCommon.puml
-!includeurl AzurePuml/AzureSimplified.puml
-!includeurl AzurePuml/Databases/AzureSqlDatabase.puml
-!includeurl AzurePuml/General/Azure.puml
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define DEVICONS2 https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons2
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
 
-' Kubernetes
-'https://github.com/dcasati/kubernetes-PlantUML
-!define KubernetesPuml https://raw.githubusercontent.com/dcasati/kubernetes-PlantUML/master/dist
-!includeurl KubernetesPuml/kubernetes_Common.puml
-!includeurl KubernetesPuml/kubernetes_Context.puml
-!includeurl KubernetesPuml/kubernetes_Simplified.puml
-!includeurl KubernetesPuml/OSS/KubernetesApi.puml
-!includeurl KubernetesPuml/OSS/KubernetesIng.puml
-!includeurl KubernetesPuml/OSS/KubernetesPod.puml
+!include DEVICONS/python.puml
+!include DEVICONS/react.puml
+!include DEVICONS2/oracle_original.puml
+!include DEVICONS2/postgresql.puml
+!include FONTAWESOME/users.puml
+!include FONTAWESOME/sync_alt.puml
+!include FONTAWESOME/user_circle.puml
+!include FONTAWESOME/ethernet.puml
+!include FONTAWESOME/network_wired.puml
 
-actor "User" as user
-node "Network" as network
+title Multilayer Network Management Architecture
 
-Cluster_Boundary(cluster, "Backend") {
-    KubernetesPod(KubernetesBE4, "front-end", "")
-    KubernetesPod(KubernetesBE1, "Api", "")
-    KubernetesPod(KubernetesBE2, "DB Ingestion module", "")
-    KubernetesPod(KubernetesBE3, "Adapter Module", "")
-    AzureSqlDatabase(backendSQL, "BackendDB", "")
+ContainerDb(db, "Database", "Oracle DB", "Holds residency correlation records", $sprite="oracle_original")
+Person(user, "User", "Directly interacting with the system", $sprite="users")
+
+Boundary(c1, "Input layer") {
+  Container(syncmodule, "Sync Module", "python", "A worker to process DB changes, Requires DB access", $sprite="sync_alt")
+  Container(ui, "UI", "react", "User interface component", $sprite="user_circle")
 }
-AzureSqlDatabase(cloudSQL, "MMDB", "")
 
-Rel(user, KubernetesBE4, "HTTPS")
-Rel(user, KubernetesBE1, "HTTPS")
-Rel(KubernetesBE4, KubernetesBE1, "HTTPS")
+Boundary(c2, "Logic layer", "Main layer") {
+  Container(backend, "Backend", "python", "The main interface that the customer interacts with", $sprite="python")
+  ContainerDb(internaldb,"Internal Database", "pgsql","Stores relations, system components, state and access credentials",$sprite="postgresql")
+}
 
-Rel(KubernetesBE2, cloudSQL, "HTTPS")
-Rel(KubernetesBE2, backendSQL, "HTTPS")
-Rel(KubernetesBE2, KubernetesBE1, "HTTPS")
+Boundary(c3, "Controller layer", "IMC/Mgmt VLAN Access") {
+  Container(imc, "IMC", "HPE Proprietary", "Adapter interface to control HPE IMC using API, Requires IMC access", $sprite="network_wired")
+  Container(snmp, "SNMP Controller", "python", "Used for legacy units w/o central mgmt, Requires mgmt VLAN access", $sprite="ethernet")
+}
 
-Rel(KubernetesBE1, KubernetesBE3, "HTTPS")
-
-Rel(KubernetesBE3, network, "SNMP")
-Rel(KubernetesBE3, network, "HTTPS")
+Lay_L(user,ui)
+Rel_R(user, ui, "Rest API", "http")
+Lay_R(syncmodule,db)
+Rel_R(syncmodule, db, "Read View", "SQL")
+Rel(ui, backend, "Rest API", "http")
+Rel(syncmodule, backend, "Trigger", "http")
+Rel(backend,snmp,"Rest API", "http")
+Rel(backend,imc,"Rest API","http")
+Rel_R(backend,internaldb,"Store Status", "SQL")
+Rel(syncmodule,internaldb,"Update","SQL")
 @enduml
 ```
