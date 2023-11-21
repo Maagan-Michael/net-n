@@ -1,10 +1,14 @@
+import re
+import sys
 from pydantic import BaseModel
 from typing import Callable, Generic, TypeVar, List, Annotated, Union
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import SQLAlchemyError
 from . import Base, get_db_session
+from ..logger import get_logger
 
 from ..models import BatchError, BatchedDeleteOutput, Connection, Switch, Customer
 from .schemas import DBConnection, DBSwitch, DBCustomer
@@ -16,10 +20,11 @@ PydanticModel = TypeVar("PydanticModel", bound=BaseModel)
 class DatabaseRepository(Generic[Model]):
     """common repository for crud operations on models"""
 
-    def __init__(self, session: AsyncSession, schema: Model, model: PydanticModel) -> None:
+    def __init__(self, session: AsyncSession, schema: Model, model: PydanticModel, name: str) -> None:
         self.session = session
         self.schema = schema
         self.model = model
+        self.logger = get_logger(name)
 
     async def get(self, id: str) -> Model:
         """return a model"""
@@ -35,6 +40,7 @@ class DatabaseRepository(Generic[Model]):
         """return a list of models"""
         q = None
         if search and search != "":
+            search = re.escape(search)
             q = await self.session.scalars(
                 select(self.schema).filter(self.schema.name.like(search)))
         else:
@@ -47,6 +53,7 @@ class DatabaseRepository(Generic[Model]):
             .values(model.model_dump(exclude_unset=True))
             .on_conflict_do_update(index_elements=[self.schema.id], set_=model.model_dump(exclude_unset=True, exclude={"id"}))
         )
+        self.logger.info(f"upserted:{model.id}")
         return model
 
     async def batch_upsert(self, inputs: Union[Model, List[Model]]) -> (List[Model], List[BatchError]):
@@ -73,8 +80,11 @@ class DatabaseRepository(Generic[Model]):
             try:
                 existing = self.model.model_validate(existing)
                 await self.upsert(existing)
+                self.logger.info(input.model_dump_json(exclude_unset=True))
                 items.append(existing)
             except Exception as e:
+                if isinstance(e, SQLAlchemyError):
+                    self.logger.error(e)
                 errors.append(BatchError.model_construct(
                     id=input.id, error=str(e)))
         return (items, errors)
@@ -85,30 +95,32 @@ class DatabaseRepository(Generic[Model]):
             delete(self.schema)
             .where(self.schema.id.in_(ids))
         )
+        for id in ids:
+            self.logger.info(f"deleted:{id}")
         return BatchedDeleteOutput.model_construct(items=ids, errors=[])
 
 
 def get_repository(
     schema: type[Base],
     model: type[BaseModel],
+    name: str
 ) -> Callable[[AsyncSession], DatabaseRepository]:
     def func(session: AsyncSession = Depends(get_db_session)):
-        return DatabaseRepository(schema=schema, model=model, session=session)
-
+        return DatabaseRepository(schema=schema, model=model, session=session, name=name)
     return func
 
 
 ConnectionRepository = Annotated[
     DatabaseRepository[DBConnection],
-    Depends(get_repository(DBConnection, Connection))
+    Depends(get_repository(DBConnection, Connection, "connections"))
 ]
 
 SwitchRepository = Annotated[
     DatabaseRepository[DBSwitch],
-    Depends(get_repository(DBSwitch, Switch))
+    Depends(get_repository(DBSwitch, Switch, "switches"))
 ]
 
 CustomerRepository = Annotated[
     DatabaseRepository[DBCustomer],
-    Depends(get_repository(DBCustomer, Customer))
+    Depends(get_repository(DBCustomer, Customer, "customers"))
 ]
