@@ -1,40 +1,40 @@
 {
-  "hello": "working translation",
+  "hello": "התרגום עובד",
   "navigation": {
     "search": {
-      "placeholder": "search..."
+      "placeholder": "חיפוש…"
     }
   },
   "connections": {
-    "notFound": "No connections found",
-    "noMore": "No more connections",
+    "notFound": "לא נמצאו חיבורים",
+    "noMore": "אין עוד חיבורים",
     "table": {
       "header": {
         "ppp": "ppp",
-        "type": "type",
-        "status": "connection status",
-        "ID": "ID"
+        "type": "סוג",
+        "status": "סוג חיבור",
+        "ID": "מס׳"
       }
     }
   },
   "connection": {
     "form": {
       "technical": {
-        "title": "technical options",
+        "title": "אפשרויות טכניות",
         "ppp": "ppp",
-        "port": "port",
-        "toggleDate": "scheduled automatic change",
-        "lat": "latitude",
-        "lng": "longitude"
+        "port": "פחתה",
+        "toggleDate": "מתוזמן לשינוי אוטומטי",
+        "lat": "קו רוחב",
+        "lng": "קו גובה"
       },
       "customer": {
-        "title": "customer details",
-        "firstname": "firstname",
-        "lastname": "lastname",
-        "type": "type",
-        "address": "address"
+        "title": "פרטי לקוח",
+        "firstname": "שם פרטי",
+        "lastname": "שם משפחה",
+        "type": "סוג",
+        "address": "כתובת"
       },
-      "save": "save"
+      "save": "שמירה"
     }
   }
 }
