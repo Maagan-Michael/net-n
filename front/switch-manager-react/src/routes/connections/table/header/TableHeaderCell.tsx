@@ -2,7 +2,8 @@ import clsx from "clsx";
 import { TableSeparator } from "@components/tables/generic";
 import Carret from "@icons/carret.svg?react";
 import { OrderBy } from "@api/types";
-import { TableHeaderCellProps } from "./header";
+import { TableHeaderCellProps } from ".";
+import { useTranslation } from "react-i18next";
 
 export const TableHeaderCell = ({
   sort,
@@ -13,6 +14,9 @@ export const TableHeaderCell = ({
   classname,
   children,
 }: TableHeaderCellProps) => {
+  const { t } = useTranslation("translation", {
+    keyPrefix: "connections.table.header",
+  });
   const canSort = sortValue !== undefined;
   const isSort = canSort && sort === sortValue;
   const isDesc = isSort && order === OrderBy.desc;
@@ -32,7 +36,6 @@ export const TableHeaderCell = ({
   return (
     <div
       onClick={onClick}
-      key={title}
       className={clsx(
         "relative h-12 border-b-2 border-neutral-100 flex items-center justify-center w-full [&:last-child>.separator]:hidden",
         classname,
@@ -50,7 +53,7 @@ export const TableHeaderCell = ({
       {children ? (
         children
       ) : (
-        <div className="font-light text-sm text-center">{title}</div>
+        <div className="font-light text-sm text-center">{t(title)}</div>
       )}
       <TableSeparator />
     </div>

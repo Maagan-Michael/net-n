@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Table } from "@components/tables/generic";
 import { ConnectionOutput, ConnectionsOutput } from "@api/types";
 import {
@@ -11,6 +12,7 @@ import Row from "./table/row";
 import LoadingRow from "./table/loadingRow";
 
 function Connections() {
+  const { t } = useTranslation("translation", { keyPrefix: "connections" });
   const [queryParams, setParams] = useConnectionsUrlParams();
   const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useConnectionsQuery(queryParams);
@@ -50,12 +52,12 @@ function Connections() {
       )}
       {!isLoading && pagesContent.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-y-4 mt-8">
-          <h3 className="font-bold text-xl">no connections found</h3>
+          <h3 className="font-bold text-xl">{t("notFound")}</h3>
         </div>
       )}
       {!isLoading && pagesContent.length > 0 && !hasNextPage && (
         <div className="flex flex-col items-center justify-center gap-y-4 mt-4 mb-4 md:mt-8 md:mb-8">
-          <h3 className="font-bold text-md">no more connections</h3>
+          <h3 className="font-bold text-md">{t("noMore")}</h3>
         </div>
       )}
       <Outlet />

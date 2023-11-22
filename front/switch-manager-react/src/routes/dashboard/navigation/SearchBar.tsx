@@ -5,6 +5,7 @@ import Search from "@icons/search.svg?react";
 import { useConnectionsUrlParams } from "@api/queries/getConnections";
 import { ConnectionsFilters as cf } from "@api/types";
 import { filtersMap, IconFilterElem } from "./filters";
+import { useTranslation } from "react-i18next";
 
 export const SearchBar = ({
   shouldFocus = false,
@@ -13,6 +14,9 @@ export const SearchBar = ({
   shouldFocus?: boolean;
   onSearchDone?: () => void;
 }) => {
+  const { t } = useTranslation("translation", {
+    keyPrefix: "navigation.search",
+  });
   const [params, setParams] = useConnectionsUrlParams();
   const [search, setSearch] = useState<string>(params.search || "");
   const createTimeout = useTimeout();
@@ -63,7 +67,7 @@ export const SearchBar = ({
       />
       <input
         type="search"
-        placeholder="search..."
+        placeholder={t("placeholder")}
         className="bg-transparent outline-none text-sm grow"
         onChange={onChange}
         value={search}

@@ -1,0 +1,40 @@
+{
+  "hello": "working translation",
+  "navigation": {
+    "search": {
+      "placeholder": "search..."
+    }
+  },
+  "connections": {
+    "notFound": "No connections found",
+    "noMore": "No more connections",
+    "table": {
+      "header": {
+        "ppp": "ppp",
+        "type": "type",
+        "status": "connection status",
+        "ID": "ID"
+      }
+    }
+  },
+  "connection": {
+    "form": {
+      "technical": {
+        "title": "technical options",
+        "ppp": "ppp",
+        "port": "port",
+        "toggleDate": "scheduled automatic change",
+        "lat": "latitude",
+        "lng": "longitude"
+      },
+      "customer": {
+        "title": "customer details",
+        "firstname": "firstname",
+        "lastname": "lastname",
+        "type": "type",
+        "address": "address"
+      },
+      "save": "save"
+    }
+  }
+}

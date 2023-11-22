@@ -12,6 +12,7 @@ import TechnicalSection from "./TechnicalSection";
 import { useUpsertFullConnection } from "@api/mutations/upsertFullConnection";
 import { MouseEventHandler, useEffect } from "react";
 import { toast, CloseButtonProps } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 function getTouchedValues<T extends Record<string, any>>(
   data?: Record<string, any>,
@@ -76,6 +77,9 @@ export default function ConnectionForm({
   } = useForm({
     defaultValues: data,
   });
+  const { t } = useTranslation("translation", {
+    keyPrefix: "connection.form",
+  });
   const { mutate, isLoading, data: response } = useUpsertFullConnection();
   useEffect(() => {
     if (!isLoading && response) {
@@ -122,7 +126,7 @@ export default function ConnectionForm({
       </div>
       <TextButton
         className="bg-blue-400 w-6/12 md:absolute md:bottom-8 md:left-1/2 md:transform md:-translate-x-1/2"
-        label="save"
+        label={t("save")}
         disabled={isLoading || !isDirty}
       />
     </form>

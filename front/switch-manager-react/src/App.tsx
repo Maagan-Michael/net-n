@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "@routes/dashboard";
@@ -29,7 +30,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <RouterProvider router={router} />
+      </Suspense>
       <ToastContainer />
     </QueryClientProvider>
   );
