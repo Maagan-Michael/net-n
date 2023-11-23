@@ -18,6 +18,8 @@ class Switch(BaseModel):
     gpsLong: Optional[float] = Field(default=None, min=-180, max=180)
     name: str
     description: str
+    restricted: bool = Field(
+        default=False, description="switch access / update is restricted")
 
     @validator("ip")
     def validate_ip(cls, v):
@@ -40,3 +42,4 @@ class UpsertSwitchInput(BaseModel):
     gpsLong: Optional[float] = None
     name: Optional[str] = None
     description: Optional[str] = None
+    restricted: Optional[bool] = None
