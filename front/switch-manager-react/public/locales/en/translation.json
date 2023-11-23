@@ -25,26 +25,14 @@
         "port": "port",
         "toggleDate": "scheduled automatic change",
         "lat": "latitude",
-        "lng": "longitude",
-        "errors": {
-          "ppp": "ppp is required",
-          "port": "port is required",
-          "lat": "latitude is required",
-          "lng": "longitude is required"
-        }
+        "lng": "longitude"
       },
       "customer": {
         "title": "customer details",
         "firstname": "firstname",
         "lastname": "lastname",
         "type": "type",
-        "address": "address",
-        "errors": {
-          "firstname": "firstname is required",
-          "lastname": "lastname is required",
-          "type": "type is required",
-          "address": "address is required"
-        }
+        "address": "address"
       },
       "errors": {
         "general": "an error has occured"

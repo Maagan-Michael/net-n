@@ -34,7 +34,11 @@
         "type": "סוג",
         "address": "כתובת"
       },
-      "save": "שמירה"
+      "save": "שמירה",
+      "errors": {
+        "general": "an error has occured"
+      },
+      "success": "connection saved"
     }
   }
 }
