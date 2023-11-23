@@ -23,6 +23,8 @@ class IConnectionBase(BaseModel):
         default=None, description="date at which the port should open / close based on currrent port status")
     type: str = Field(default="copper|fiber",
                       description="physical connection type")
+    autoUpdate: bool = Field(default=True,
+                             description="define if the connection should be updated automatically")
 
     @validator("toggleDate")
     def validate_toggleDate(cls, v):
@@ -129,3 +131,4 @@ class ConnectionUpsertInput(BaseModel):
     speed: Optional[int] = None
     switchId: Optional[UUID4] = None
     customerId: Optional[int] = None
+    autoUpdate: Optional[bool] = None

@@ -19,6 +19,7 @@ class DBConnection(Base):
     speed = Column(Integer, index=False)
     switchId = Column(UUID, ForeignKey("switches.id"), index=True)
     customerId = Column(Integer, ForeignKey("customers.id"), index=True)
+    autoUpdate = Column(Boolean, index=True, default=True)
 
     switch = relationship(
         "DBSwitch", back_populates="connections", foreign_keys=[switchId])
