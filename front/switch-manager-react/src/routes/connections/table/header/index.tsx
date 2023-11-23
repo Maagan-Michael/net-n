@@ -4,6 +4,8 @@ import Customer from "@icons/customer.svg?react";
 import Calandar from "@icons/calandar.svg?react";
 import { ListSortEnum, OrderBy } from "@api/types";
 import { TableHeaderCell } from "./TableHeaderCell";
+import { useTranslation } from "react-i18next";
+import clsx from "clsx";
 
 interface TableHeaderProps {
   sort: ListSortEnum;
@@ -60,8 +62,14 @@ const staticHeader = [
 ];
 
 const Header = ({ sort, order, setSearch }: TableHeaderProps) => {
+  const { i18n } = useTranslation();
   return (
-    <div className="h-full text-xs text-center grid grid-flow-col grid-cols-12 w-full md:gap-x-4 lg:gap-x-8 xl:gap-x-12">
+    <div
+      className={clsx(
+        "h-full text-xs text-center grid grid-flow-col grid-cols-12 w-full md:gap-x-4 lg:gap-x-8 xl:gap-x-12",
+        i18n.dir()
+      )}
+    >
       <div className="h-full grid grid-flow-col items-center grid-cols-11 col-span-12 lg:col-span-10">
         {staticHeader.map((header, index) => (
           <TableHeaderCell

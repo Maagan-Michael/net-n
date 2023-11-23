@@ -1,14 +1,22 @@
 import { UseFormRegister } from "react-hook-form";
 import TextInput from "@components/inputs/TextInput";
 import { useTranslation } from "react-i18next";
+import clsx from "clsx";
 
 const CustomerSection = ({ register }: { register: UseFormRegister<any> }) => {
-  const { t } = useTranslation("translation", {
+  const { t, i18n } = useTranslation("translation", {
     keyPrefix: "connection.form.customer",
   });
   return (
     <div className="p-4 col-span-5">
-      <h3 className="font-bold text-2xl">{t("title")}</h3>
+      <h3
+        className={clsx(
+          "font-bold text-2xl",
+          i18n.dir() === "ltr" ? "text-left" : "text-right"
+        )}
+      >
+        {t("title")}
+      </h3>
       <div className="flex flex-col gap-y-2 mt-4">
         <TextInput
           register={register}

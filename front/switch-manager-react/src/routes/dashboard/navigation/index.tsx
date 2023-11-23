@@ -3,9 +3,11 @@ import clsx from "clsx";
 import { SearchBar } from "./SearchBar";
 import SearchIcon from "@icons/search.svg?react";
 import Cross from "@icons/cross.svg?react";
+import { useTranslation } from "react-i18next";
 
 export default function Navigation() {
   const [open, setOpen] = useState(false);
+  const { i18n } = useTranslation();
   const onSearch: MouseEventHandler<HTMLButtonElement> = useCallback(
     (e) => {
       e.preventDefault();

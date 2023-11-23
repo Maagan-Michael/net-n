@@ -13,6 +13,7 @@ import { useUpsertFullConnection } from "@api/mutations/upsertFullConnection";
 import { MouseEventHandler, useEffect } from "react";
 import { toast, CloseButtonProps } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import clsx from "clsx";
 
 function getTouchedValues<T extends Record<string, any>>(
   data?: Record<string, any>,
@@ -77,7 +78,7 @@ export default function ConnectionForm({
   } = useForm({
     defaultValues: data,
   });
-  const { t } = useTranslation("translation", {
+  const { t, i18n } = useTranslation("translation", {
     keyPrefix: "connection.form",
   });
   const { mutate, isLoading, data: response } = useUpsertFullConnection();
@@ -112,7 +113,10 @@ export default function ConnectionForm({
       })}
     >
       <Cross
-        className="absolute w-6 h-6 top-4 right-4 cursor-pointer hover:opacity-60 transition-all"
+        className={clsx(
+          "absolute w-6 h-6 top-4 cursor-pointer hover:opacity-60 transition-all",
+          i18n.dir() === "ltr" ? "right-4" : "left-4"
+        )}
         onClick={goBack}
       />
       <div className="md:grid md:grid-cols-11 justify-evenly">

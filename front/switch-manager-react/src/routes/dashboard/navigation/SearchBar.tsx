@@ -14,7 +14,7 @@ export const SearchBar = ({
   shouldFocus?: boolean;
   onSearchDone?: () => void;
 }) => {
-  const { t } = useTranslation("translation", {
+  const { t, i18n } = useTranslation("translation", {
     keyPrefix: "navigation.search",
   });
   const [params, setParams] = useConnectionsUrlParams();
@@ -57,8 +57,14 @@ export const SearchBar = ({
   // }, [shouldFocus]);
   const searchActive =
     params.search && params.search.length > 0 && search.length !== 0;
+  const dirClass = i18n.dir() === "ltr" ? "flex-row" : "flex-row-reverse";
   return (
-    <div className="rounded-md w-full bg-white lg:bg-neutral-100 flex items-center gap-x-1 px-2 shadow relative [&>.search-popup]:focus-within:block">
+    <div
+      className={clsx(
+        dirClass,
+        "rounded-md w-full bg-white lg:bg-neutral-100 flex items-center gap-x-1 px-2 shadow relative [&>.search-popup]:focus-within:block"
+      )}
+    >
       <Search
         className={clsx(
           "w-12 h-12",
@@ -69,6 +75,7 @@ export const SearchBar = ({
         type="search"
         placeholder={t("placeholder")}
         className="bg-transparent outline-none text-sm grow"
+        dir={i18n.dir()}
         onChange={onChange}
         value={search}
         ref={inputRef}
@@ -86,7 +93,12 @@ export const SearchBar = ({
             "search-popup absolute w-full mb-4 lg:mb-0 bottom-full lg:bottom-[unset] lg:mt-32 left-0 rounded-md shadow-md p-4 bg-white lg:bg-neutral-100 z-10 hidden"
           }
         >
-          <div className="flex items-center justify-evenly w-full">
+          <div
+            className={clsx(
+              i18n.dir() === "ltr" ? "flex-row" : "flex-row-reverse",
+              "flex items-center justify-evenly w-full"
+            )}
+          >
             {Object.entries(filtersMap).map(([key, props]) => (
               <IconFilterElem
                 key={key}

@@ -11,6 +11,7 @@ import DatePicker from "@components/inputs/datePicker";
 import GPS from "@icons/gps.svg?react";
 import IconRoundBtn from "@components/inputs/iconRoundBtn";
 import { useTranslation } from "react-i18next";
+import clsx from "clsx";
 
 const TechnicalSection = ({
   register,
@@ -21,12 +22,19 @@ const TechnicalSection = ({
   control: Control<FieldValues>;
   setValue: UseFormSetValue<any>;
 }) => {
-  const { t } = useTranslation("translation", {
+  const { t, i18n } = useTranslation("translation", {
     keyPrefix: "connection.form.technical",
   });
   return (
     <div className="p-4 col-span-5">
-      <h3 className="font-bold text-2xl">{t("title")}</h3>
+      <h3
+        className={clsx(
+          "font-bold text-2xl",
+          i18n.dir() === "ltr" ? "text-left" : "text-right"
+        )}
+      >
+        {t("title")}
+      </h3>
       <div className="flex flex-col gap-y-2 mt-4 h-full">
         <div className="flex flex-row gap-x-2 justify-between items-end">
           <TextInput
@@ -58,7 +66,7 @@ const TechnicalSection = ({
             )}
           />
         </div>
-        <DatePicker control={control} />
+        <DatePicker control={control} label={t("toggleDate")} />
         <div className="flex flex-row gap-x-2 items-center justify-between">
           <IconRoundBtn
             icon={<GPS className="w-4 h-4" />}

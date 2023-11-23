@@ -1,6 +1,7 @@
 import { clsx } from "clsx";
 import { UseFormRegister } from "react-hook-form";
 import { forwardRef } from "react";
+import { useTranslation } from "react-i18next";
 
 export interface TextInputProps
   extends Partial<JSX.IntrinsicElements["input"]> {
@@ -18,9 +19,16 @@ export default function TextInput({
   ...props
 }: TextInputProps): JSX.Element {
   const _extraProps = register ? register(name, { required }) : {};
+  const { i18n } = useTranslation();
   return (
     <div className={clsx("[&>label]:focus-within:text-blue-400", className)}>
-      <label htmlFor={label} className="font-thin text-xs">
+      <label
+        htmlFor={label}
+        className={clsx(
+          i18n.dir() === "rtl" ? "text-right" : "text-left",
+          "font-thin text-xs w-full inline-block"
+        )}
+      >
         {label}
         {required ? "*" : ""}
       </label>
@@ -28,6 +36,7 @@ export default function TextInput({
         <input
           type="text"
           className="bg-transparent outline-none w-full text-xs"
+          dir={i18n.dir()}
           required={required}
           {..._extraProps}
           {...props}
@@ -40,9 +49,16 @@ export default function TextInput({
 export const TextInputWithRef = forwardRef<HTMLInputElement, TextInputProps>(
   ({ label, className, register, name, required, ...props }, ref) => {
     const _extraProps = register ? register(name, { required }) : {};
+    const { i18n } = useTranslation();
     return (
       <div className={clsx("[&>label]:focus-within:text-blue-400", className)}>
-        <label htmlFor={label} className="font-thin text-xs">
+        <label
+          htmlFor={label}
+          className={clsx(
+            i18n.dir() === "rtl" ? "text-right" : "text-left",
+            "font-thin text-xs w-full inline-block"
+          )}
+        >
           {label}
           {required ? "*" : ""}
         </label>
@@ -50,6 +66,7 @@ export const TextInputWithRef = forwardRef<HTMLInputElement, TextInputProps>(
           <input
             ref={ref}
             type="text"
+            dir={i18n.dir()}
             className="bg-transparent outline-none w-full text-xs"
             required={required}
             {..._extraProps}

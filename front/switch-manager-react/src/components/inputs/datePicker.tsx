@@ -33,8 +33,10 @@ const DatePickerHeader = ({
 
 export default function DatePicker({
   control,
+  label,
 }: {
   control: Control<FieldValues>;
+  label: string;
 }) {
   return (
     <Controller
@@ -63,12 +65,7 @@ export default function DatePicker({
                 date.getTime() === _date.getTime() && "!bg-blue-400 text-white"
               );
             }}
-            customInput={
-              <TextInputWithRef
-                name=""
-                label="scheduled activation / deactivation"
-              />
-            }
+            customInput={<TextInputWithRef name="" label={label} />}
             renderCustomHeader={DatePickerHeader}
           />
         );

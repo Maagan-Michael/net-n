@@ -36,9 +36,9 @@
       },
       "save": "שמירה",
       "errors": {
-        "general": "an error has occured"
+        "general": "אירעה שגיאה בשמירת החיבור"
       },
-      "success": "connection saved"
+      "success": "החיבור נשמר בהצלחה"
     }
   }
 }
