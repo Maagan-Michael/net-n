@@ -84,10 +84,10 @@ export default function ConnectionForm({
   useEffect(() => {
     if (!isLoading && response) {
       if (response.errors.length) {
-        toast.error("an error has occured");
+        toast.error(t("errors.general"));
         console.error(response.errors);
       } else {
-        toast.success("connection updated", {
+        toast.success(t("success"), {
           className: "bg-neutral-100 rounded-md",
           bodyClassName: "text-black text-sm font-sans",
           closeButton: CloseButton,
@@ -95,7 +95,7 @@ export default function ConnectionForm({
         goBack();
       }
     }
-  }, [isLoading, response, goBack]);
+  }, [isLoading, response, goBack, t]);
   return (
     <form
       className="relative flex flex-col p-4 items-center w-11/12 md:w-[600px] md:h-[440px] bg-white rounded-md z-10 shadow-md overflow-scroll"
