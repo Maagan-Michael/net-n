@@ -25,7 +25,9 @@
         "port": "port",
         "toggleDate": "scheduled automatic change",
         "lat": "latitude",
-        "lng": "longitude"
+        "lng": "longitude",
+        "autoUpdate": "allow automatic updates",
+        "restricted": "restrict modifications"
       },
       "customer": {
         "title": "customer details",

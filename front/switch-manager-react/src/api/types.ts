@@ -13,6 +13,7 @@ export interface SwitchOuput {
     description?: string
     gpsLat?: number
     gpsLong?: number
+    restricted: boolean
 }
 
 export interface ConnectionOutput {
@@ -27,6 +28,7 @@ export interface ConnectionOutput {
     isUp: boolean
     adapter: string
     speed?: number
+    autoUpdate: boolean
 }
 
 export interface ConnectionsOutput {
@@ -85,6 +87,7 @@ export interface SwitchInput {
     description?: string
     gpsLat?: number
     gpsLong?: number
+    restricted?: boolean
 }
 
 export interface ConnectionInput {
@@ -99,6 +102,7 @@ export interface ConnectionInput {
     isUp?: boolean
     adapter?: string
     speed?: number
+    autoUpdate?: boolean
 }
 
 export interface BatchError {

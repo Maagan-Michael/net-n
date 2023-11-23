@@ -6,7 +6,9 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import TextInput from "@components/inputs/TextInput";
-import Toggle from "@components/inputs/toggle";
+import Toggle, { IconToggle } from "@components/inputs/toggle";
+import Lock from "@icons/lock.svg?react";
+import Unlock from "@icons/lock-open.svg?react";
 import DatePicker from "@components/inputs/datePicker";
 import GPS from "@icons/gps.svg?react";
 import IconRoundBtn from "@components/inputs/iconRoundBtn";
@@ -98,9 +100,54 @@ const TechnicalSection = ({
             label={t("lng")}
           />
         </div>
+        <div className="flex flex-row gap-x-2 items-center justify-between">
+          <span className="text-sm font-thin  underline">
+            {t("autoUpdate")} :
+          </span>
+          <Controller
+            control={control}
+            name="autoUpdate"
+            render={({ field: { value, onChange } }) => (
+              <Toggle
+                label=""
+                name="autoUpdate"
+                className="w-9 mb-1"
+                toggled={value}
+                onChange={(e) => onChange(!value)}
+              />
+            )}
+          />
+        </div>
+        <div className="flex flex-row gap-x-2 items-center justify-between">
+          <span className="text-sm font-thin  underline">
+            {t("restricted")} :
+          </span>
+          <Controller
+            control={control}
+            name="switch.restricted"
+            render={({ field: { value, onChange } }) => (
+              <Toggle
+                label=""
+                name="switch.restricted"
+                className="w-9 mb-1"
+                toggled={value}
+                onChange={(e) => onChange(!value)}
+              />
+            )}
+          />
+        </div>
       </div>
     </div>
   );
 };
 
 export default TechnicalSection;
+
+// <IconToggle
+//   label=""
+//   name="switch.restricted"
+//   className="w-6"
+//   toggled={value}
+//   onClick={() => onChange(!value)}
+//   icons={[Lock, Unlock]}
+// />
