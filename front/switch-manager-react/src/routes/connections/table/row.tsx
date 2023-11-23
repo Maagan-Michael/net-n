@@ -4,11 +4,12 @@ import ComputerIcon from "@icons/computer.svg?react";
 import Ethernet from "@icons/ethernet.svg?react";
 import { ConnectionOutput } from "@api/types";
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 const DateStatus = ({ toggled }: { toggled: boolean }) => (
   <span
     className={clsx(
-      "w-2 h-2 rounded-full  inline-block mr-2",
+      "w-2 h-2 rounded-full  inline-block mx-2",
       toggled ? "bg-red-500" : "bg-green-300"
     )}
   />
@@ -26,13 +27,18 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
     adapter,
     isUp,
   } = data;
+  const { i18n } = useTranslation();
   const navigate = useNavigate();
   const onclick = useCallback(() => {
     navigate(`/connections/${id}${window.location.search}`);
   }, [navigate, id]);
   return (
-    <div className="w-full h-16 lg:h-14 text-xs text-center grid grid-flow-col grid-cols-12 md:gap-x-4 lg:gap-x-8 [&>*]:hover:border-blue-300 cursor-pointer">
+    <div
+      dir={i18n.dir()}
+      className="w-full h-16 lg:h-14 text-xs text-center grid grid-flow-col grid-cols-12 md:gap-x-4 lg:gap-x-8 [&>*]:hover:border-blue-300 cursor-pointer"
+    >
       <div
+        dir={i18n.dir()}
         className="h-full rounded-md bg-neutral-100 grid grid-flow-col items-center grid-cols-11 col-span-12 lg:col-span-10 border-2 border-neutral-100 transition-colors"
         onClick={onclick}
       >
@@ -81,7 +87,10 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
         <div className="col-span-3 md:col-span-2">{customer.address}</div>
         <div className="hidden lg:block col-span-1">{customer.type}</div>
       </div>
-      <div className="hidden h-full rounded-md bg-neutral-100 p-4 lg:grid grid-flow-col items-center justify-between col-span-2 border-2 border-neutral-100 transition-colors">
+      <div
+        className="hidden h-full rounded-md bg-neutral-100 p-4 lg:grid grid-flow-col items-center justify-between col-span-2 border-2 border-neutral-100 transition-colors"
+        dir={i18n.dir()}
+      >
         <div className="flex items-center">
           <Ethernet
             className={clsx(

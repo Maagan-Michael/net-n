@@ -6,7 +6,7 @@ import clsx from "clsx";
 export default function Dashboard() {
   const { i18n } = useTranslation();
   return (
-    <div className={clsx("p-1 md:p-2 lg:p-8", i18n.dir())}>
+    <div className="p-1 md:p-2 lg:p-8" dir={i18n.dir()}>
       <Navigation />
       <Outlet />
     </div>

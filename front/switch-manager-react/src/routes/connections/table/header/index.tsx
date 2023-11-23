@@ -65,12 +65,13 @@ const Header = ({ sort, order, setSearch }: TableHeaderProps) => {
   const { i18n } = useTranslation();
   return (
     <div
-      className={clsx(
-        "h-full text-xs text-center grid grid-flow-col grid-cols-12 w-full md:gap-x-4 lg:gap-x-8 xl:gap-x-12",
-        i18n.dir()
-      )}
+      className="h-full text-xs text-center grid grid-flow-col grid-cols-12 w-full md:gap-x-4 lg:gap-x-8 xl:gap-x-12"
+      dir={i18n.dir()}
     >
-      <div className="h-full grid grid-flow-col items-center grid-cols-11 col-span-12 lg:col-span-10">
+      <div
+        dir={i18n.dir()}
+        className="h-full grid grid-flow-col items-center grid-cols-11 col-span-12 lg:col-span-10"
+      >
         {staticHeader.map((header, index) => (
           <TableHeaderCell
             key={header.title}

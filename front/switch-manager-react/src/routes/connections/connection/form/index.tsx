@@ -57,7 +57,7 @@ const Separator = () => (
 
 const CloseButton = ({ closeToast }: CloseButtonProps) => (
   <Cross
-    className="absolute w-6 h-6 top-5 right-4 cursor-pointer hover:opacity-60 transition-all text-black"
+    className="w-6 h-6 cursor-pointer hover:opacity-60 transition-all text-black"
     onClick={closeToast as unknown as MouseEventHandler<SVGElement>}
   />
 );
@@ -83,20 +83,28 @@ export default function ConnectionForm({
   });
   const { mutate, isLoading, data: response } = useUpsertFullConnection();
   useEffect(() => {
+    const position = i18n.dir() === "rtl" ? "top-left" : "top-right";
     if (!isLoading && response) {
       if (response.errors.length) {
-        toast.error(t("errors.general"));
+        toast.error(
+          t("errors.general", {
+            position,
+            rtl: i18n.dir() === "rtl",
+          })
+        );
         console.error(response.errors);
       } else {
         toast.success(t("success"), {
           className: "bg-neutral-100 rounded-md",
           bodyClassName: "text-black text-sm font-sans",
           closeButton: CloseButton,
+          position,
+          rtl: i18n.dir() === "rtl",
         });
         goBack();
       }
     }
-  }, [isLoading, response, goBack, t]);
+  }, [isLoading, response, goBack, t, i18n]);
   return (
     <form
       className="relative flex flex-col p-4 items-center w-11/12 md:w-[600px] md:h-[440px] bg-white rounded-md z-10 shadow-md overflow-scroll"
