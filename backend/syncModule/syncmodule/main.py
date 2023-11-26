@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, Dict, List
 from pydantic import BaseModel
 import logging
 
@@ -120,14 +120,14 @@ class SyncModule:
         engine.dispose()
         return result
 
-    def splitData(self) -> dict[
-        "updates": dict[
-            "customers": List[dict],
-            "connections": List[dict]
+    def splitData(self) -> Dict[
+        "updates": Dict[
+            "customers": List[Dict],
+            "connections": List[Dict]
         ],
-        "removes": dict[
-            "customers": List[dict],
-            "connections": List[dict]
+        "removes": Dict[
+            "customers": List[Dict],
+            "connections": List[Dict]
         ]
     ]:
         """splits the data into updates and removes"""
