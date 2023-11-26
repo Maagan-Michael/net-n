@@ -118,8 +118,8 @@ class SyncModule:
         engine.dispose()
         return result
 
-    def sync(self):
-        """syncs the data from the source database to the target database"""
+    def splitData(self) -> dict:
+        """splits the data into updates and removes"""
         sourceData = self.getSourceData()
         targetData = self.getTargetData()
         res = {
@@ -149,3 +149,7 @@ class SyncModule:
             if x["connection"]["autoUpdate"]:
                 res["removes"]["customers"].append(x["customer"])
                 res["removes"]["connections"].append(x["connection"])
+
+    def sync(self):
+        """syncs the data from the source database to the target database"""
+        data = self.splitData()
