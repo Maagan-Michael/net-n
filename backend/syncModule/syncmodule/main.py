@@ -42,6 +42,8 @@ class SyncModuleConfig(BaseModel):
 
 
 class SyncModule:
+    """SyncModule is the module that syncs the data from the source database to the target database"""
+
     def __init__(self, config: SyncModuleConfig):
         self.config = config
         self.logger = logging.getLogger('syncmodule')
@@ -118,7 +120,16 @@ class SyncModule:
         engine.dispose()
         return result
 
-    def splitData(self) -> dict:
+    def splitData(self) -> dict[
+        "updates": dict[
+            "customers": List[dict],
+            "connections": List[dict]
+        ],
+        "removes": dict[
+            "customers": List[dict],
+            "connections": List[dict]
+        ]
+    ]:
         """splits the data into updates and removes"""
         sourceData = self.getSourceData()
         targetData = self.getTargetData()
