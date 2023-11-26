@@ -122,7 +122,6 @@ class SyncModule:
         connectionsToUpdate = []
 
         # getting users and connections to update
-        # all the targetData left is to be removed
         for x in sourceData:
             for (y, idx) in enumerate(targetData):
                 if x["customer"]["id"] == y["customer"]["id"]:
@@ -133,3 +132,9 @@ class SyncModule:
                     # remove from list
                     del targetData[idx]
                     break
+
+        # all the targetData left is to be removed only if autoUpdate is true
+        toRemove = []
+        for (x, idx) in enumerate(targetData):
+            if x["autoUpdate"]:
+                toRemove.append(x)
