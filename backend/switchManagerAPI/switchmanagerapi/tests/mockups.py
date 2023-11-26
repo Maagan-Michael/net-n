@@ -32,6 +32,7 @@ def createMockSwitch() -> Switch:
         description=fake.text(),
         gpsLat=random.choice([None, fake.latitude()]),
         gpsLong=random.choice([None, fake.longitude()]),
+        restricted=bool(random.getrandbits(1)),
     )
 
 
@@ -50,7 +51,8 @@ def createMockConnection(switchId: str, customerId: str) -> Connection:
             toggled=bool(random.getrandbits(1)),
             adapter="snmp",
             switchId=switchId,
-            customerId=customerId
+            customerId=customerId,
+            autoUpdate=bool(random.getrandbits(1)),
         )
     except Exception as e:
         print(e)
