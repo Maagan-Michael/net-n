@@ -68,7 +68,9 @@ class SyncModule:
                     "type": x[3],
                     "address": x[4],
                 },
-                "toggled": x[5]
+                "connection": {
+                    "toggled": x[5]
+                }
             }
         with engine.connect() as conn:
             result = conn.execute(
@@ -99,9 +101,11 @@ class SyncModule:
                     "type": x[3],
                     "address": x[4],
                 },
-                "toggled": x[5],
-                "id": x[6],
-                "autoUpdate": x[7]
+                "connection": {
+                    "toggled": x[5],
+                    "id": x[6],
+                    "autoUpdate": x[7]
+                }
             }
         with engine.connect() as conn:
             result = conn.execute(
@@ -118,23 +122,30 @@ class SyncModule:
         """syncs the data from the source database to the target database"""
         sourceData = self.getSourceData()
         targetData = self.getTargetData()
-        userToUpdate = []
-        connectionsToUpdate = []
-
-        # getting users and connections to update
+        res = {
+            "updates": {
+                "customers": [],
+                "connections": []
+            },
+            "removes": {
+                "customers": [],
+                "connections": []
+            }
+        }
+        # getting customers and connections to update
         for x in sourceData:
             for (y, idx) in enumerate(targetData):
                 if x["customer"]["id"] == y["customer"]["id"]:
                     if (x["customer"] != y["customer"]):
-                        userToUpdate.append(x)
-                    if (x["toggled"] != y["toggled"] and y["autoUpdate"]):
-                        connectionsToUpdate.append(x)
+                        res["updates"]["customers"].append(x)
+                    if (x["connection"]["toggled"] != y["connection"]["toggled"] and y["connection"]["autoUpdate"]):
+                        res["updates"]["connection"].append(x)
                     # remove from list
                     del targetData[idx]
                     break
 
         # all the targetData left is to be removed only if autoUpdate is true
-        toRemove = []
         for (x, idx) in enumerate(targetData):
-            if x["autoUpdate"]:
-                toRemove.append(x)
+            if x["connection"]["autoUpdate"]:
+                res["removes"]["customers"].append(x["customer"])
+                res["removes"]["connections"].append(x["connection"])
