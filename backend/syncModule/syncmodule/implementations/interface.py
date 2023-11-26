@@ -57,8 +57,7 @@ class ISyncModule:
         """
         gets the data from the source
         this method should be implemented by the child class
-        this method should return a list of dict
-        SourceDataType is the type of the dict
+        this method should return a list of SourceDataType
         """
         pass
 
