@@ -1,3 +1,4 @@
+from typing import Any, List
 from pydantic import BaseModel
 import logging
 
@@ -46,7 +47,7 @@ class SyncModule:
         self.logger = logging.getLogger('syncmodule')
         self.logger.info('SyncModule init')
 
-    def getSourceData(self):
+    def getSourceData(self) -> List[dict]:
         """gets the data from the source database"""
         url = self.config.source.generateUrl()
         engine = create_engine(url)
@@ -58,13 +59,24 @@ class SyncModule:
             self.config.source.col_name_customer_address,
             self.config.source.col_name_connection_toggled
         ])
+        for x in columns:
+            x = {
+                "customer": {
+                    "id": x[0],
+                    "firstname": x[1],
+                    "lastname": x[2],
+                    "type": x[3],
+                    "address": x[4],
+                },
+                "toggled": x[5]
+            }
         with engine.connect() as conn:
             result = conn.execute(
                 f"SELECT {columns} FROM {self.config.source.table}")
         engine.dispose()
         return result
 
-    def getTargetData(self):
+    def getTargetData(self) -> List[dict]:
         """gets the data from the target database"""
         url = self.config.destination.generateUrl()
         engine = create_engine(url)
@@ -78,6 +90,19 @@ class SyncModule:
             "connections.id",
             "connections.autoUpdate"
         ])
+        for x in columns:
+            x = {
+                "customer": {
+                    "id": x[0],
+                    "firstname": x[1],
+                    "lastname": x[2],
+                    "type": x[3],
+                    "address": x[4],
+                },
+                "toggled": x[5],
+                "id": x[6],
+                "autoUpdate": x[7]
+            }
         with engine.connect() as conn:
             result = conn.execute(
                 f"""
@@ -93,3 +118,18 @@ class SyncModule:
         """syncs the data from the source database to the target database"""
         sourceData = self.getSourceData()
         targetData = self.getTargetData()
+        userToUpdate = []
+        connectionsToUpdate = []
+
+        # getting users and connections to update
+        # all the targetData left is to be removed
+        for x in sourceData:
+            for (y, idx) in enumerate(targetData):
+                if x["customer"]["id"] == y["customer"]["id"]:
+                    if (x["customer"] != y["customer"]):
+                        userToUpdate.append(x)
+                    if (x["toggled"] != y["toggled"] and y["autoUpdate"]):
+                        connectionsToUpdate.append(x)
+                    # remove from list
+                    del targetData[idx]
+                    break
