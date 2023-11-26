@@ -139,7 +139,10 @@ class SyncModule:
                     if (x["customer"] != y["customer"]):
                         res["updates"]["customers"].append(x)
                     if (x["connection"]["toggled"] != y["connection"]["toggled"] and y["connection"]["autoUpdate"]):
-                        res["updates"]["connection"].append(x)
+                        res["updates"]["connection"].append({
+                            "id": y["connection"]["id"],
+                            "toggled": x["connection"]["toggled"]
+                        })
                     # remove from list
                     del targetData[idx]
                     break
