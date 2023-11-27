@@ -162,3 +162,5 @@ class ISyncModule:
     async def sync(self):
         """syncs the data from the source database to the target database"""
         data = self.splitData()
+        await self.apiUpdates(data)
+        await self.apiRemoves(data)
