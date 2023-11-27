@@ -109,8 +109,8 @@ class ISyncModule:
             "connections": List[Dict]
         ],
         "removes": Dict[
-            "customers": List[Dict],
-            "connections": List[Dict]
+            "customers": List[str],
+            "connections": List[str]
         ]
     ]:
         """splits the data into updates and removes"""
@@ -144,8 +144,8 @@ class ISyncModule:
         # all the targetData left is to be removed only if autoUpdate is true
         for (x, idx) in enumerate(targetData):
             if x["connection"]["autoUpdate"]:
-                res["removes"]["customers"].append(x["customer"])
-                res["removes"]["connections"].append(x["connection"])
+                res["removes"]["customers"].append(x["customer"]["id"])
+                res["removes"]["connections"].append(x["connection"]["id"])
 
     async def apiUpdates(self, data: Dict):
         if (len(data["updates"]["customers"]) > 0):
