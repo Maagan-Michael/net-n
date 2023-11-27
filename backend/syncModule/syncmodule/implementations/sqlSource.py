@@ -19,6 +19,7 @@ class SyncModuleConfig(BaseModel):
     """
     source: DBConfig
     destination: DBConfig
+    apiUrl: str
 
     col_name_customer_id: str
     col_name_customer_firstname: str
@@ -32,7 +33,7 @@ class SyncModule(ISyncModule):
     """SyncModule is the module that syncs the data from the source database to the target database"""
 
     def __init__(self, config: SyncModuleConfig):
-        super().__init__(config.destination)
+        super().__init__(config.destination, config.apiUrl)
         self.config = config
         self.logger = logging.getLogger('syncmodule')
         self.logger.info('SyncModule init')
