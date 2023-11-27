@@ -148,19 +148,21 @@ class ISyncModule:
                 res["removes"]["connections"].append(x["connection"]["id"])
 
     async def apiUpdates(self, data: Dict):
+        """updates the data to the API"""
         if (len(data["updates"]["customers"]) > 0):
             await requests.post(f"{self.apiUrl}/v1/customers/upsert", json=data)
         if (len(data["updates"]["connections"]) > 0):
             await requests.post(f"{self.apiUrl}/v1/connections/upsert", json=data)
 
     async def apiRemoves(self, data: Dict):
+        """removes the data from the API"""
         if (len(data["removes"]["customers"]) > 0):
             await requests.post(f"{self.apiUrl}/v1/customers/delete", json=data)
         if (len(data["removes"]["connections"]) > 0):
             await requests.post(f"{self.apiUrl}/v1/connections/delete", json=data)
 
     async def sync(self):
-        """syncs the data from the source database to the target database"""
+        """syncs the data from the source database to the API"""
         data = self.splitData()
         await self.apiUpdates(data)
         await self.apiRemoves(data)
