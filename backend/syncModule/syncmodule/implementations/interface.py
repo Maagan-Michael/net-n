@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from typing import Dict, List
 from pydantic import BaseModel
+import requests
 
 from sqlalchemy import create_engine
 
@@ -49,8 +50,9 @@ class DBConfig(BaseModel):
 class ISyncModule:
     """ISyncModule is the interface for the SyncModule"""
 
-    def __init__(self, destination: DBConfig):
+    def __init__(self, destination: DBConfig, apiUrl: str):
         self.destination = destination
+        self.apiUrl = apiUrl
 
     @abstractmethod
     def getSourceData(self) -> List[SourceDataType]:
@@ -145,6 +147,18 @@ class ISyncModule:
                 res["removes"]["customers"].append(x["customer"])
                 res["removes"]["connections"].append(x["connection"])
 
-    def sync(self):
+    async def apiUpdates(self, data: Dict):
+        if (len(data["updates"]["customers"]) > 0):
+            await requests.post(f"{self.apiUrl}/v1/customers/upsert", json=data)
+        if (len(data["updates"]["connections"]) > 0):
+            await requests.post(f"{self.apiUrl}/v1/connections/upsert", json=data)
+
+    async def apiRemoves(self, data: Dict):
+        if (len(data["removes"]["customers"]) > 0):
+            await requests.post(f"{self.apiUrl}/v1/customers/delete", json=data)
+        if (len(data["removes"]["connections"]) > 0):
+            await requests.post(f"{self.apiUrl}/v1/connections/delete", json=data)
+
+    async def sync(self):
         """syncs the data from the source database to the target database"""
         data = self.splitData()
