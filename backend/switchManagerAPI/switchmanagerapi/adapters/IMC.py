@@ -11,7 +11,7 @@ class IMCAdapter(Adapter):
 
     def getDevices(self):
         self.devices = get_all_devs(self.auth)
-        return super().getDevices()
+        return self.devices
 
     def getDevicesNames(self):
         return [device['name'] for device in self.devices]
