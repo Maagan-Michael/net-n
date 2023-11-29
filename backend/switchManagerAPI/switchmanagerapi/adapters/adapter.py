@@ -1,11 +1,17 @@
 from abc import abstractmethod
+from datetime import datetime
+from typing import List, Optional
 
 
 class Adapter:
-    @abstractmethod
-    def getDevices(self):
+    def __init__(self):
+        self.devices: List[dict] = []
+        lastSync: Optional[datetime] = None
+
+    def getDevices(self) -> List[dict]:
         """gets the devices from the adapter"""
-        pass
+        lastSync = datetime.now()
+        return self.devices
 
     @abstractmethod
     def getDevicesNames(self):

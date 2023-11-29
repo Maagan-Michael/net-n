@@ -8,11 +8,10 @@ class IMCAdapter(Adapter):
         super().__init__()
         self.auth = IMCAuth("https://" if https else "http://",
                             host, port, user, password)
-        self.devices: list[dict] = []
 
     def getDevices(self):
         self.devices = get_all_devs(self.auth)
-        return self.devices
+        return super().getDevices()
 
     def getDevicesNames(self):
         return [device['name'] for device in self.devices]
