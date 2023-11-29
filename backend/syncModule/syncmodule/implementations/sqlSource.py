@@ -30,7 +30,7 @@ class SyncModuleConfig(BaseModel):
     splitName: bool = False
 
 
-class SyncModule(ISyncModule):
+class SQLSyncModule(ISyncModule):
     """SyncModule is the module that syncs the data from the source database to the target database"""
 
     def __init__(self, config: SyncModuleConfig):

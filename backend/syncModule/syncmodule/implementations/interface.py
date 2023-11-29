@@ -1,6 +1,6 @@
 from abc import abstractmethod
-from typing import Dict, List
-from pydantic import BaseModel
+from typing import Dict, List, Optional
+from pydantic import BaseModel, model_validator
 import requests
 
 from sqlalchemy import create_engine
@@ -36,14 +36,35 @@ TargetDataType = Dict[
 
 class DBConfig(BaseModel):
     """DBConfig is the configuration for the database"""
-    host: str
-    port: int
-    user: str
-    password: str
-    database: str
-    table: str
+    host: Optional[str] = None
+    port: Optional[int] = None
+    user: Optional[str] = None
+    password: Optional[str] = None
+    database: Optional[str] = None
+    table: Optional[str] = None
+    url: Optional[str] = None
+
+    @model_validator(mode="after")
+    def validateUrl(self):
+        if (self.url):
+            return self
+        if (not self.host):
+            raise ValueError("host is required")
+        if (not self.port):
+            raise ValueError("port is required")
+        if (not self.user):
+            raise ValueError("user is required")
+        if (not self.password):
+            raise ValueError("password is required")
+        if (not self.database):
+            raise ValueError("database is required")
+        if (not self.table):
+            raise ValueError("table is required")
+        return self
 
     def generateUrl(self) -> str:
+        if (self.url):
+            return self.url
         return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}/{self.database}"
 
 
