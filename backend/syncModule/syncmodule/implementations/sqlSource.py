@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from pydantic import BaseModel
 import logging
 from .interface import ISyncModule, DBConfig, TargetDataType
@@ -22,11 +22,12 @@ class SyncModuleConfig(BaseModel):
     apiUrl: str
 
     col_name_customer_id: str
-    col_name_customer_firstname: str
+    col_name_customer_firstname: Optional[str]
     col_name_customer_lastname: str
     col_name_customer_type: str
     col_name_customer_address: str
     col_name_connection_toggled: str
+    splitName: bool = False
 
 
 class SyncModule(ISyncModule):
@@ -42,20 +43,29 @@ class SyncModule(ISyncModule):
         """gets the data from the source database"""
         url = self.config.source.generateUrl()
         engine = create_engine(url)
-        columns = ",".join([
-            self.config.col_name_customer_id,
-            self.config.col_name_customer_firstname,
-            self.config.col_name_customer_lastname,
-            self.config.col_name_customer_type,
-            self.config.col_name_customer_address,
-            self.config.col_name_connection_toggled
-        ])
+        columns = ",".join(
+            [
+                self.config.col_name_customer_id,
+                self.config.col_name_customer_firstname,
+            ] +
+            ([self.config.col_name_customer_lastname] if self.config.splitName
+             else [
+                self.config.col_name_customer_firstname,
+                self.config.col_name_customer_lastname
+            ]) + [
+                self.config.col_name_customer_type,
+                self.config.col_name_customer_address,
+                self.config.col_name_connection_toggled
+            ]
+        )
         for x in columns:
+            [firstname, lastname] = x[2].split(" ") if self.config.splitName else [
+                x[1], x[2]]
             x = {
                 "customer": {
                     "id": x[0],
-                    "firstname": x[1],
-                    "lastname": x[2],
+                    "firstname": firstname,
+                    "lastname": lastname,
                     "type": x[3],
                     "address": x[4],
                 },
