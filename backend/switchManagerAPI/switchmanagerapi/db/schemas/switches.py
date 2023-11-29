@@ -14,5 +14,6 @@ class DBSwitch(Base):
     name = Column(String, index=True)
     description = Column(String, index=False)
     restricted = Column(Boolean, index=True, default=False)
+    notReachable = Column(Boolean, index=True, default=False)
 
     connections = relationship("DBConnection", back_populates="switch")
