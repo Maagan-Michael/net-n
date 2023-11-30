@@ -1,10 +1,11 @@
-import sys
+import os
 import time
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from switchmanagerapi.routers import connections, customers, switches
 from .tests.mockups import generateMockupDB
+from .adapters.IMC import IMCAdapter
 
 origins = [
     "http://localhost:3000",
@@ -33,7 +34,16 @@ async def on_startup():
     """Run on startup"""
     # pass
     # await create_db()
-    await generateMockupDB()
+    # await generateMockupDB()
+    imc = IMCAdapter(
+        https=False,
+        host=os.environ.get("IMC_HOST"),
+        user=os.environ.get("IMC_USER"),
+        password=os.environ.get("IMC_PASSWORD"),
+        port=os.environ.get("IMC_PORT"),
+    )
+    imc.getDevices()
+    print(imc.devices)
 
 
 def main():

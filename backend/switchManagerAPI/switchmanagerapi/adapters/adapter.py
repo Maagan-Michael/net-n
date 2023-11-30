@@ -15,3 +15,8 @@ class Adapter:
     def getDevicesNames(self):
         """gets the devices from the adapter"""
         pass
+
+    @abstractmethod
+    def togglePort(self, ip: str, port: int, state: bool):
+        """sets the interface for a specific device up / down"""
+        pass

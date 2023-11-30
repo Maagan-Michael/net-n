@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from .. import Base
@@ -26,3 +26,4 @@ class DBConnection(Base):
         "DBSwitch", back_populates="connections", foreign_keys=[switchId])
     customer = relationship(
         "DBCustomer", back_populates="connections", foreign_keys=[customerId])
+    UniqueConstraint(switchId, strPort, name="switch_port_unique")

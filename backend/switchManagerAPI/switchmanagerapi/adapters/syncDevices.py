@@ -1,5 +1,5 @@
 from .adapter import Adapter
-from sqlalchemy import update, delete, insert, select
+from sqlalchemy import update, delete, insert, select, bindparam
 from ..db.schemas.switches import DBSwitch
 from ..db.context import get_context_db_session
 
@@ -14,20 +14,30 @@ class DeviceSyncModule:
             self.adapter.getDevices()
             names = self.adapter.getDevicesNames()
 
-            # switches to update
+            updates = [
+                {
+                    "name": e["label"],
+                    "ip": e["ip"],
+                    "notReachable": False
+                } for e in self.adapter.devices
+            ]
+            # override IP, notReachable
+            await session.execute(
+                update(DBSwitch)
+                .where(DBSwitch.name == bindparam("label"))
+                .values({
+                    "ip": bindparam("ip"),
+                    "notReachable": bindparam("notReachable")
+                }),
+                updates
+            )
+
+            # switches to add
             reachables = await session.scalars(
                 select(DBSwitch).where(DBSwitch.name.in_(names))
             )
             reachablesNames = [e.name for e in reachables]
             # todo : check for differences and update
-            reachablesIds = [e.id for e in reachables]
-            await session.execute(
-                update(DBSwitch)
-                .where(DBSwitch.id.in_(reachablesIds))
-                .values(notReachable=False)
-            )
-
-            # switches to add
             toAdd = [e for e in self.adapter.devices.filter(
                 lambda x: x['name'] not in reachablesNames
             )]
