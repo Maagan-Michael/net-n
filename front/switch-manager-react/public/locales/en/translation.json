@@ -19,19 +19,22 @@
   },
   "connection": {
     "form": {
-      "technical": {
-        "title": "technical options",
+      "switch": {
+        "title": "switch",
+        "lat": "latitude",
+        "lng": "longitude",
+        "restricted": "restrict modifications"
+      },
+      "connection": {
+        "title": "connection",
         "ppp": "ppp",
         "port": "port",
         "toggleDate": "scheduled automatic change",
-        "lat": "latitude",
-        "lng": "longitude",
         "autoUpdate": "allow automatic updates",
-        "restricted": "restrict modifications",
         "address": "address"
       },
       "customer": {
-        "title": "customer details",
+        "title": "customer",
         "firstname": "firstname",
         "lastname": "lastname",
         "type": "type"

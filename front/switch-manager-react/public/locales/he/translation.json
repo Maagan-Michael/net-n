@@ -19,15 +19,18 @@
   },
   "connection": {
     "form": {
-      "technical": {
+      "switch": {
+        "title": "מתג רשת",
+        "lat": "קו רוחב",
+        "lng": "קו גובה",
+        "restricted": "הגבל שינויים"
+      },
+      "connection": {
         "title": "אפשרויות טכניות",
         "ppp": "ppp",
         "port": "פחתה",
         "toggleDate": "מתוזמן לשינוי אוטומטי",
-        "lat": "קו רוחב",
-        "lng": "קו גובה",
         "autoUpdate": "לאפשר עדכוני אוטומטיים",
-        "restricted": "הגבל שינויים",
         "address": "כתובת"
       },
       "customer": {

@@ -27,7 +27,7 @@ export default function Toggle({
         className={clsx(
           "cursor-pointer transition-colors",
           className,
-          toggled ? "fill-green-400" : "rotate-180 fill-red-500"
+          toggled ? "fill-green-400 rotate-180" : "fill-red-500"
         )}
       />
     </div>

@@ -7,8 +7,9 @@ import {
 } from "@api/types";
 import TextButton from "@components/inputs/textBtn";
 import Cross from "@icons/cross.svg?react";
-import CustomerSection from "./CustomerSection";
-import TechnicalSection from "./TechnicalSection";
+import CustomerSection from "./sections/customer";
+import SwitchSection from "./sections/switch";
+import ConnectionSection from "./sections/connection";
 import { useUpsertFullConnection } from "@api/mutations/upsertFullConnection";
 import { MouseEventHandler, useEffect } from "react";
 import { toast, CloseButtonProps } from "react-toastify";
@@ -128,13 +129,20 @@ export default function ConnectionForm({
         onClick={goBack}
       />
       <div className="md:grid md:grid-cols-11 justify-evenly">
-        <TechnicalSection
+        <ConnectionSection
           register={register}
           control={control}
           setValue={setValue}
         />
         <Separator />
-        <CustomerSection register={register} />
+        <div className="w-full col-span-5">
+          <SwitchSection
+            register={register}
+            control={control}
+            setValue={setValue}
+          />
+          <CustomerSection register={register} />
+        </div>
       </div>
       <TextButton
         className="bg-blue-400 w-6/12 md:absolute md:bottom-8 md:left-1/2 md:transform md:-translate-x-1/2"
