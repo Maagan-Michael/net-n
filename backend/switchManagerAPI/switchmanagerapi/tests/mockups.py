@@ -20,7 +20,6 @@ def createMockCustomer() -> InternalCustomer:
         firstname=fake.first_name(),
         lastname=fake.last_name(),
         type=random.choice(["haverim", fake.company()]),
-        address=fake.address(),
     )
 
 
@@ -42,6 +41,7 @@ def createMockConnection(switchId: str, customerId: str) -> Connection:
     try:
         return Connection(
             id=fake.uuid4(),
+            address=fake.address(),
             name=f"{fake.word()[0:3].upper()}{fake.ean(length=8)[0:3]}",
             port=port,
             strPort=f"{port}",

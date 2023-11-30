@@ -12,6 +12,5 @@ class DBCustomer(Base):
     firstname = Column(String, index=True)
     lastname = Column(String, index=True)
     type = Column(String, index=True)
-    address = Column(String, index=True)
 
     connections = relationship("DBConnection", back_populates="customer")

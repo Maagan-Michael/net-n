@@ -3,7 +3,6 @@ export interface CustomerOutput {
     firstname: string
     lastname: string
     type: string
-    address: string
 }
 
 export interface SwitchOuput {
@@ -29,6 +28,7 @@ export interface ConnectionOutput {
     adapter: string
     speed?: number
     autoUpdate: boolean
+    address: string
 }
 
 export interface ConnectionsOutput {
@@ -77,7 +77,6 @@ export interface CustomerInput {
     firstname?: string
     lastname?: string
     type?: string
-    address?: string
 }
 
 export interface SwitchInput {
@@ -103,6 +102,7 @@ export interface ConnectionInput {
     adapter?: string
     speed?: number
     autoUpdate?: boolean
+    address?: string
 }
 
 export interface BatchError {

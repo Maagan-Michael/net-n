@@ -20,6 +20,7 @@ class DBConnection(Base):
     switchId = Column(UUID, ForeignKey("switches.id"), index=True)
     customerId = Column(Integer, ForeignKey("customers.id"), index=True)
     autoUpdate = Column(Boolean, index=True, default=True)
+    address = Column(String, index=True)
 
     switch = relationship(
         "DBSwitch", back_populates="connections", foreign_keys=[switchId])

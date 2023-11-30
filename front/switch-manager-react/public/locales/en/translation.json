@@ -27,14 +27,14 @@
         "lat": "latitude",
         "lng": "longitude",
         "autoUpdate": "allow automatic updates",
-        "restricted": "restrict modifications"
+        "restricted": "restrict modifications",
+        "address": "address"
       },
       "customer": {
         "title": "customer details",
         "firstname": "firstname",
         "lastname": "lastname",
-        "type": "type",
-        "address": "address"
+        "type": "type"
       },
       "errors": {
         "general": "an error has occured"

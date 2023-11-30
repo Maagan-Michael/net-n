@@ -54,6 +54,12 @@ const TechnicalSection = ({
             required
             className="w-24"
           />
+          <TextInput
+            register={register}
+            name="address"
+            label={t("address")}
+            required
+          />
           <Controller
             control={control}
             name="toggled"

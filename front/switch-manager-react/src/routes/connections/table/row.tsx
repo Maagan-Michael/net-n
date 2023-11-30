@@ -26,6 +26,7 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
     toggled,
     adapter,
     isUp,
+    address,
   } = data;
   const { i18n } = useTranslation();
   const navigate = useNavigate();
@@ -84,7 +85,7 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
             <span>N / A</span>
           )}
         </div>
-        <div className="col-span-3 md:col-span-2">{customer.address}</div>
+        <div className="col-span-3 md:col-span-2">{address}</div>
         <div className="hidden lg:block col-span-1">{customer.type}</div>
       </div>
       <div

@@ -36,12 +36,6 @@ const CustomerSection = ({ register }: { register: UseFormRegister<any> }) => {
           label={t("type")}
           required
         />
-        <TextInput
-          register={register}
-          name="customer.address"
-          label={t("address")}
-          required
-        />
       </div>
     </div>
   );

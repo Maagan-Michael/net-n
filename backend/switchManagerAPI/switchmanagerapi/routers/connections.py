@@ -20,8 +20,8 @@ router = APIRouter(
 sortEnumMap: dict[ListSortEnum, List[Column[any]]] = {
     ListSortEnum.con: [DBConnection.name],
     ListSortEnum.customerId: [DBConnection.customerId],
+    ListSortEnum.address: [DBConnection.address],
     ListSortEnum.fullname: [DBCustomer.lastname, DBCustomer.firstname],
-    ListSortEnum.address: [DBCustomer.address],
     ListSortEnum.switch: [DBSwitch.name],
 }
 
@@ -49,7 +49,7 @@ def getFilterStm(search: Optional[str], filter: ListFilterEnum):
         if (filter == ListFilterEnum.customerId):
             filters.append(DBCustomer.idstr.op('~*')(orSearch))
         elif (filter == ListFilterEnum.address):
-            filters.append(DBCustomer.address.op('~*')(andSearch))
+            filters.append(DBConnection.address.op('~*')(andSearch))
         elif (filter == ListFilterEnum.port):
             filters.append(DBConnection.strPort.op('~*')(orSearch))
         elif (filter == ListFilterEnum.switch):
@@ -71,7 +71,7 @@ def getFilterStm(search: Optional[str], filter: ListFilterEnum):
                             DBCustomer.firstname.op('~*')(orSearch),
                             DBCustomer.lastname.op('~*')(orSearch),
                         ),
-                        DBCustomer.address.op('~*')(andSearch),
+                        DBConnection.address.op('~*')(andSearch),
                         and_(
                             DBSwitch.name.op('~*')(orSearch),
                             DBConnection.strPort.op('~*')(orSearch),
@@ -86,7 +86,7 @@ def getFilterStm(search: Optional[str], filter: ListFilterEnum):
                     # todo handle spaces in orSearch for firstname + lastname
                     DBCustomer.firstname.op('~*')(orSearch),
                     DBCustomer.lastname.op('~*')(orSearch),
-                    DBCustomer.address.op('~*')(andSearch),
+                    DBConnection.address.op('~*')(andSearch),
                     DBSwitch.name.op('~*')(orSearch),
                 ))
     return filters

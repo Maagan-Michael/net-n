@@ -18,7 +18,7 @@ class Switch(BaseModel):
     gpsLong: Optional[float] = Field(default=None, min=-180, max=180)
     name: str
     description: str
-    notReachable: Field(
+    notReachable: bool = Field(
         default=False, description="the switch disapeared from the network"
     )
     restricted: bool = Field(

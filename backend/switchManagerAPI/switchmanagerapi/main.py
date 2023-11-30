@@ -31,9 +31,9 @@ app.include_router(switches.router)
 @app.on_event("startup")
 async def on_startup():
     """Run on startup"""
-    pass
+    # pass
     # await create_db()
-    # await generateMockupDB()
+    await generateMockupDB()
 
 
 def main():

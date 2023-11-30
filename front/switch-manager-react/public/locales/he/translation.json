@@ -27,14 +27,14 @@
         "lat": "קו רוחב",
         "lng": "קו גובה",
         "autoUpdate": "לאפשר עדכוני אוטומטיים",
-        "restricted": "הגבל שינויים"
+        "restricted": "הגבל שינויים",
+        "address": "כתובת"
       },
       "customer": {
         "title": "פרטי לקוח",
         "firstname": "שם פרטי",
         "lastname": "שם משפחה",
-        "type": "סוג",
-        "address": "כתובת"
+        "type": "סוג"
       },
       "save": "שמירה",
       "errors": {
