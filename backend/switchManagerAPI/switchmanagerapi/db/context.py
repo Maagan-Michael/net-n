@@ -2,7 +2,7 @@ from sqlalchemy import exc
 from contextlib import asynccontextmanager
 from collections.abc import AsyncGenerator
 from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,

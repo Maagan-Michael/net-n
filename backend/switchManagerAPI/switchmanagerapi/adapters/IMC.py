@@ -9,30 +9,28 @@ class IMCAdapter(Adapter):
         self.auth = IMCAuth("https://" if https else "http://",
                             host, port, user, password)
 
-    def getDevices(self):
-        self.devices = get_all_devs(auth=self.auth.creds, url=self.auth.url)
+    def getSwitches(self):
+        self.switches = get_all_devs(auth=self.auth.creds, url=self.auth.url)
+        return self.switches
 
-        print(self.devices)
-        return self.devices
-
-    def getDevicesNames(self):
-        return [device['name'] for device in self.devices]
-
-    def togglePort(self, ip: str, port: int, state: bool):
-        """sets the interface up / down"""
-        interfaces = get_all_interface_details(
+    def getSwitchInterfaces(self, ip: str):
+        return get_all_interface_details(
             auth=self.auth.creds,
             url=self.auth.url,
             devip=ip
         )
+
+    def togglePort(self, ip: str, port: int, state: bool):
+        """sets the interface up / down"""
+        interfaces = self.getSwitchInterfaces(ip)
         assert len(interfaces) > 0
-        interface = [
+        interfaces = [
             i for i in interfaces if (
                 i["ifType"] == "6"  # or i["ifTypeDesc"] == "ETHERNETCSMACD"
                 and i["ifIndex"] == str(port)
             )
         ]
-        assert len(interface) > 0
+        assert len(interfaces) > 0
         if (state):
             set_interface_up(port, self.auth.creds, self.auth.url, devip=ip)
         else:

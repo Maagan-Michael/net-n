@@ -5,7 +5,8 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from switchmanagerapi.routers import connections, customers, switches
 from .tests.mockups import generateMockupDB
-from .adapters.IMC import IMCAdapter
+from .db.context import create_db, drop_db
+from .adapters.sync import AdapterSyncModule
 
 origins = [
     "http://localhost:3000",
@@ -33,17 +34,11 @@ app.include_router(switches.router)
 async def on_startup():
     """Run on startup"""
     # pass
-    # await create_db()
+    # await drop_db()
     # await generateMockupDB()
-    imc = IMCAdapter(
-        https=False,
-        host=os.environ.get("IMC_HOST"),
-        user=os.environ.get("IMC_USER"),
-        password=os.environ.get("IMC_PASSWORD"),
-        port=os.environ.get("IMC_PORT"),
-    )
-    imc.getDevices()
-    print(imc.devices)
+    await create_db()
+    module = AdapterSyncModule()
+    module.sync()
 
 
 def main():

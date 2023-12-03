@@ -4,16 +4,16 @@ from typing import List
 
 class Adapter:
     def __init__(self):
-        self.devices: List[dict] = []
+        self.switches: List[dict] = []
 
     @abstractmethod
-    def getDevices(self) -> List[dict]:
+    def getSwitches(self) -> List[dict]:
         """gets the devices from the adapter"""
         pass
 
     @abstractmethod
-    def getDevicesNames(self):
-        """gets the devices from the adapter"""
+    def getSwitchInterfaces(self, ip: str) -> List[dict]:
+        """gets the interfaces from the adapter"""
         pass
 
     @abstractmethod
