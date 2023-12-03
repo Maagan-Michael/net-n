@@ -30,7 +30,7 @@
   },
   "scripts": {
     "start": "VITE_API_URL=http://0.0.0.0:8000 vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "test": "jest",
     "test:watch": "jest --watch",

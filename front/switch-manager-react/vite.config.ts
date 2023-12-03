@@ -8,7 +8,9 @@ import eslint from 'vite-plugin-eslint'
 export default defineConfig({
     // depending on your application, base can also be "/"
     base: '',
-    plugins: [react(), viteTsconfigPaths(), svgr(), eslint()],
+    plugins: [react(), viteTsconfigPaths(), svgr({
+        include: ["**/*.svg?react"],
+    }), eslint()],
     server: {
         // this ensures that the browser opens upon server start
         open: true,
