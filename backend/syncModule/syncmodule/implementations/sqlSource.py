@@ -26,7 +26,7 @@ class SyncModuleConfig(BaseModel):
     col_name_customer_lastname: str
     col_name_customer_type: str
     col_name_customer_address: str
-    col_name_connection_toggled: str
+    col_name_connection_toggled: Optional[str]
     splitName: bool = False
 
 
@@ -55,8 +55,7 @@ class SQLSyncModule(ISyncModule):
             ]) + [
                 self.config.col_name_customer_type,
                 self.config.col_name_customer_address,
-                self.config.col_name_connection_toggled
-            ]
+            ] + [self.config.col_name_connection_toggled] if self.config.col_name_connection_toggled else []
         )
         for x in columns:
             [firstname, lastname] = x[2].split(" ") if self.config.splitName else [
@@ -67,9 +66,9 @@ class SQLSyncModule(ISyncModule):
                     "firstname": firstname,
                     "lastname": lastname,
                     "type": x[3],
-                    "address": x[4],
                 },
                 "connection": {
+                    "address": x[4],
                     "toggled": x[5]
                 }
             }
