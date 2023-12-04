@@ -13,8 +13,8 @@ class IConnectionBase(BaseModel):
     """Base Connection model interface"""
     id: UUID4 = Field(min_length=3, max_length=255,
                       description="connection id")
-    name: str = Field(min_length=3, max_length=255,
-                      description="connection name")
+    name: Optional[str] = Field(min_length=3, max_length=255,
+                                description="connection name")
     port: int = Field(default=0, min=0, max=65535,
                       description="port number on the switch")
     toggled: bool = Field(
@@ -25,7 +25,7 @@ class IConnectionBase(BaseModel):
                       description="physical connection type")
     autoUpdate: bool = Field(default=True,
                              description="define if the connection should be updated automatically")
-    address: str = Field(min_length=1, max_length=255)
+    address: Optional[str] = Field(min_length=1, max_length=255)
 
     @validator("toggleDate")
     def validate_toggleDate(cls, v):
@@ -53,7 +53,7 @@ class Connection(IConnection):
     def strPort(self):
         return f"{self.port}"
     switchId: UUID4
-    customerId: int
+    customerId: Optional[int]
 
 # API
 # outputs
@@ -66,7 +66,7 @@ class ConnectionOutput(IConnection):
     """Connection model API output"""
     # relationships
     switch: Switch
-    customer: Customer
+    customer: Optional[Customer]
 
 
 # upsert

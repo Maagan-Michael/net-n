@@ -1,17 +1,21 @@
 from abc import abstractmethod
 import os
-from net-n.backend.switchManagerAPI.switchmanagerapi.db.schemas.connections import DBConnection
 import yaml
-from .adapter import Adapter
-from sqlalchemy import update, delete, insert, select, bindparam
-from ..db.schemas.switches import DBSwitch
-from .IMC import IMCAdapter
 
-from ..db.context import SQLALCHEMY_DATABASE_URL
+from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy import update, select, bindparam
 from sqlalchemy import exc
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from ..db.context import SQLALCHEMY_DATABASE_URL
+from ..db.schemas import DBConnection, DBSwitch
+
+from .adapter import Adapter
+from .IMC import IMCAdapter
+
+from ..logger import get_logger
+
+logger = get_logger("SyncAdapter")
 
 
 class ModelsSyncModule:
@@ -33,40 +37,52 @@ class ModelsSyncModule:
 
     def sync(self):
         self.adapter.getSwitches()
-        self.insert()
         self.update()
         self.check()
+        self.insert()
+
 
 class ConnectionSyncModule(ModelsSyncModule):
     def __init__(self, adapter: Adapter, session):
         super().__init__(adapter, session)
 
     def insert(self):
-        switches = self.session.execute(
+        switches = self.session.scalars(
             select(DBSwitch)
             .where(DBSwitch.notReachable == False)
-        )
+        ).all()
         for switch in switches:
-            interfaces = self.adapter.getSwitchInterfaces(switch["ip"])
-            for interface in interfaces:
-                self.session.execute(
-                    insert(DBConnection)
-                    .values({
-                        "switchId": switch["id"],
+            _dict = switch.__dict__
+            logger.info(f"syncronizing switch {_dict['name']}({_dict['ip']})")
+            try:
+                interfaces = self.adapter.getSwitchInterfaces(_dict["ip"])
+                for interface in interfaces:
+                    values = {
+                        "name": interface["ifAlias"],
+                        "switchId": _dict["id"],
                         "port": int(interface["ifIndex"]),
-                        "isUp": interface["showStatus"] == "1"
-                    })
-                    .on_conflict_do_update(
-                        constraint="switch_port_unique", set_={
-                        "isUp": interface["showStatus"] == "1"
-                    })
-                )
+                        "strPort": interface["ifIndex"],
+                        "toggled": interface["operationStatus"] == "1",
+                        "isUp": interface["operationStatus"] == "1",
+                        "adapter": "imc"
+                    }
+                    self.session.execute(
+                        insert(DBConnection)
+                        .values(values)
+                        .on_conflict_do_update(
+                            constraint="switch_port_unique", set_=values)
+                    )
+            except Exception as e:
+                logger.error(
+                    f"error syncing switch {_dict['name']}({_dict['ip']}) interfaces")
+                logger.error(e)
 
     def update(self):
         pass
 
     def check(self):
         pass
+
 
 class SwitchesSyncModule(ModelsSyncModule):
     def __init__(self, adapter: Adapter, session):
@@ -84,15 +100,16 @@ class SwitchesSyncModule(ModelsSyncModule):
         )
         exists = [e[0] for e in exists]
         inserts = [e for e in inserts if e["name"] not in exists]
-        self.session.execute(
-            insert(DBSwitch)
-            .values({
-                "name": bindparam("name"),
-                "ip": bindparam("ip"),
-                "notReachable": False
-            }),
-            inserts
-        )
+        if (len(inserts) > 0):
+            self.session.execute(
+                insert(DBSwitch)
+                .values({
+                    "name": bindparam("name"),
+                    "ip": bindparam("ip"),
+                    "notReachable": False
+                }),
+                inserts
+            )
 
     def update(self):
         updates = [{
@@ -100,15 +117,15 @@ class SwitchesSyncModule(ModelsSyncModule):
             "ip": e["ip"],
             "notReachable": False
         } for e in self.adapter.switches]
-        self.session.execute(
-            update(DBSwitch)
-            .where(DBSwitch.name == bindparam("label"))
-            .values({
-                "ip": bindparam("ip"),
-                "notReachable": False
-            }),
-            updates
-        )
+        for e in updates:
+            self.session.execute(
+                update(DBSwitch)
+                .where(DBSwitch.name == e["name"])
+                .values({
+                    "ip": e["ip"],
+                    "notReachable": False
+                })
+            )
 
     def check(self):
         names = [e['label'] for e in self.adapter.switches]
@@ -142,3 +159,23 @@ class AdapterSyncModule:
             raise Exception(
                 "unknown network adapter, please provide a configuration file for [imc]")
 
+    def _sync_all(self, session):
+        switches = SwitchesSyncModule(self.adapter, session)
+        switches.sync()
+        connections = ConnectionSyncModule(self.adapter, session)
+        connections.sync()
+
+    def sync(self):
+        """get database session"""
+        engine = create_engine(
+            SQLALCHEMY_DATABASE_URL.replace("asyncpg", "psycopg2"))
+        factory = sessionmaker(engine)
+        with factory() as session:
+            try:
+                self._sync_all(session)
+                session.commit()
+            except exc.SQLAlchemyError as e:
+                session.rollback()
+                raise e
+            finally:
+                session.close()

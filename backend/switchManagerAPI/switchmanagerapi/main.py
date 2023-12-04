@@ -34,11 +34,11 @@ app.include_router(switches.router)
 async def on_startup():
     """Run on startup"""
     # pass
-    # await drop_db()
     # await generateMockupDB()
-    await create_db()
-    module = AdapterSyncModule()
-    module.sync()
+    # await drop_db()
+    # await create_db()
+    # module = AdapterSyncModule()
+    # module.sync()
 
 
 def main():
