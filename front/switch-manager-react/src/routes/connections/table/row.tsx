@@ -44,7 +44,7 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
         onClick={onclick}
       >
         <div className="col-span-2 md:col-span-1 flex flex-col items-center justify-center">
-          <span>{name}</span>
+          <span>{name || "N/A"}</span>
           <div className="flex items-center gap-x-2 lg:hidden">
             <Ethernet
               className={clsx(
@@ -62,12 +62,12 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
         </div>
         <div className="col-span-3 md:col-span-2 flex flex-col">
           <span>
-            {customer.lastname} {customer.firstname}
+            {clsx(customer ? [customer.lastname, customer.firstname] : "N/A")}
           </span>
-          <span className="md:hidden">ID: {customer.id}</span>
+          <span className="md:hidden">ID: {customer?.id || "N/A"}</span>
         </div>
         <div className="hidden md:block col-span-2 lg:col-span-1">
-          {customer.id}
+          {customer?.id || "N/A"}
         </div>
         <div className="col-span-3 md:col-span-2 flex flex-col break-words">
           <span>{sw.name}</span>
@@ -85,8 +85,10 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
             <span>N / A</span>
           )}
         </div>
-        <div className="col-span-3 md:col-span-2">{address}</div>
-        <div className="hidden lg:block col-span-1">{customer.type}</div>
+        <div className="col-span-3 md:col-span-2">{address || "N/A"}</div>
+        <div className="hidden lg:block col-span-1">
+          {customer?.type || "N/A"}
+        </div>
       </div>
       <div
         className="hidden h-full rounded-md bg-neutral-100 p-4 lg:grid grid-flow-col items-center justify-between col-span-2 border-2 border-neutral-100 transition-colors"
