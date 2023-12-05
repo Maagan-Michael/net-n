@@ -53,7 +53,8 @@ class ConnectionSyncModule(ModelsSyncModule):
         ).all()
         for switch in switches:
             _dict = switch.__dict__
-            logger.info(f"syncronizing switch {_dict['name']}({_dict['ip']})")
+            logger.info(
+                f"syncronizing switch {_dict['name']}({_dict['ip']}) interfaces")
             try:
                 interfaces = self.adapter.getSwitchInterfaces(_dict["ip"])
                 for interface in interfaces:
@@ -76,6 +77,8 @@ class ConnectionSyncModule(ModelsSyncModule):
                 logger.error(
                     f"error syncing switch {_dict['name']}({_dict['ip']}) interfaces")
                 logger.error(e)
+            logger.info(
+                f"syncronizing switch {_dict['name']}({_dict['ip']}) interfaces done")
 
     def update(self):
         pass
@@ -101,6 +104,8 @@ class SwitchesSyncModule(ModelsSyncModule):
         exists = [e[0] for e in exists]
         inserts = [e for e in inserts if e["name"] not in exists]
         if (len(inserts) > 0):
+            logger.info(
+                f"adding new switches detected on the network ({len(inserts)})")
             self.session.execute(
                 insert(DBSwitch)
                 .values({
@@ -110,6 +115,7 @@ class SwitchesSyncModule(ModelsSyncModule):
                 }),
                 inserts
             )
+            logger.info("adding new switches detected on the network done")
 
     def update(self):
         updates = [{
@@ -118,6 +124,7 @@ class SwitchesSyncModule(ModelsSyncModule):
             "notReachable": False
         } for e in self.adapter.switches]
         for e in updates:
+            logger.info(f"syncing switch {e['name']}")
             self.session.execute(
                 update(DBSwitch)
                 .where(DBSwitch.name == e["name"])
@@ -126,6 +133,7 @@ class SwitchesSyncModule(ModelsSyncModule):
                     "notReachable": False
                 })
             )
+            logger.info(f"syncing switch {e['name']} done")
 
     def check(self):
         names = [e['label'] for e in self.adapter.switches]
@@ -136,6 +144,12 @@ class SwitchesSyncModule(ModelsSyncModule):
                 "notReachable": True
             })
         )
+        unreachables = self.session.scalars(
+            select(DBSwitch)
+            .where(DBSwitch.notReachable == True)
+        ).all()
+        for e in unreachables:
+            logger.info(f"switch {e['name']} is unreachable")
 
 
 class AdapterSyncModule:
