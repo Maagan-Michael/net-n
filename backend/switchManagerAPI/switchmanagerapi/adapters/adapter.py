@@ -17,6 +17,11 @@ class Adapter:
         pass
 
     @abstractmethod
+    def getSwitchInterface(self, ip: str, port: int) -> dict:
+        """gets the interface for a specific device"""
+        pass
+
+    @abstractmethod
     def togglePort(self, ip: str, port: int, state: bool):
         """sets the interface for a specific device up / down"""
         pass

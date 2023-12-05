@@ -110,7 +110,6 @@ async def listConnections(repo: ConnectionRepository, input: ConnectionListInput
         .offset(input.page * input.limit)
         .execution_options(populate_existing=True)
     )
-    print(stm)
     q = await repo.session.scalars(stm)
     # todo : compute hasPrevious
     res = []

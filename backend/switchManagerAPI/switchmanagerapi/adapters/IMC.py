@@ -14,11 +14,24 @@ class IMCAdapter(Adapter):
         return self.switches
 
     def getSwitchInterfaces(self, ip: str):
-        return get_all_interface_details(
+        res = get_all_interface_details(
             auth=self.auth.creds,
             url=self.auth.url,
             devip=ip
         )
+        res = [i for i in res if i["ifType"] == "53"]  # virtual
+        return res
+
+    def getSwitchInterface(self, ip: str, port: int) -> dict:
+        inter = get_interface_details(
+            ifindex=str(port),
+            auth=self.auth.creds,
+            url=self.auth.url,
+            devip=ip,
+        )
+        if (inter["ifType"] == "53"):
+            return inter
+        return None
 
     def togglePort(self, ip: str, port: int, state: bool):
         """sets the interface up / down"""
@@ -26,7 +39,7 @@ class IMCAdapter(Adapter):
         assert len(interfaces) > 0
         interfaces = [
             i for i in interfaces if (
-                i["ifType"] == "6"  # or i["ifTypeDesc"] == "ETHERNETCSMACD"
+                i["ifType"] == "53"  # virtual
                 and i["ifIndex"] == str(port)
             )
         ]

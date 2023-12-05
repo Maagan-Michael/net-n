@@ -38,6 +38,9 @@ async def on_startup():
     # await drop_db()
     # await create_db()
     # module = AdapterSyncModule()
+    # print(module.adapter.getSwitchInterface("172.22.10.2", 630))
+    # print(module.adapter.getSwitchInterface("10.100.64.251", 165))
+    # print(module.adapter.getSwitchInterface("10.100.65.251", 702))
     # module.sync()
 
 
