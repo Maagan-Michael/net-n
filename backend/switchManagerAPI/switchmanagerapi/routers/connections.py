@@ -101,7 +101,7 @@ async def listConnections(repo: ConnectionRepository, input: ConnectionListInput
         e.asc() for e in obFields]
     stm = (
         select(DBConnection)
-        .join(DBConnection.customer)
+        .join(DBConnection.customer, isouter=True)
         .join(DBConnection.switch)
         .options(contains_eager(DBConnection.customer), contains_eager(DBConnection.switch))
         .filter(*filters)
@@ -110,6 +110,7 @@ async def listConnections(repo: ConnectionRepository, input: ConnectionListInput
         .offset(input.page * input.limit)
         .execution_options(populate_existing=True)
     )
+    print(stm)
     q = await repo.session.scalars(stm)
     # todo : compute hasPrevious
     res = []
@@ -131,7 +132,7 @@ async def listConnections(repo: ConnectionRepository, input: ConnectionListInput
 async def getConnection(id: str, repo: ConnectionRepository):
     q = await repo.session.scalar(
         select(DBConnection)
-        .join(DBConnection.customer)
+        .join(DBConnection.customer, isouter=True)
         .join(DBConnection.switch)
         .options(contains_eager(DBConnection.customer), contains_eager(DBConnection.switch))
         .where(DBConnection.id == id)
