@@ -8,10 +8,10 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine
 )
-
+from ..config import AppConfig
 # using sqlite in dev environment, but will change to postgresql in production
 ### dev environment only ###
-SQLALCHEMY_DATABASE_URL = "postgresql+asyncpg://postgres:password@0.0.0.0:5432/postgres"
+SQLALCHEMY_DATABASE_URL = f"postgresql+asyncpg://{AppConfig['db']['user']}:{AppConfig['db']['password']}@{AppConfig['db']['host']}:{AppConfig['db']['port']}/{AppConfig['db']['database']}"
 Base = declarative_base()
 
 

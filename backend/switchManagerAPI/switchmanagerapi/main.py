@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from switchmanagerapi.routers import connections, customers, switches
 from .tests.mockups import generateMockupDB
 from .db.context import create_db, drop_db
-from .adapters.sync import AdapterSyncModule
+from .adapters.sync import AppAdapter
 
 origins = [
     "http://localhost:3000",
@@ -34,14 +34,13 @@ app.include_router(switches.router)
 async def on_startup():
     """Run on startup"""
     # pass
-    # await generateMockupDB()
     # await drop_db()
     # await create_db()
-    # module = AdapterSyncModule()
-    # print(module.adapter.getSwitchInterface("172.22.10.2", 630))
-    # print(module.adapter.getSwitchInterface("10.100.64.251", 165))
-    # print(module.adapter.getSwitchInterface("10.100.65.251", 702))
-    # module.sync()
+    # await generateMockupDB()
+    # print(AppAdapter.adapter.getSwitchInterface("172.22.10.2", 630))
+    # print(AppAdapter.adapter.getSwitchInterface("10.100.64.251", 165))
+    # print(AppAdapter.adapter.getSwitchInterface("10.100.65.251", 702))
+    # AppAdapter.sync()
 
 
 def main():

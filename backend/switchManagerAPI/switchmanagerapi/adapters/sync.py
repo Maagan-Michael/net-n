@@ -1,14 +1,16 @@
 from abc import abstractmethod
+import datetime
 import os
 import yaml
 
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy import update, select, bindparam
 from sqlalchemy import exc
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, contains_eager
 from sqlalchemy import create_engine
 from ..db.context import SQLALCHEMY_DATABASE_URL
 from ..db.schemas import DBConnection, DBSwitch
+from ..config import AppConfig
 
 from .adapter import Adapter
 from .IMC import IMCAdapter
@@ -86,6 +88,43 @@ class ConnectionSyncModule(ModelsSyncModule):
     def check(self):
         pass
 
+    def toggleConnections(self):
+        cons = self.session.scalars(
+            select(DBConnection.id, DBConnection.toggled,
+                   DBConnection.port, DBSwitch.ip)
+            .join(DBConnection.switch)
+            .where(DBConnection.toggleDate <= datetime.datetime.now())
+            .options(contains_eager(DBConnection.switch))
+        ).all()
+        for con in cons:
+            if (con["toggled"]):
+                logger.info(
+                    f"disabling connection {con['id']} on switch {con['ip']} port {con['port']}")
+                self.adapter.togglePort(con["ip"], con["port"], False)
+                self.session.execute(
+                    update(DBConnection)
+                    .where(DBConnection.id == con["id"])
+                    .values({
+                        "toggled": False,
+                        "toggleDate": None
+                    })
+                )
+            else:
+                logger.info(
+                    f"enabling connection {con['id']} on switch {con['ip']} port {con['port']}")
+                self.session.execute(
+                    update(DBConnection)
+                    .where(DBConnection.id == con["id"])
+                    .values({
+                        "toggled": True,
+                        "toggleDate": None
+                    })
+                )
+
+    def sync(self):
+        super().sync()
+        self.toggleConnections()
+
 
 class SwitchesSyncModule(ModelsSyncModule):
     def __init__(self, adapter: Adapter, session):
@@ -153,25 +192,20 @@ class SwitchesSyncModule(ModelsSyncModule):
 
 
 class AdapterSyncModule:
-    def get_config(self) -> dict:
-        """get the configuration"""
-        with open(os.environ["SM_CONF"], "r") as f:
-            return yaml.safe_load(f)
-
     def __init__(self) -> None:
-        config = self.get_config()
         self.adapter = None
-        if (config["imc"]):
+        if (AppConfig["imc"]):
             self.adapter = IMCAdapter(
-                https=config["imc"]["https"],
-                host=config["imc"]["host"],
-                user=config["imc"]["user"],
-                password=config["imc"]["password"],
-                port=config["imc"]["port"]
+                https=AppConfig["imc"]["https"],
+                host=AppConfig["imc"]["host"],
+                user=AppConfig["imc"]["user"],
+                password=AppConfig["imc"]["password"],
+                port=AppConfig["imc"]["port"]
             )
         else:
-            raise Exception(
+            logger.error(
                 "unknown network adapter, please provide a configuration file for [imc]")
+            self.adapter = Adapter()
 
     def _sync_all(self, session):
         switches = SwitchesSyncModule(self.adapter, session)
@@ -193,3 +227,6 @@ class AdapterSyncModule:
                 raise e
             finally:
                 session.close()
+
+
+AppAdapter = AdapterSyncModule()
