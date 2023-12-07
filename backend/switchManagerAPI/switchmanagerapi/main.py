@@ -34,9 +34,9 @@ app.include_router(switches.router)
 async def on_startup():
     """Run on startup"""
     # pass
-    # await drop_db()
-    # await create_db()
     # await generateMockupDB()
+    # await drop_db()
+    await create_db()
     # print(AppAdapter.adapter.getSwitchInterface("172.22.10.2", 630))
     # print(AppAdapter.adapter.getSwitchInterface("10.100.64.251", 165))
     # print(AppAdapter.adapter.getSwitchInterface("10.100.65.251", 702))
