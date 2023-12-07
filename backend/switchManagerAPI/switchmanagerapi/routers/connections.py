@@ -183,7 +183,7 @@ async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUp
             except Exception as ex:
                 logger.error(ex)
                 raise Exception(
-                    "asked operation on network failed, please try again")
+                    f"network op failed for {b.switch.ip}:{b.port}")
     return BatchConnectionOutput.model_construct(items=items, errors=errors)
 
 
