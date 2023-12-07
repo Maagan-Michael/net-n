@@ -1,11 +1,15 @@
 from fastapi import APIRouter, Depends
 from typing import List, Optional, Union
+from ..adapters.sync import AppAdapter
 from sqlalchemy import Column, or_, select, and_
 from sqlalchemy.orm import contains_eager
-from ..models import BatchedDeleteOutput, OrderBy, \
+from ..models import BatchedDeleteOutput, OrderBy, Connection, \
     BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListFilterEnum, ListSortEnum
 from ..db import DBConnection, DBSwitch, DBCustomer, ConnectionRepository
 import re
+from ..logger import get_logger
+
+logger = get_logger("ConnectionRouter")
 
 router = APIRouter(
     tags=["v1", "connections"],
@@ -146,7 +150,40 @@ async def getConnection(id: str, repo: ConnectionRepository):
 @router.post("/upsert", response_model=BatchConnectionOutput)
 async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUpsertInput]], repo: ConnectionRepository):
     """upsert or udpate one || multiple connections"""
-    [items, errors] = await repo.batch_upsert(input)
+    [items, errors, previousValues] = await repo.batch_upsert(input)
+    ids = [e.id for e in items]
+    items = (await repo.session.scalars(
+        select(DBConnection)
+        .join(DBConnection.customer, isouter=True)
+        .join(DBConnection.switch)
+        .options(contains_eager(DBConnection.customer), contains_eager(DBConnection.switch))
+        .where(DBConnection.id.in_(ids))
+        .execution_options(populate_existing=True)
+    )).all()
+    for (idx, e) in enumerate(previousValues):
+        if e:
+            items[idx] = ConnectionOutput.model_construct(
+                **items[idx].__dict__)
+            b = items[idx]
+            try:
+                if (e.toggled != b.toggled):
+                    # enable / disable connection with adapter
+                    logger.info(
+                        f"toggling {'on' if b.toggled else 'off'} connection {b.id} on {b.switch.name}({b.switch.ip}:{b.port})")
+                    AppAdapter.adapter.togglePort(
+                        b.switch.ip, b.port, b.toggled)
+                if (e.port != b.port):
+                    # closing old port with adapter
+                    logger.info(
+                        f"port changed on connection ({b.name})({b.id}) closing old port {e.port}")
+                    AppAdapter.adapter.togglePort(
+                        b.switch.ip, b.port, b.toggled)
+                    AppAdapter.adapter.togglePort(
+                        b.switch.ip, e.port, False)
+            except Exception as ex:
+                logger.error(ex)
+                raise Exception(
+                    "asked operation on network failed, please try again")
     return BatchConnectionOutput.model_construct(items=items, errors=errors)
 
 

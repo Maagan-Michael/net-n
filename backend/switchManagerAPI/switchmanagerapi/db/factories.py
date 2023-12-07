@@ -56,12 +56,13 @@ class DatabaseRepository(Generic[Model]):
         self.logger.info(f"upserted:{model.id}")
         return model
 
-    async def batch_upsert(self, inputs: Union[Model, List[Model]]) -> (List[Model], List[BatchError]):
+    async def batch_upsert(self, inputs: Union[Model, List[Model]]) -> (List[Model], List[BatchError], List[Model]):
         """upsert multiple model(s)"""
         if not isinstance(inputs, list):
             inputs = [inputs]
         items = []
         errors = []
+        previousValues = []
         for input in inputs:
             existing = None
             if input.id:
@@ -71,23 +72,26 @@ class DatabaseRepository(Generic[Model]):
                     .limit(1)
                 )
             if existing:
+                previousValues.append(
+                    self.model.model_construct(**existing.__dict__))
                 existing = {
                     **existing.__dict__,
                     **input.model_dump(exclude_unset=True)
                 }
             else:
+                previousValues.append(None)
                 existing = input
             try:
                 existing = self.model.model_validate(existing)
                 await self.upsert(existing)
-                self.logger.info(input.model_dump_json(exclude_unset=True))
                 items.append(existing)
             except Exception as e:
                 if isinstance(e, SQLAlchemyError):
                     self.logger.error(e)
                 errors.append(BatchError.model_construct(
                     id=input.id, error=str(e)))
-        return (items, errors)
+                previousValues.pop()
+        return (items, errors, previousValues)
 
     async def delete(self, ids: List[str]) -> BatchedDeleteOutput:
         """batch delete model(s)"""

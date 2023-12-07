@@ -3,8 +3,6 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, U
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from .. import Base
-from sqlalchemy import event
-from ...logger import get_logger
 
 
 class DBConnection(Base):
@@ -33,26 +31,3 @@ class DBConnection(Base):
     customer = relationship(
         "DBCustomer", back_populates="connections", foreign_keys=[customerId])
     UniqueConstraint(switchId, strPort, name="switch_port_unique")
-
-
-logger = get_logger("connectionJobs")
-
-
-@event.listens_for(DBConnection.port, 'modified', retval=True, propagate=True)
-@event.listens_for(DBConnection.port, 'set', retval=True, propagate=True)
-def validate_port(target, value, oldvalue, initiator):
-    """validate port"""
-    logger.info("here man")
-    print("here man", flush=True)
-    print([target, value, oldvalue], flush=True)
-    return value
-
-
-@event.listens_for(DBConnection.toggled, 'modified', retval=True, propagate=True)
-@event.listens_for(DBConnection.toggled, 'set', retval=True, propagate=True)
-def validate_toggle(target, value, oldvalue, initiator):
-    logger.info("here man")
-    """validate toggle"""
-    print("here man", flush=True)
-    print([target, value, oldvalue], flush=True)
-    return value

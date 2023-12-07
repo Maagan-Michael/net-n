@@ -194,7 +194,7 @@ class SwitchesSyncModule(ModelsSyncModule):
 class AdapterSyncModule:
     def __init__(self) -> None:
         self.adapter = None
-        if (AppConfig["imc"]):
+        if (AppConfig.get("imc")):
             self.adapter = IMCAdapter(
                 https=AppConfig["imc"]["https"],
                 host=AppConfig["imc"]["host"],
