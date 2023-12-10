@@ -1,0 +1,48 @@
+# imc adapter config
+imc:
+  https: false
+  host: "127.0.0.1"
+  port: "2000"
+  user: imc_user
+  password: imc_password
+
+# backend database config
+db: &db
+  user: db_user
+  password: db_password
+  host: "0.0.0.0"
+  port: "5432"
+  database: db_name
+
+# syncModule config
+sync:
+  # right now only "sql" is supported
+  # could be used with a REST API, GRAPHQL, redis, mongo or other in the futur.
+  type: "sql"
+  source:
+    # requires oracle and cx_oracle drivers
+    driver: "oracle+cx_oracle"
+    user: source_db_user
+    password: source_db_pass
+    host: "0.0.0.0"
+    port: "1522"
+    database: source_db_name
+    table: source_table_name
+  destination:
+    # same database as the backend, but other target could be specified
+    <<: *db
+    # requires asyncpg and postgresql drivers
+    driver: "postgresql+asyncpg"
+    # table name in the backend database
+    table: "public.customers"
+
+  # api url to the backend
+  api_url: "http://localhost:8080"
+
+  # column names in the source table (mapping to the backend table)
+  col_name_customer_id: "takziv" # find correct column
+  col_name_customer_lastname: "dayar_name"
+  col_name_customer_address: "dira_name"
+  col_name_customer_type: "dira_name" # find correct column
+  col_name_connection_toggled: "takziv"
+  split_name: True
