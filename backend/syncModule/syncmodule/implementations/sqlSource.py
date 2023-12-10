@@ -57,23 +57,27 @@ class SQLSyncModule(ISyncModule):
             ] + [self.config.col_name_connection_toggled] if self.config.col_name_connection_toggled else []
         )
         results = []
-        with engine.connect() as conn:
-            results = conn.scalars(
-                f"SELECT {columns} FROM {self.config.source.table}").all()
-            engine.dispose()
-        for x in results:
-            [firstname, lastname] = x[2].split(" ") if self.config.split_name else [
-                x[1], x[2]]
-            x = {
-                "customer": {
-                    "id": x[0],
-                    "firstname": firstname,
-                    "lastname": lastname,
-                    "type": x[3],
-                },
-                "connection": {
-                    "address": x[4],
-                    "toggled": bool(x[5])
+        try:
+            with engine.connect() as conn:
+                results = conn.scalars(
+                    f"SELECT {columns} FROM {self.config.source.table}").all()
+                engine.dispose()
+            for x in results:
+                [firstname, lastname] = x[2].split(" ") if self.config.split_name else [
+                    x[1], x[2]]
+                x = {
+                    "customer": {
+                        "id": x[0],
+                        "firstname": firstname,
+                        "lastname": lastname,
+                        "type": x[3],
+                    },
+                    "connection": {
+                        "address": x[4],
+                        "toggled": bool(x[5])
+                    }
                 }
-            }
+        except Exception as e:
+            self.logger.error(e)
+            self.logger.error("Error could not connect to source database")
         return results
