@@ -39,7 +39,8 @@ class IMCAdapter(Adapter):
         assert len(interfaces) > 0
         interfaces = [
             i for i in interfaces if (
-                i["ifType"] == "53"  # virtual
+                # virtual connections only need to check wanted behavior; physical connections == "6" need to check both
+                i["ifType"] == "53"
                 and i["ifIndex"] == str(port)
             )
         ]
