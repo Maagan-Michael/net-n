@@ -1,41 +1,60 @@
 from abc import abstractmethod
-from typing import Dict, List, Optional
+from typing import TypedDict, List, Optional
 from pydantic import BaseModel, model_validator
 import requests
 
 from sqlalchemy import create_engine
 
-SourceDataType = Dict[
-    "customer": Dict[
-        "id": int,
-        "firstname": str,
-        "lastname": str,
-        "type": str,
-        "address": str
-    ],
-    "connection": Dict[
-        "toggled": bool,
-    ]
-]
 
-TargetDataType = Dict[
-    "customer": Dict[
-        "id": int,
-        "firstname": str,
-        "lastname": str,
-        "type": str,
-        "address": str
-    ],
-    "connection": Dict[
-        "id": int,
-        "toggled": bool,
-        "autoUpdate": bool
-    ]
-]
+class CustomerDataType(TypedDict):
+    """CustomerDataType is the type of the data from the customer"""
+    id: int
+    firstname: str
+    lastname: str
+    type: str
+    address: str
+
+
+class ConnectionDataType(TypedDict):
+    """ConnectionDataType is the type of the data from the connection"""
+    id: Optional[int]
+    toggled: bool
+    autoUpdate: bool
+
+
+class SourceDataType(TypedDict):
+    """SourceDataType is the type of the data from the source"""
+    customer: CustomerDataType
+    connection: ConnectionDataType
+
+
+class TargetDataType(TypedDict):
+    """TargetDataType is the type of the data from the target"""
+    customer: CustomerDataType
+    connection: ConnectionDataType
+
+
+class UpdatesDataType(TypedDict):
+    """UpdatesDataType is the type of the data to be updated"""
+    customers: List[CustomerDataType]
+    connections: List[ConnectionDataType]
+
+
+class RemovesDataType(TypedDict):
+    """RemovesDataType is the type of the data to be removed"""
+    customers: List[int]
+    connections: List[int]
+
+
+class SplitDataType(TypedDict):
+    """SplitDataType is the type of the data to be split"""
+    updates: UpdatesDataType
+    removes: RemovesDataType
 
 
 class DBConfig(BaseModel):
     """DBConfig is the configuration for the database"""
+    driver: Optional[str] = None
     host: Optional[str] = None
     port: Optional[int] = None
     user: Optional[str] = None
@@ -48,6 +67,8 @@ class DBConfig(BaseModel):
     def validateUrl(self):
         if (self.url):
             return self
+        if (not self.driver):
+            raise ValueError("driver is required")
         if (not self.host):
             raise ValueError("host is required")
         if (not self.port):
@@ -65,7 +86,7 @@ class DBConfig(BaseModel):
     def generateUrl(self) -> str:
         if (self.url):
             return self.url
-        return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}/{self.database}"
+        return f"{self.driver}://{self.user}:{self.password}@{self.host}/{self.database}"
 
 
 class ISyncModule:
@@ -117,23 +138,13 @@ class ISyncModule:
             result = conn.execute(
                 f"""
                 SELECT {columns} FROM {self.destination.table}
-                FROM customers
                 LEFT JOIN connections ON = connections.customer_id
                 """
             )
         engine.dispose()
         return result
 
-    def splitData(self) -> Dict[
-        "updates": Dict[
-            "customers": List[Dict],
-            "connections": List[Dict]
-        ],
-        "removes": Dict[
-            "customers": List[str],
-            "connections": List[str]
-        ]
-    ]:
+    def splitData(self) -> SplitDataType:
         """splits the data into updates and removes"""
         sourceData = self.getSourceData()
         targetData = self.getTargetData()
@@ -168,14 +179,14 @@ class ISyncModule:
                 res["removes"]["customers"].append(x["customer"]["id"])
                 res["removes"]["connections"].append(x["connection"]["id"])
 
-    async def apiUpdates(self, data: Dict):
+    async def apiUpdates(self, data: SplitDataType):
         """updates the data to the API"""
         if (len(data["updates"]["customers"]) > 0):
             await requests.post(f"{self.apiUrl}/v1/customers/upsert", json=data)
         if (len(data["updates"]["connections"]) > 0):
             await requests.post(f"{self.apiUrl}/v1/connections/upsert", json=data)
 
-    async def apiRemoves(self, data: Dict):
+    async def apiRemoves(self, data: SplitDataType):
         """removes the data from the API"""
         if (len(data["removes"]["customers"]) > 0):
             await requests.post(f"{self.apiUrl}/v1/customers/delete", json=data)

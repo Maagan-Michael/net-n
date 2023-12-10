@@ -19,7 +19,7 @@ class SyncModuleConfig(BaseModel):
     """
     source: DBConfig
     destination: DBConfig
-    apiUrl: str
+    api_url: str
 
     col_name_customer_id: str
     col_name_customer_firstname: Optional[str]
@@ -27,14 +27,14 @@ class SyncModuleConfig(BaseModel):
     col_name_customer_type: str
     col_name_customer_address: str
     col_name_connection_toggled: Optional[str]
-    splitName: bool = False
+    split_name: bool = False
 
 
 class SQLSyncModule(ISyncModule):
     """SyncModule is the module that syncs the data from the source database to the target database"""
 
     def __init__(self, config: SyncModuleConfig):
-        super().__init__(config.destination, config.apiUrl)
+        super().__init__(config.destination, config.api_url)
         self.config = config
         self.logger = logging.getLogger('syncmodule')
         self.logger.info('SyncModule init')
@@ -48,7 +48,7 @@ class SQLSyncModule(ISyncModule):
                 self.config.col_name_customer_id,
                 self.config.col_name_customer_firstname,
             ] +
-            ([self.config.col_name_customer_lastname] if self.config.splitName
+            ([self.config.col_name_customer_lastname] if self.config.split_name
              else [
                 self.config.col_name_customer_firstname,
                 self.config.col_name_customer_lastname
@@ -58,7 +58,7 @@ class SQLSyncModule(ISyncModule):
             ] + [self.config.col_name_connection_toggled] if self.config.col_name_connection_toggled else []
         )
         for x in columns:
-            [firstname, lastname] = x[2].split(" ") if self.config.splitName else [
+            [firstname, lastname] = x[2].split(" ") if self.config.split_name else [
                 x[1], x[2]]
             x = {
                 "customer": {
