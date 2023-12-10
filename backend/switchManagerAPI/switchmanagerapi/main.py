@@ -1,5 +1,6 @@
 import os
 import time
+import asyncio
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,6 +8,8 @@ from switchmanagerapi.routers import connections, customers, switches
 from .tests.mockups import generateMockupDB
 from .db.context import create_db, drop_db
 from .adapters.sync import AppAdapter
+from .jobs.connections import toggleDueConnections
+from .jobs.scheduler import schedule_every
 
 origins = [
     "http://localhost:3000",
@@ -29,6 +32,15 @@ app.include_router(connections.router)
 app.include_router(customers.router)
 app.include_router(switches.router)
 
+jobs = []
+
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    """Run on shutdown"""
+    for job in jobs:
+        job.cancel()
+
 
 @app.on_event("startup")
 async def on_startup():
@@ -41,6 +53,10 @@ async def on_startup():
     # print(AppAdapter.adapter.getSwitchInterface("10.100.64.251", 165))
     # print(AppAdapter.adapter.getSwitchInterface("10.100.65.251", 702))
     # AppAdapter.sync()
+
+    # checks for due connections every 12 hours
+    jobs.append(asyncio.create_task(
+        schedule_every(60 * 60 * 12, toggleDueConnections)))
 
 
 def main():
