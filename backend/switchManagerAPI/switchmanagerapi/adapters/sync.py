@@ -1,16 +1,12 @@
 from abc import abstractmethod
 import datetime
-import os
-import yaml
 
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy import update, select, bindparam
-from sqlalchemy import exc
-from sqlalchemy.orm import sessionmaker, contains_eager
-from sqlalchemy import create_engine
-from ..db.context import SQLALCHEMY_DATABASE_URL
+from sqlalchemy.orm import contains_eager
 from ..db.schemas import DBConnection, DBSwitch
 from ..config import AppConfig
+from ..db.context import get_context_db_session
 
 from .adapter import Adapter
 from .IMC import IMCAdapter
@@ -26,33 +22,33 @@ class ModelsSyncModule:
         self.session = session
 
     @abstractmethod
-    def insert(self):
+    async def insert(self):
         pass
 
     @abstractmethod
-    def update(self):
+    async def update(self):
         pass
 
     @abstractmethod
-    def check(self):
+    async def check(self):
         pass
 
-    def sync(self):
+    async def sync(self):
         self.adapter.getSwitches()
-        self.update()
-        self.check()
-        self.insert()
+        await self.update()
+        await self.check()
+        await self.insert()
 
 
 class ConnectionSyncModule(ModelsSyncModule):
     def __init__(self, adapter: Adapter, session):
         super().__init__(adapter, session)
 
-    def insert(self):
-        switches = self.session.scalars(
+    async def insert(self):
+        switches = await (self.session.scalars(
             select(DBSwitch)
             .where(DBSwitch.notReachable == False)
-        ).all()
+        )).all()
         for switch in switches:
             _dict = switch.__dict__
             logger.info(
@@ -69,7 +65,7 @@ class ConnectionSyncModule(ModelsSyncModule):
                         "isUp": interface["operationStatus"] == "1",
                         "adapter": "imc"
                     }
-                    self.session.execute(
+                    await self.session.execute(
                         insert(DBConnection)
                         .values(values)
                         .on_conflict_do_update(
@@ -82,26 +78,26 @@ class ConnectionSyncModule(ModelsSyncModule):
             logger.info(
                 f"syncronizing switch {_dict['name']}({_dict['ip']}) interfaces done")
 
-    def update(self):
+    async def update(self):
         pass
 
-    def check(self):
+    async def check(self):
         pass
 
-    def toggleConnections(self):
-        cons = self.session.scalars(
+    async def toggleConnections(self):
+        cons = (await self.session.scalars(
             select(DBConnection.id, DBConnection.toggled,
                    DBConnection.port, DBSwitch.ip)
             .join(DBConnection.switch)
             .where(DBConnection.toggleDate <= datetime.datetime.now())
             .options(contains_eager(DBConnection.switch))
-        ).all()
+        )).all()
         for con in cons:
             if (con["toggled"]):
                 logger.info(
                     f"disabling connection {con['id']} on switch {con['ip']} port {con['port']}")
                 self.adapter.togglePort(con["ip"], con["port"], False)
-                self.session.execute(
+                await self.session.execute(
                     update(DBConnection)
                     .where(DBConnection.id == con["id"])
                     .values({
@@ -112,7 +108,7 @@ class ConnectionSyncModule(ModelsSyncModule):
             else:
                 logger.info(
                     f"enabling connection {con['id']} on switch {con['ip']} port {con['port']}")
-                self.session.execute(
+                await self.session.execute(
                     update(DBConnection)
                     .where(DBConnection.id == con["id"])
                     .values({
@@ -121,23 +117,23 @@ class ConnectionSyncModule(ModelsSyncModule):
                     })
                 )
 
-    def sync(self):
-        super().sync()
-        self.toggleConnections()
+    async def sync(self):
+        await super().sync()
+        await self.toggleConnections()
 
 
 class SwitchesSyncModule(ModelsSyncModule):
     def __init__(self, adapter: Adapter, session):
         super().__init__(adapter, session)
 
-    def insert(self):
+    async def insert(self):
         inserts = [{
             "name": e["label"],
             "ip": e["ip"],
             "notReachable": False
         } for e in self.adapter.switches]
         names = [e["name"] for e in inserts]
-        exists = self.session.execute(
+        exists = await self.session.execute(
             select(DBSwitch.name).where(DBSwitch.name.in_(names))
         )
         exists = [e[0] for e in exists]
@@ -145,7 +141,7 @@ class SwitchesSyncModule(ModelsSyncModule):
         if (len(inserts) > 0):
             logger.info(
                 f"adding new switches detected on the network ({len(inserts)})")
-            self.session.execute(
+            await self.session.execute(
                 insert(DBSwitch)
                 .values({
                     "name": bindparam("name"),
@@ -156,7 +152,7 @@ class SwitchesSyncModule(ModelsSyncModule):
             )
             logger.info("adding new switches detected on the network done")
 
-    def update(self):
+    async def update(self):
         updates = [{
             "name": e["label"],
             "ip": e["ip"],
@@ -164,7 +160,7 @@ class SwitchesSyncModule(ModelsSyncModule):
         } for e in self.adapter.switches]
         for e in updates:
             logger.info(f"syncing switch {e['name']}")
-            self.session.execute(
+            await self.session.execute(
                 update(DBSwitch)
                 .where(DBSwitch.name == e["name"])
                 .values({
@@ -174,19 +170,19 @@ class SwitchesSyncModule(ModelsSyncModule):
             )
             logger.info(f"syncing switch {e['name']} done")
 
-    def check(self):
+    async def check(self):
         names = [e['label'] for e in self.adapter.switches]
-        self.session.execute(
+        await self.session.execute(
             update(DBSwitch)
             .where(DBSwitch.name.not_in(names))
             .values({
                 "notReachable": True
             })
         )
-        unreachables = self.session.scalars(
+        unreachables = (await self.session.scalars(
             select(DBSwitch)
             .where(DBSwitch.notReachable == True)
-        ).all()
+        )).all()
         for e in unreachables:
             logger.info(f"switch {e['name']} is unreachable")
 
@@ -207,26 +203,16 @@ class AdapterSyncModule:
                 "unknown network adapter, please provide a configuration file for [imc]")
             self.adapter = Adapter()
 
-    def _sync_all(self, session):
+    async def _sync_all(self, session):
         switches = SwitchesSyncModule(self.adapter, session)
-        switches.sync()
+        await switches.sync()
         connections = ConnectionSyncModule(self.adapter, session)
-        connections.sync()
+        await connections.sync()
 
-    def sync(self):
+    async def sync(self):
         """get database session"""
-        engine = create_engine(
-            SQLALCHEMY_DATABASE_URL.replace("asyncpg", "psycopg2"))
-        factory = sessionmaker(engine)
-        with factory() as session:
-            try:
-                self._sync_all(session)
-                session.commit()
-            except exc.SQLAlchemyError as e:
-                session.rollback()
-                raise e
-            finally:
-                session.close()
+        async with get_context_db_session() as session:
+            await self._sync_all(session)
 
 
 AppAdapter = AdapterSyncModule()
