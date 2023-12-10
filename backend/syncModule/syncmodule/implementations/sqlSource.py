@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, ConfigDict
 import logging
 from .interface import ISyncModule, DBConfig, TargetDataType
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 
 class SQLSyncModuleConfig(BaseModel):
@@ -45,7 +45,7 @@ class SQLSyncModule(ISyncModule):
         """gets the data from the source database"""
         url = self.config.source.generateUrl()
         engine = create_engine(url)
-        columns = ','.join(
+        columns = ", ".join(
             [self.config.col_name_customer_id]
             + ([self.config.col_name_customer_lastname] if self.config.split_name
                else [
@@ -57,27 +57,35 @@ class SQLSyncModule(ISyncModule):
             ] + [self.config.col_name_connection_toggled] if self.config.col_name_connection_toggled else []
         )
         results = []
+        parsedValues = []
         try:
             with engine.connect() as conn:
-                results = conn.scalars(
-                    f"SELECT {columns} FROM {self.config.source.table}").all()
+                results = conn.execute(
+                    text(f"SELECT {columns} FROM {self.config.source.table}")).all()
                 engine.dispose()
             for x in results:
-                [firstname, lastname] = x[2].split(" ") if self.config.split_name else [
-                    x[1], x[2]]
-                x = {
+                length = len(x)
+                fn, lsn = "", ""
+                if self.config.split_name and x[1] is not None:
+                    _values = x[1].split(" ")
+                    fn = _values[0]
+                    lsn = " ".join(_values[1:len(_values)])
+                else:
+                    fn = x[1] if x[1] is not None else ""
+                    lsn = x[2] if x[2] is not None else ""
+                parsedValues.append({
                     "customer": {
                         "id": x[0],
-                        "firstname": firstname,
-                        "lastname": lastname,
-                        "type": x[3],
+                        "firstname": fn,
+                        "lastname": lsn,
+                        "type": "unknown",  # x[length - 3],
                     },
                     "connection": {
-                        "address": x[4],
-                        "toggled": bool(x[5])
+                        "address": x[length - 2],
+                        "toggled": bool(x[length - 1])
                     }
-                }
+                })
         except Exception as e:
             self.logger.error(e)
-            self.logger.error("Error could not connect to source database")
-        return results
+            self.logger.error("Error could retrieve data from source database")
+        return parsedValues
