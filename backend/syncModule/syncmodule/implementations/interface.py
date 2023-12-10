@@ -109,7 +109,7 @@ class ISyncModule:
         """gets the data from the target database"""
         url = self.destination.generateUrl()
         engine = create_engine(url)
-        columns = ",".join([
+        columns = ','.join([
             "customers.id",
             "customers.firstname",
             "customers.lastname",

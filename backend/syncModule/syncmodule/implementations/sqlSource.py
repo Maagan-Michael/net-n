@@ -45,13 +45,10 @@ class SQLSyncModule(ISyncModule):
         """gets the data from the source database"""
         url = self.config.source.generateUrl()
         engine = create_engine(url)
-        columns = ",".join(
-            [
-                self.config.col_name_customer_id,
-                self.config.col_name_customer_firstname,
-            ] +
-            ([self.config.col_name_customer_lastname] if self.config.split_name
-             else [
+        columns = ','.join(
+            [self.config.col_name_customer_id]
+            + ([self.config.col_name_customer_lastname] if self.config.split_name
+               else [
                 self.config.col_name_customer_firstname,
                 self.config.col_name_customer_lastname
             ]) + [
@@ -59,7 +56,12 @@ class SQLSyncModule(ISyncModule):
                 self.config.col_name_customer_address,
             ] + [self.config.col_name_connection_toggled] if self.config.col_name_connection_toggled else []
         )
-        for x in columns:
+        results = []
+        with engine.connect() as conn:
+            results = conn.scalars(
+                f"SELECT {columns} FROM {self.config.source.table}").all()
+            engine.dispose()
+        for x in results:
             [firstname, lastname] = x[2].split(" ") if self.config.split_name else [
                 x[1], x[2]]
             x = {
@@ -74,8 +76,4 @@ class SQLSyncModule(ISyncModule):
                     "toggled": bool(x[5])
                 }
             }
-        with engine.connect() as conn:
-            result = conn.execute(
-                f"SELECT {columns} FROM {self.config.source.table}")
-        engine.dispose()
         return result
