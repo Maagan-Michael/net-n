@@ -76,4 +76,4 @@ class SQLSyncModule(ISyncModule):
                     "toggled": bool(x[5])
                 }
             }
-        return result
+        return results
