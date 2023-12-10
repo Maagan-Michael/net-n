@@ -4,7 +4,8 @@ import yaml
 
 def get_config() -> dict:
     """get the configuration"""
-    with open(os.environ["SM_CONF"], "r") as f:
+    assert "CONFIG_PATH" in os.environ, "CONFIG_PATH is not defined"
+    with open(os.environ["CONFIG_PATH"], "r") as f:
         return yaml.safe_load(f)
 
 

@@ -4,6 +4,10 @@ from .adapter import Adapter
 
 
 class IMCAdapter(Adapter):
+    """
+        IMCAdapter is an adapter for the HP IMC API.
+    """
+
     def __init__(self, https: bool = False, host: str = None, port: int = 80, user: str = None, password: str = None):
         super().__init__()
         self.auth = IMCAuth("https://" if https else "http://",
