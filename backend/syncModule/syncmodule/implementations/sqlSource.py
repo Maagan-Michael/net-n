@@ -1,11 +1,11 @@
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 import logging
 from .interface import ISyncModule, DBConfig, TargetDataType
 from sqlalchemy import create_engine
 
 
-class SyncModuleConfig(BaseModel):
+class SQLSyncModuleConfig(BaseModel):
     """
         SyncModuleConfig is the configuration for the SyncModule
         source: DBConfig is the source database configuration
@@ -17,12 +17,14 @@ class SyncModuleConfig(BaseModel):
         col_name_customer_address is the source column name for customer address
         col_name_connection_toggled is the source column name for connection toggled
     """
+    model_config = ConfigDict(from_attributes=True)
+
     source: DBConfig
     destination: DBConfig
     api_url: str
 
     col_name_customer_id: str
-    col_name_customer_firstname: Optional[str]
+    col_name_customer_firstname: Optional[str] = None
     col_name_customer_lastname: str
     col_name_customer_type: str
     col_name_customer_address: str
@@ -33,7 +35,7 @@ class SyncModuleConfig(BaseModel):
 class SQLSyncModule(ISyncModule):
     """SyncModule is the module that syncs the data from the source database to the target database"""
 
-    def __init__(self, config: SyncModuleConfig):
+    def __init__(self, config: SQLSyncModuleConfig):
         super().__init__(config.destination, config.api_url)
         self.config = config
         self.logger = logging.getLogger('syncmodule')
@@ -69,7 +71,7 @@ class SQLSyncModule(ISyncModule):
                 },
                 "connection": {
                     "address": x[4],
-                    "toggled": x[5]
+                    "toggled": bool(x[5])
                 }
             }
         with engine.connect() as conn:
