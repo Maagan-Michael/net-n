@@ -74,6 +74,7 @@ export default function ConnectionForm({
     register,
     handleSubmit,
     control,
+    watch,
     formState: { dirtyFields, isDirty },
     setValue,
   } = useForm({
@@ -82,6 +83,7 @@ export default function ConnectionForm({
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "connection.form",
   });
+  const shouldLock = watch("switch.restricted");
   const { mutate, isLoading, data: response } = useUpsertFullConnection();
   useEffect(() => {
     const position = i18n.dir() === "rtl" ? "top-left" : "top-right";
@@ -133,6 +135,7 @@ export default function ConnectionForm({
           register={register}
           control={control}
           setValue={setValue}
+          shouldLock={shouldLock}
         />
         <Separator />
         <div className="w-full col-span-5">

@@ -34,9 +34,11 @@ const DatePickerHeader = ({
 export default function DatePicker({
   control,
   label,
+  disabled,
 }: {
   control: Control<FieldValues>;
   label: string;
+  disabled?: boolean;
 }) {
   return (
     <Controller
@@ -48,6 +50,7 @@ export default function DatePicker({
         date.setMinutes(0, 0, 0);
         return (
           <DP
+            disabled={disabled}
             selected={date}
             onChange={(date: Date) => onChange(date)}
             minDate={new Date()}
@@ -65,7 +68,9 @@ export default function DatePicker({
                 date.getTime() === _date.getTime() && "!bg-blue-400 text-white"
               );
             }}
-            customInput={<TextInputWithRef name="" label={label} />}
+            customInput={
+              <TextInputWithRef name="" label={label} disabled={disabled} />
+            }
             renderCustomHeader={DatePickerHeader}
           />
         );

@@ -8,12 +8,14 @@ export default function Toggle({
   toggled,
   onChange,
   className = "w-9",
+  disabled,
 }: {
   label?: string;
   name: string;
   toggled: boolean;
   onChange?: MouseEventHandler<HTMLDivElement>;
   className?: string;
+  disabled?: boolean;
 }) {
   return (
     <div onMouseDown={onChange}>
@@ -25,9 +27,14 @@ export default function Toggle({
       <input type="checkbox" id={name} name={name} hidden />
       <ToggleOn
         className={clsx(
-          "cursor-pointer transition-colors",
+          "transition-colors",
           className,
-          toggled ? "fill-green-400 rotate-180" : "fill-red-500"
+          toggled && "rotate-180",
+          disabled
+            ? "fill-gray-400"
+            : toggled
+            ? "cursor-pointer fill-green-400"
+            : "cursor-pointer fill-red-500"
         )}
       />
     </div>
@@ -58,7 +65,7 @@ export function IconToggle({
         </label>
       )}
       <input type="checkbox" id={name} name={name} hidden />
-      <Icon className={clsx(className, "cursor-pointer")} />
+      <Icon className={clsx(className, "cursor-pointer w-8 h-8")} />
     </div>
   );
 }

@@ -35,7 +35,7 @@ export default function TextInput({
       <div className="bg-neutral-100 rounded py-1 px-2 w-full" id={label}>
         <input
           type="text"
-          className="bg-transparent outline-none w-full text-xs"
+          className="bg-transparent outline-none w-full text-xs disabled:text-gray-500"
           dir={i18n.dir()}
           required={required}
           {..._extraProps}
@@ -67,7 +67,7 @@ export const TextInputWithRef = forwardRef<HTMLInputElement, TextInputProps>(
             ref={ref}
             type="text"
             dir={i18n.dir()}
-            className="bg-transparent outline-none w-full text-xs"
+            className="bg-transparent outline-none w-full text-xs disabled:text-gray-500"
             required={required}
             {..._extraProps}
             {...props}

@@ -15,7 +15,7 @@ export default function FormSection({
       >
         {title}
       </h3>
-      <div className="flex flex-col gap-y-2">{children}</div>
+      <div className="relative flex flex-col gap-y-2">{children}</div>
     </div>
   );
 }
