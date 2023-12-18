@@ -2,11 +2,14 @@ import { useState, useCallback, MouseEventHandler } from "react";
 import clsx from "clsx";
 import { SearchBar } from "./SearchBar";
 import SearchIcon from "@icons/search.svg?react";
+import SettingsIcon from "@icons/settings.svg?react";
 import Cross from "@icons/cross.svg?react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 export default function Navigation() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const { i18n } = useTranslation();
   const onSearch: MouseEventHandler<HTMLButtonElement> = useCallback(
     (e) => {
@@ -26,6 +29,15 @@ export default function Navigation() {
         <h1 className="hidden lg:block font-thin text-xl md:text-3xl">
           SwitchManager
         </h1>
+        <button
+          className={clsx(
+            "absolute cursor-pointer hover:text-blue-400 transition-all rounded-full bg-neutral-50 shadow-md hover:shadow-lg flex items-center justify-center w-10 h-10",
+            i18n.dir() === "rtl" ? "left-4" : "right-4"
+          )}
+          onClick={() => navigate(`/settings?${window.location.search}`)}
+        >
+          <SettingsIcon className="h-6" />
+        </button>
         <section
           className={clsx(
             "fixed w-full left-0 transition-all lg:transition-none p-4 pr-16 lg:relative lg:grow lg:w-[440px] lg:px-0 lg:py-2 lg:mt-1",
