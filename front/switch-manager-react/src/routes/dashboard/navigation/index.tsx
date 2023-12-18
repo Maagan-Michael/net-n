@@ -25,19 +25,10 @@ export default function Navigation() {
   );
   return (
     <>
-      <nav className="fixed w-full bottom-0 right-0 lg:relative lg:w-auto lg:block items-center gap-x-4 mt-4 md:mt-0">
+      <nav className="fixed w-full bottom-0 right-0 lg:relative lg:w-auto lg:block items-center gap-x-4 mt-4 md:mt-0 z-10">
         <h1 className="hidden lg:block font-thin text-xl md:text-3xl">
           SwitchManager
         </h1>
-        <button
-          className={clsx(
-            "absolute cursor-pointer hover:text-blue-400 transition-all rounded-full bg-neutral-50 shadow-md hover:shadow-lg flex items-center justify-center w-10 h-10",
-            i18n.dir() === "rtl" ? "left-4" : "right-4"
-          )}
-          onClick={() => navigate(`/settings?${window.location.search}`)}
-        >
-          <SettingsIcon className="h-6" />
-        </button>
         <section
           className={clsx(
             "fixed w-full left-0 transition-all lg:transition-none p-4 pr-16 lg:relative lg:grow lg:w-[440px] lg:px-0 lg:py-2 lg:mt-1",
@@ -47,8 +38,20 @@ export default function Navigation() {
           <SearchBar shouldFocus={open} onSearchDone={() => setOpen(false)} />
         </section>
         <section>
+          <div className="lg:hidden fixed bottom-3 right-3 w-[48px] h-[98px] rounded-md backdrop-blur-md">
+            &nbsp;
+          </div>
           <button
-            className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center rounded-full bg-white absolute right-4 bottom-0 transform -translate-y-1/2 shadow-md"
+            className={clsx(
+              "absolute bottom-16 lg:top-0 cursor-pointer hover:text-blue-400 transition-all rounded-full bg-neutral-50 shadow-lg lg:shadow-md hover:shadow-lg flex items-center justify-center w-10 h-10",
+              i18n.dir() === "rtl" ? "right-4 md:left-4" : "right-4"
+            )}
+            onClick={() => navigate(`/settings?${window.location.search}`)}
+          >
+            <SettingsIcon className="h-6" />
+          </button>
+          <button
+            className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center rounded-full bg-neutral-50 absolute right-4 bottom-0 transform -translate-y-1/2 shadow-md"
             onMouseDown={onSearch}
           >
             {open ? <Cross /> : <SearchIcon />}
