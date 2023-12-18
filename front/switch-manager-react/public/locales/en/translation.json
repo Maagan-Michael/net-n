@@ -17,6 +17,11 @@
       }
     }
   },
+  "settings": {
+    "title": "Settings",
+    "instructions": "select a language",
+    "continue": "continue working"
+  },
   "connection": {
     "form": {
       "switch": {

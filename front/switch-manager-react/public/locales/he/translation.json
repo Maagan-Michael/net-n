@@ -17,6 +17,11 @@
       }
     }
   },
+  "settings": {
+    "title": "הגדרות",
+    "instructions": "בחר שפה",
+    "continue": "להמשיך לעבוד"
+  },
   "connection": {
     "form": {
       "switch": {
