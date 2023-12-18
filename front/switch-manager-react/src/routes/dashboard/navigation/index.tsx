@@ -44,7 +44,9 @@ export default function Navigation() {
           <button
             className={clsx(
               "absolute bottom-16 lg:top-0 cursor-pointer hover:text-blue-400 transition-all rounded-full bg-neutral-50 shadow-lg lg:shadow-md hover:shadow-lg flex items-center justify-center w-10 h-10",
-              "lg:end-4 right-4 lg:right-[unset]"
+              i18n.dir() === "rtl"
+                ? "right-4 lg:right-[unset] lg:left-4"
+                : "right-4"
             )}
             onClick={() => navigate(`/settings?${window.location.search}`)}
           >
