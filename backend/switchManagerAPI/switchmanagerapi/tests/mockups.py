@@ -42,6 +42,7 @@ def createMockConnection(switchId: str, customerId: str) -> Connection:
         return Connection(
             id=fake.uuid4(),
             address=fake.address(),
+            flat=fake.building_number(),
             name=f"{fake.word()[0:3].upper()}{fake.ean(length=8)[0:3]}",
             port=port,
             strPort=f"{port}",

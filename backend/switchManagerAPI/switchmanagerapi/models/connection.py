@@ -26,6 +26,7 @@ class IConnectionBase(BaseModel):
     autoUpdate: bool = Field(default=True,
                              description="define if the connection should be updated automatically")
     address: Optional[str] = Field(min_length=1, max_length=255)
+    flat: Optional[str] = Field(min_length=1, max_length=255)
 
     @validator("toggleDate")
     def validate_toggleDate(cls, v):
@@ -134,3 +135,4 @@ class ConnectionUpsertInput(BaseModel):
     customerId: Optional[int] = None
     autoUpdate: Optional[bool] = None
     address: Optional[str] = None
+    flat: Optional[str] = None

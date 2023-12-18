@@ -25,6 +25,7 @@ class DBConnection(Base):
         "customers.id"), index=True, default=None, nullable=True)
     autoUpdate = Column(Boolean, index=True, default=True, nullable=False)
     address = Column(String, index=True, default=None, nullable=True)
+    flat = Column(String, index=True, default=None, nullable=True)
 
     switch = relationship(
         "DBSwitch", back_populates="connections", foreign_keys=[switchId])

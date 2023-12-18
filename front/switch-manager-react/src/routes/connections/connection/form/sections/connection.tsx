@@ -64,6 +64,7 @@ const ConnectionSection = ({
           label={t("address")}
           required
         />
+        <TextInput register={register} name="flat" label={t("flat")} />
         <DatePicker control={control} label={t("toggleDate")} />
         <div className="flex flex-row gap-x-2 items-center justify-between">
           <span className="text-sm font-thin  underline">

@@ -23,7 +23,8 @@
         "title": "switch",
         "lat": "latitude",
         "lng": "longitude",
-        "restricted": "restrict modifications"
+        "restricted": "restrict modifications",
+        "description": "description"
       },
       "connection": {
         "title": "connection",
@@ -31,7 +32,8 @@
         "port": "port",
         "toggleDate": "scheduled automatic change",
         "autoUpdate": "allow automatic updates",
-        "address": "address"
+        "address": "address",
+        "flat": "flat"
       },
       "customer": {
         "title": "customer",

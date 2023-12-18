@@ -13,6 +13,7 @@ import GPS from "@icons/gps.svg?react";
 import IconRoundBtn from "@components/inputs/iconRoundBtn";
 import { useTranslation } from "react-i18next";
 import FormSection from "./section";
+import TextArea from "@/components/inputs/TextArea";
 
 const SwitchSection = ({
   register,
@@ -50,6 +51,13 @@ const SwitchSection = ({
         />
         <TextInput register={register} name="switch.gpsLat" label={t("lat")} />
         <TextInput register={register} name="switch.gpsLong" label={t("lng")} />
+      </div>
+      <div className="flex flex-col gap-x-2 w-full">
+        <TextArea
+          register={register}
+          name="switch.description"
+          label={t("description")}
+        />
       </div>
       <div className="flex flex-row gap-x-2 items-center justify-between">
         {" "}

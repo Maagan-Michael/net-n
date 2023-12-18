@@ -108,7 +108,7 @@ export default function ConnectionForm({
   }, [isLoading, response, goBack, t, i18n]);
   return (
     <form
-      className="relative flex flex-col p-4 items-center w-11/12 md:w-[600px] md:h-[440px] bg-white rounded-md z-10 shadow-md overflow-scroll"
+      className="relative flex flex-col p-4 items-center w-11/12 md:w-[600px] md:h-[500px] bg-white rounded-md z-10 shadow-md overflow-scroll"
       onSubmit={handleSubmit((d) => {
         const { switch: dsw, customer: dcustomer, ...dcon } = dirtyFields;
         let input: fullConnectionUpdateInput | undefined = {

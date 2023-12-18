@@ -23,7 +23,8 @@
         "title": "מתג רשת",
         "lat": "קו רוחב",
         "lng": "קו גובה",
-        "restricted": "הגבל שינויים"
+        "restricted": "הגבל שינויים",
+        "description": "תיאור"
       },
       "connection": {
         "title": "אפשרויות טכניות",
@@ -31,7 +32,8 @@
         "port": "פחתה",
         "toggleDate": "מתוזמן לשינוי אוטומטי",
         "autoUpdate": "לאפשר עדכוני אוטומטיים",
-        "address": "כתובת"
+        "address": "כתובת",
+        "flat": "דִירָה"
       },
       "customer": {
         "title": "פרטי לקוח",
