@@ -28,6 +28,8 @@ sync:
     port: 1521
     database: source_db_name
     table: source_table_name
+    # use the url parameter if you want to use a service name or other specific attributes for the connection
+    url: "oracle+cx_oracle://user:pass@ip:1521?service_name=service_name"
   destination:
     # same database as the backend, but other target could be specified
     <<: *db
