@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "@routes/dashboard";
+import Settings from "@routes/settings";
 import Connections from "@routes/connections";
 import Connection from "@routes/connections/connection";
 import { ToastContainer } from "react-toastify";
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <Connections />,
         children: [
+          {
+            path: "/settings",
+            element: <Settings />,
+          },
           {
             path: "/connections/:id",
             element: <Connection />,
