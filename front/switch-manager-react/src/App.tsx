@@ -5,6 +5,7 @@ import Dashboard from "@routes/dashboard";
 import Settings from "@routes/settings";
 import Connections from "@routes/connections";
 import Connection from "@routes/connections/connection";
+import LoadingScreen from "./components/loadingScreen";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -35,7 +36,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingScreen />}>
         <RouterProvider router={router} />
       </Suspense>
       <ToastContainer />
