@@ -61,9 +61,8 @@ const ConnectionSection = ({
             name="port"
             type="number"
             label={t("port")}
-            required
             className="w-24"
-            disabled={disabled}
+            disabled
           />
           <Controller
             control={control}

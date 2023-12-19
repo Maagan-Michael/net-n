@@ -45,8 +45,7 @@
         "firstname": "שם פרטי",
         "lastname": "שם משפחה",
         "type": "סוג",
-        "ID": "מס׳",
-        "clear": "unassign"
+        "ID": "מס׳"
       },
       "save": "שמירה",
       "errors": {

@@ -9,17 +9,7 @@ const CustomerSection = ({ register }: { register: UseFormRegister<any> }) => {
     keyPrefix: "connection.form.customer",
   });
   return (
-    <FormSection
-      title={t("title")}
-      ltr={i18n.dir() === "ltr"}
-      rightComponent={
-        <TextAction
-          className="text-xs"
-          text={t("clear")}
-          onMouseDown={() => console.log("clear")}
-        />
-      }
-    >
+    <FormSection title={t("title")} ltr={i18n.dir() === "ltr"}>
       <div className="flex flex-row gap-x-2">
         <TextInput
           register={register}

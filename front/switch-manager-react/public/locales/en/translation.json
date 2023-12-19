@@ -45,8 +45,7 @@
         "firstname": "firstname",
         "lastname": "lastname",
         "type": "type",
-        "ID": "ID",
-        "clear": "unassign"
+        "ID": "ID"
       },
       "errors": {
         "general": "an error has occured"

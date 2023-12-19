@@ -1,7 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Navigation from "./navigation";
 import { useTranslation } from "react-i18next";
-import clsx from "clsx";
 
 export default function Dashboard() {
   const { i18n } = useTranslation();
