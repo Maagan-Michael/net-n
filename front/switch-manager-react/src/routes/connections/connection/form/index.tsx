@@ -51,8 +51,8 @@ function cleanInput<T extends Record<string, any>>(
 }
 
 const Separator = () => (
-  <div className="relative col-span-1 px-4 py-20 hidden md:block">
-    <div className="absolute bg-neutral-100 rounded-full w-2 h-4/6 block"></div>
+  <div className="relative col-span-1 px-4 py-5 hidden md:block">
+    <div className="absolute bg-neutral-100 rounded-full w-2 h-full block"></div>
   </div>
 );
 
@@ -110,7 +110,7 @@ export default function ConnectionForm({
   }, [isLoading, response, goBack, t, i18n]);
   return (
     <form
-      className="relative flex flex-col p-4 items-center w-11/12 md:w-[600px] md:h-[500px] bg-white rounded-md z-10 shadow-md overflow-scroll"
+      className="relative flex flex-col p-4 items-center w-11/12 md:w-[600px] md:h-[700px] bg-white rounded-md z-10 shadow-md overflow-scroll"
       onSubmit={handleSubmit((d) => {
         const { switch: dsw, customer: dcustomer, ...dcon } = dirtyFields;
         let input: fullConnectionUpdateInput | undefined = {
@@ -131,12 +131,15 @@ export default function ConnectionForm({
         onClick={goBack}
       />
       <div className="md:grid md:grid-cols-11 justify-evenly">
-        <ConnectionSection
-          register={register}
-          control={control}
-          setValue={setValue}
-          shouldLock={shouldLock}
-        />
+        <div className="w-full col-span-5">
+          <ConnectionSection
+            register={register}
+            control={control}
+            setValue={setValue}
+            shouldLock={shouldLock}
+          />
+          <CustomerSection register={register} />
+        </div>
         <Separator />
         <div className="w-full col-span-5">
           <SwitchSection
@@ -144,7 +147,6 @@ export default function ConnectionForm({
             control={control}
             setValue={setValue}
           />
-          <CustomerSection register={register} />
         </div>
       </div>
       <TextButton

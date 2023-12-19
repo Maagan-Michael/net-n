@@ -14,6 +14,8 @@ import IconRoundBtn from "@components/inputs/iconRoundBtn";
 import { useTranslation } from "react-i18next";
 import FormSection from "./section";
 import TextArea from "@/components/inputs/TextArea";
+import DropDownSection from "@/components/dropdownSection";
+import TextAction from "@/components/inputs/textAction";
 
 const SwitchSection = ({
   register,
@@ -29,6 +31,24 @@ const SwitchSection = ({
   });
   return (
     <FormSection title={t("title")} ltr={i18n.dir() === "ltr"}>
+      <TextInput
+        register={register}
+        name="switch.id"
+        label={t("ID")}
+        disabled
+      />
+      <TextInput
+        register={register}
+        name="switch.ip"
+        label={t("ip")}
+        disabled
+      />
+      <TextInput
+        register={register}
+        name="switch.name"
+        label={t("name")}
+        required
+      />
       <div className="flex flex-row gap-x-2 items-center justify-between">
         <IconRoundBtn
           icon={<GPS className="w-4 h-4" />}
@@ -77,6 +97,12 @@ const SwitchSection = ({
             />
           )}
         />
+      </div>
+      <div>
+        <DropDownSection
+          label={t("restricted-ports")}
+          action={<TextAction text="+" className="text-xl" />}
+        ></DropDownSection>
       </div>
     </FormSection>
   );

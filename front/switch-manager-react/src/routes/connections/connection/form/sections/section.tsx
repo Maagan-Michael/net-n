@@ -11,7 +11,7 @@ export default function FormSection({
   rightComponent?: React.ReactNode;
 }>) {
   return (
-    <div className="p-2 col-span-5">
+    <div className="p-2">
       <div className="flex flex-row items-center justify-between">
         <h3
           className={clsx(

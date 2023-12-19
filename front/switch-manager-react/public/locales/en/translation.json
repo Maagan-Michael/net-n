@@ -26,10 +26,14 @@
     "form": {
       "switch": {
         "title": "switch",
+        "name": "name",
+        "ID": "ID",
+        "ip": "ip address",
         "lat": "latitude",
         "lng": "longitude",
         "restricted": "restrict modifications",
-        "description": "description"
+        "description": "description",
+        "restricted-ports": "restricted ports"
       },
       "connection": {
         "title": "connection",

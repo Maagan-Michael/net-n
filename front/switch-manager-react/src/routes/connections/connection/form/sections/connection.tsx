@@ -46,7 +46,7 @@ const ConnectionSection = ({
         )
       }
     >
-      <div className="flex flex-col gap-y-2 mt-4 h-full">
+      <div className="flex flex-col gap-y-2 h-full">
         <div className="flex flex-row gap-x-2 justify-between items-end">
           <TextInput
             disabled={disabled}

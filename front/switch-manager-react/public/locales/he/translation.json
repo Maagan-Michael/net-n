@@ -26,10 +26,14 @@
     "form": {
       "switch": {
         "title": "מתג רשת",
+        "name": "שֵׁם",
+        "ID": "מס׳",
+        "ip": "כתובת ה - IP",
         "lat": "קו רוחב",
         "lng": "קו גובה",
         "restricted": "הגבל שינויים",
-        "description": "תיאור"
+        "description": "תיאור",
+        "restricted-ports": "פחתות רשת מוגבלות"
       },
       "connection": {
         "title": "אפשרויות טכניות",
