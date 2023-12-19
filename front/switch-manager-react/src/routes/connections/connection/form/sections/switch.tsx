@@ -16,6 +16,7 @@ import FormSection from "./section";
 import TextArea from "@/components/inputs/TextArea";
 import DropDownSection from "@/components/dropdownSection";
 import TextAction from "@/components/inputs/textAction";
+import clsx from "clsx";
 
 const SwitchSection = ({
   register,
@@ -100,7 +101,7 @@ const SwitchSection = ({
       </div>
       <div>
         <DropDownSection
-          label={t("restricted-ports")}
+          label={clsx(t("restricted-ports"), `(${0})`)}
           action={<TextAction text="+" className="text-xl" />}
         ></DropDownSection>
       </div>
