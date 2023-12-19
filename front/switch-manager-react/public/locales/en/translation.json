@@ -44,7 +44,9 @@
         "title": "customer",
         "firstname": "firstname",
         "lastname": "lastname",
-        "type": "type"
+        "type": "type",
+        "ID": "ID",
+        "clear": "unassign"
       },
       "errors": {
         "general": "an error has occured"

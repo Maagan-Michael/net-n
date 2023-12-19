@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import ISO6391 from "iso-639-1";
 import clsx from "clsx";
 import CrossIcon from "@icons/cross.svg?react";
+import TextAction from "@/components/inputs/textAction";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -43,12 +44,11 @@ export default function Settings() {
           ))}
         </ul>
         <div className="py-2 w-full text-center">
-          <span
+          <TextAction
             onMouseDown={goBack}
-            className="font-light text-md cursor-pointer hover:underline text-blue-400"
-          >
-            {clsx(t("continue"), " ", i18n.dir() === "rtl" ? "←" : "→")}
-          </span>
+            className="font-light text-md"
+            text={clsx(t("continue"), " ", i18n.dir() === "rtl" ? "←" : "→")}
+          />
         </div>
       </div>
       <button

@@ -44,7 +44,9 @@
         "title": "פרטי לקוח",
         "firstname": "שם פרטי",
         "lastname": "שם משפחה",
-        "type": "סוג"
+        "type": "סוג",
+        "ID": "מס׳",
+        "clear": "unassign"
       },
       "save": "שמירה",
       "errors": {

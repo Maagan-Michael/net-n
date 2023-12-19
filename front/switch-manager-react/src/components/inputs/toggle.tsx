@@ -46,7 +46,7 @@ export function IconToggle({
   name,
   toggled,
   onChange,
-  className = "w-9",
+  className = "w-9 h-9",
   icons,
 }: {
   label?: string;
@@ -65,7 +65,7 @@ export function IconToggle({
         </label>
       )}
       <input type="checkbox" id={name} name={name} hidden />
-      <Icon className={clsx(className, "cursor-pointer w-8 h-8")} />
+      <Icon className={clsx(className, "cursor-pointer")} />
     </div>
   );
 }

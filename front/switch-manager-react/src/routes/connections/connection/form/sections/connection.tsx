@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Controller,
   UseFormRegister,
@@ -25,26 +25,31 @@ const ConnectionSection = ({
   setValue: UseFormSetValue<any>;
   shouldLock: boolean;
 }) => {
-  const [locked, setLocked] = useState(shouldLock);
+  const [locked, setLocked] = useState(true);
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "connection.form.connection",
   });
+  useEffect(() => setLocked(true), [shouldLock]);
+  const disabled = shouldLock && locked;
   return (
-    <FormSection title={t("title")} ltr={i18n.dir() === "ltr"}>
-      <div className="absolute -top-7 right-0">
-        {shouldLock && (
+    <FormSection
+      title={t("title")}
+      ltr={i18n.dir() === "ltr"}
+      rightComponent={
+        shouldLock && (
           <IconToggle
             name="locked"
             icons={[Lock, Unlock]}
             toggled={locked}
             onChange={(e) => setLocked(!locked)}
           />
-        )}
-      </div>
+        )
+      }
+    >
       <div className="flex flex-col gap-y-2 mt-4 h-full">
         <div className="flex flex-row gap-x-2 justify-between items-end">
           <TextInput
-            disabled={shouldLock && locked}
+            disabled={disabled}
             register={register}
             name="name"
             label={t("ppp")}
@@ -58,12 +63,12 @@ const ConnectionSection = ({
             label={t("port")}
             required
             className="w-24"
-            disabled={shouldLock && locked}
+            disabled={disabled}
           />
           <Controller
             control={control}
             name="toggled"
-            disabled={shouldLock && locked}
+            disabled={disabled}
             render={({ field: { value, onChange } }) => (
               <Toggle
                 label=""
@@ -71,7 +76,7 @@ const ConnectionSection = ({
                 className="w-9 mb-1"
                 toggled={value}
                 onChange={(e) => onChange(!value)}
-                disabled={shouldLock && locked}
+                disabled={disabled}
               />
             )}
           />
@@ -80,13 +85,19 @@ const ConnectionSection = ({
           register={register}
           name="address"
           label={t("address")}
+          disabled={disabled}
           required
         />
-        <TextInput register={register} name="flat" label={t("flat")} />
+        <TextInput
+          register={register}
+          name="flat"
+          label={t("flat")}
+          disabled={disabled}
+        />
         <DatePicker
           control={control}
           label={t("toggleDate")}
-          disabled={shouldLock && locked}
+          disabled={disabled}
         />
         <div className="flex flex-row gap-x-2 items-center justify-between">
           <span className="text-sm font-thin  underline">
@@ -95,7 +106,7 @@ const ConnectionSection = ({
           <Controller
             control={control}
             name="autoUpdate"
-            disabled={shouldLock && locked}
+            disabled={disabled}
             render={({ field: { value, onChange } }) => (
               <Toggle
                 label=""
@@ -103,7 +114,7 @@ const ConnectionSection = ({
                 className="w-9 mb-1"
                 toggled={value}
                 onChange={(e) => onChange(!value)}
-                disabled={shouldLock && locked}
+                disabled={disabled}
               />
             )}
           />
