@@ -5,6 +5,7 @@ import {
   Control,
   FieldValues,
   UseFormSetValue,
+  UseFormWatch,
 } from "react-hook-form";
 import TextInput from "@components/inputs/TextInput";
 import Toggle, { IconToggle } from "@components/inputs/toggle";
@@ -18,13 +19,14 @@ const ConnectionSection = ({
   register,
   control,
   setValue,
-  shouldLock,
+  watch,
 }: {
   register: UseFormRegister<any>;
   control: Control<FieldValues>;
   setValue: UseFormSetValue<any>;
-  shouldLock: boolean;
+  watch: UseFormWatch<any>;
 }) => {
+  const shouldLock = watch("switch.restricted");
   const [locked, setLocked] = useState(true);
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "connection.form.connection",

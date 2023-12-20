@@ -4,6 +4,7 @@ import {
   Control,
   FieldValues,
   UseFormSetValue,
+  UseFormWatch,
 } from "react-hook-form";
 import TextInput from "@components/inputs/TextInput";
 import Toggle from "@components/inputs/toggle";
@@ -22,14 +23,18 @@ const SwitchSection = ({
   register,
   control,
   setValue,
+  watch,
 }: {
   register: UseFormRegister<any>;
   control: Control<FieldValues>;
   setValue: UseFormSetValue<any>;
+  watch: UseFormWatch<any>;
 }) => {
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "connection.form.switch",
   });
+  const restrictedPorts = watch("switch.restrictedPorts");
+  const restrictedDescs = watch("switch.restrictedPortsDesc");
   return (
     <FormSection title={t("title")} ltr={i18n.dir() === "ltr"}>
       <TextInput
@@ -103,7 +108,25 @@ const SwitchSection = ({
         <DropDownSection
           label={clsx(t("restricted-ports"), `(${0})`)}
           action={<TextAction text="+" className="text-xl" />}
-        ></DropDownSection>
+        >
+          {restrictedPorts.map((port: any, i: number) => (
+            <div
+              key={port}
+              className="flex flex-row gap-x-2 items-center justify-between"
+            >
+              <TextInput
+                register={register}
+                name={`switch.restrictedPorts[${i}]`}
+                label={t("port")}
+              />
+              <TextInput
+                register={register}
+                name={`switch.restrictedPortsDesc[${i}]`}
+                label={t("description")}
+              />
+            </div>
+          ))}
+        </DropDownSection>
       </div>
     </FormSection>
   );

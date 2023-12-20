@@ -83,7 +83,6 @@ export default function ConnectionForm({
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "connection.form",
   });
-  const shouldLock = watch("switch.restricted");
   const { mutate, isLoading, data: response } = useUpsertFullConnection();
   useEffect(() => {
     const position = i18n.dir() === "rtl" ? "top-left" : "top-right";
@@ -136,7 +135,7 @@ export default function ConnectionForm({
             register={register}
             control={control}
             setValue={setValue}
-            shouldLock={shouldLock}
+            watch={watch}
           />
           <CustomerSection register={register} />
         </div>
@@ -146,6 +145,7 @@ export default function ConnectionForm({
             register={register}
             control={control}
             setValue={setValue}
+            watch={watch}
           />
         </div>
       </div>

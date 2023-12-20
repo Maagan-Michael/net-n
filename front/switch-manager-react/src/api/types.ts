@@ -13,6 +13,8 @@ export interface SwitchOuput {
     gpsLat?: number
     gpsLong?: number
     restricted: boolean
+    restrictedPorts: number[]
+    restrictedPortsDesc: string[]
 }
 
 export interface ConnectionOutput {
@@ -87,6 +89,8 @@ export interface SwitchInput {
     gpsLat?: number
     gpsLong?: number
     restricted?: boolean
+    restrictedPorts?: number[]
+    restrictedPortsDesc?: string[]
 }
 
 export interface ConnectionInput {
