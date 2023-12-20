@@ -63,6 +63,39 @@ const CloseButton = ({ closeToast }: CloseButtonProps) => (
   />
 );
 
+const FormContent = ({
+  register,
+  control,
+  setValue,
+  watch,
+}: {
+  register: ReturnType<typeof useForm>["register"];
+  control: ReturnType<typeof useForm>["control"];
+  setValue: ReturnType<typeof useForm>["setValue"];
+  watch: ReturnType<typeof useForm>["watch"];
+}) => (
+  <div className="md:grid md:grid-cols-11 justify-evenly grow">
+    <div className="w-full col-span-5">
+      <ConnectionSection
+        register={register}
+        control={control}
+        setValue={setValue}
+        watch={watch}
+      />
+      <CustomerSection register={register} />
+    </div>
+    <Separator />
+    <div className="w-full col-span-5">
+      <SwitchSection
+        register={register}
+        control={control}
+        setValue={setValue}
+        watch={watch}
+      />
+    </div>
+  </div>
+);
+
 export default function ConnectionForm({
   data,
   goBack,
@@ -129,26 +162,7 @@ export default function ConnectionForm({
         )}
         onClick={goBack}
       />
-      <div className="md:grid md:grid-cols-11 justify-evenly grow">
-        <div className="w-full col-span-5">
-          <ConnectionSection
-            register={register}
-            control={control}
-            setValue={setValue}
-            watch={watch}
-          />
-          <CustomerSection register={register} />
-        </div>
-        <Separator />
-        <div className="w-full col-span-5">
-          <SwitchSection
-            register={register}
-            control={control}
-            setValue={setValue}
-            watch={watch}
-          />
-        </div>
-      </div>
+      <FormContent {...{ register, control, setValue, watch }} />
       <TextButton
         className="bg-blue-400 w-6/12"
         label={t("save")}

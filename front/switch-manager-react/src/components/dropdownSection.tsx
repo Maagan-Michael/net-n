@@ -12,7 +12,7 @@ export default function DropDownSection({
         <label className="text-sm font-thin">{label}</label>
         <div>{action}</div>
       </div>
-      <div>{children}</div>
+      <div className="overflow-scroll h-full">{children}</div>
     </div>
   );
 }

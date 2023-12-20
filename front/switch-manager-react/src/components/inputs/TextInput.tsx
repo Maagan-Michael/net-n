@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 export interface TextInputProps
   extends Partial<JSX.IntrinsicElements["input"]> {
-  label: string;
+  label?: string;
   name: string;
   register?: UseFormRegister<any>;
 }
@@ -22,16 +22,18 @@ export default function TextInput({
   const { i18n } = useTranslation();
   return (
     <div className={clsx("[&>label]:focus-within:text-blue-400", className)}>
-      <label
-        htmlFor={label}
-        className={clsx(
-          i18n.dir() === "rtl" ? "text-right" : "text-left",
-          "font-thin text-xs w-full inline-block"
-        )}
-      >
-        {label}
-        {required ? "*" : ""}
-      </label>
+      {label && (
+        <label
+          htmlFor={label}
+          className={clsx(
+            i18n.dir() === "rtl" ? "text-right" : "text-left",
+            "font-thin text-xs w-full inline-block"
+          )}
+        >
+          {label}
+          {required ? "*" : ""}
+        </label>
+      )}
       <div className="bg-neutral-100 rounded py-1 px-2 w-full" id={label}>
         <input
           type="text"
@@ -52,16 +54,18 @@ export const TextInputWithRef = forwardRef<HTMLInputElement, TextInputProps>(
     const { i18n } = useTranslation();
     return (
       <div className={clsx("[&>label]:focus-within:text-blue-400", className)}>
-        <label
-          htmlFor={label}
-          className={clsx(
-            i18n.dir() === "rtl" ? "text-right" : "text-left",
-            "font-thin text-xs w-full inline-block"
-          )}
-        >
-          {label}
-          {required ? "*" : ""}
-        </label>
+        {label && (
+          <label
+            htmlFor={label}
+            className={clsx(
+              i18n.dir() === "rtl" ? "text-right" : "text-left",
+              "font-thin text-xs w-full inline-block"
+            )}
+          >
+            {label}
+            {required ? "*" : ""}
+          </label>
+        )}
         <div className="bg-neutral-100 rounded py-1 px-2 w-full" id={label}>
           <input
             ref={ref}

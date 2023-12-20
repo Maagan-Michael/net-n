@@ -8,8 +8,6 @@ import {
 } from "react-hook-form";
 import TextInput from "@components/inputs/TextInput";
 import Toggle from "@components/inputs/toggle";
-import Lock from "@icons/lock.svg?react";
-import Unlock from "@icons/lock-open.svg?react";
 import GPS from "@icons/gps.svg?react";
 import IconRoundBtn from "@components/inputs/iconRoundBtn";
 import { useTranslation } from "react-i18next";
@@ -18,6 +16,79 @@ import TextArea from "@/components/inputs/TextArea";
 import DropDownSection from "@/components/dropdownSection";
 import TextAction from "@/components/inputs/textAction";
 import clsx from "clsx";
+
+const RestrictedPorts = ({
+  register,
+  setValue,
+  watch,
+}: {
+  register: UseFormRegister<any>;
+  control: Control<FieldValues>;
+  setValue: UseFormSetValue<any>;
+  watch: UseFormWatch<any>;
+}) => {
+  const { t } = useTranslation("translation", {
+    keyPrefix: "connection.form.switch",
+  });
+  const restrictedPorts = watch("switch.restrictedPorts");
+  const restrictedDescs = watch("switch.restrictedPortsDesc");
+  return (
+    <DropDownSection
+      label={clsx(t("restricted-ports"), `(${restrictedPorts.length})`)}
+      action={
+        <TextAction
+          text="+"
+          className="text-xl"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setValue("switch.restrictedPorts", [0, ...restrictedPorts]);
+            setValue("switch.restrictedPortsDesc", ["", ...restrictedDescs]);
+          }}
+        />
+      }
+    >
+      <div className="flex flex-col gap-y-1 items-center justify-between p-2 overflow-scroll max-h-[156px]">
+        {restrictedPorts.map((port: any, i: number) => (
+          <div
+            key={`${port}-${i}`}
+            className="grid grid-cols-12 gap-x-1 items-center"
+          >
+            <TextAction
+              text="-"
+              className="text-xl col-span-1"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setValue("switch.restrictedPorts", [
+                  ...restrictedPorts.slice(0, i),
+                  ...restrictedPorts.slice(i + 1),
+                ]);
+                setValue("switch.restrictedPortsDesc", [
+                  ...restrictedDescs.slice(0, i),
+                  ...restrictedDescs.slice(i + 1),
+                ]);
+              }}
+            />
+            <TextInput
+              type="number"
+              min="0"
+              max="65535"
+              className="col-span-3"
+              register={register}
+              name={`switch.restrictedPorts[${i}]`}
+            />
+            <TextInput
+              className="col-span-8"
+              register={register}
+              name={`switch.restrictedPortsDesc[${i}]`}
+            />
+          </div>
+        ))}
+      </div>
+    </DropDownSection>
+  );
+};
 
 const SwitchSection = ({
   register,
@@ -33,8 +104,6 @@ const SwitchSection = ({
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "connection.form.switch",
   });
-  const restrictedPorts = watch("switch.restrictedPorts");
-  const restrictedDescs = watch("switch.restrictedPortsDesc");
   return (
     <FormSection title={t("title")} ltr={i18n.dir() === "ltr"}>
       <TextInput
@@ -104,30 +173,12 @@ const SwitchSection = ({
           )}
         />
       </div>
-      <div>
-        <DropDownSection
-          label={clsx(t("restricted-ports"), `(${0})`)}
-          action={<TextAction text="+" className="text-xl" />}
-        >
-          {restrictedPorts.map((port: any, i: number) => (
-            <div
-              key={port}
-              className="flex flex-row gap-x-2 items-center justify-between"
-            >
-              <TextInput
-                register={register}
-                name={`switch.restrictedPorts[${i}]`}
-                label={t("port")}
-              />
-              <TextInput
-                register={register}
-                name={`switch.restrictedPortsDesc[${i}]`}
-                label={t("description")}
-              />
-            </div>
-          ))}
-        </DropDownSection>
-      </div>
+      <RestrictedPorts
+        register={register}
+        control={control}
+        setValue={setValue}
+        watch={watch}
+      />
     </FormSection>
   );
 };
