@@ -23,6 +23,24 @@ class Switch(BaseModel):
     )
     restricted: bool = Field(
         default=False, description="switch access / update is restricted")
+    restrictedPorts: list[int] = Field(
+        default=[], description="restricted ports"
+    )
+    restrictedPortsDesc: list[str] = Field(
+        default=[], description="restricted ports description, indexed by restrictedPorts"
+    )
+
+    @validator("restrictedPorts")
+    def validate_restrictedPorts(cls, v):
+        assert len(v) == len(
+            set(v)), "restrictedPorts must be unique"
+        return v
+
+    @validator("restrictedPortsDesc")
+    def validate_restrictedPortsDesc(cls, v, values):
+        assert len(v) == len(
+            values["restrictedPorts"]), "restrictedPortsDesc must have the same length as restrictedPorts"
+        return v
 
     @validator("ip")
     def validate_ip(cls, v):
@@ -46,3 +64,5 @@ class UpsertSwitchInput(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     restricted: Optional[bool] = None
+    restrictedPorts: Optional[list[int]] = None
+    restrictedPortsDesc: Optional[list[str]] = None

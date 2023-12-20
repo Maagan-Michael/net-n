@@ -26,7 +26,7 @@ async def getCustomer(id: str, repo: CustomerRepository):
 @router.post("/upsert", response_model=BatchedCustomerOutput)
 async def upsertCustomer(input: Union[UpsertCustomerInput, list[UpsertCustomerInput]], repo: CustomerRepository):
     """upsert or udpate one || multiple customer(s)"""
-    [items, errors] = await repo.batch_upsert(input)
+    [items, errors, previousValues] = await repo.batch_upsert(input)
     return BatchedCustomerOutput.model_construct(items=items, errors=errors)
 
 

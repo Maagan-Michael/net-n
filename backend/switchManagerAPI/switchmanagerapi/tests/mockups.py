@@ -32,7 +32,9 @@ def createMockSwitch() -> Switch:
         gpsLat=random.choice([None, fake.latitude()]),
         gpsLong=random.choice([None, fake.longitude()]),
         restricted=bool(random.getrandbits(1)),
-        notReachable=bool(random.getrandbits(1))
+        notReachable=bool(random.getrandbits(1)),
+        restrictedPorts=[],
+        restrictedPortsDesc=[],
     )
 
 

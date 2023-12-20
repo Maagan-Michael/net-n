@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Optional, Union
 from ..adapters.sync import AppAdapter
 from sqlalchemy import Column, or_, select, and_
@@ -144,7 +144,7 @@ async def getConnection(id: str, repo: ConnectionRepository):
     )
     if q is not None:
         return ConnectionOutput.model_construct(**q.__dict__)
-    return None
+    raise HTTPException(status_code=404, detail="Item not found")
 
 
 @router.post("/upsert", response_model=BatchConnectionOutput)
