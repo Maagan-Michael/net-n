@@ -51,8 +51,8 @@ function cleanInput<T extends Record<string, any>>(
 }
 
 const Separator = () => (
-  <div className="relative col-span-1 px-4 py-5 hidden md:block">
-    <div className="absolute bg-neutral-100 rounded-full w-2 h-full block"></div>
+  <div className="hidden md:flex items-center justify-center col-span-1 py-5">
+    <div className="bg-neutral-100 rounded-full w-1 h-full">&nbsp;</div>
   </div>
 );
 
@@ -130,7 +130,7 @@ export default function ConnectionForm({
         )}
         onClick={goBack}
       />
-      <div className="md:grid md:grid-cols-11 justify-evenly">
+      <div className="md:grid md:grid-cols-11 justify-evenly grow">
         <div className="w-full col-span-5">
           <ConnectionSection
             register={register}
@@ -150,7 +150,7 @@ export default function ConnectionForm({
         </div>
       </div>
       <TextButton
-        className="bg-blue-400 w-6/12 md:absolute md:bottom-8 md:left-1/2 md:transform md:-translate-x-1/2"
+        className="bg-blue-400 w-6/12"
         label={t("save")}
         disabled={isLoading || !isDirty}
       />
