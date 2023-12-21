@@ -180,6 +180,12 @@ async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUp
                         b.switch.ip, b.port, b.toggled)
                     AppAdapter.adapter.togglePort(
                         b.switch.ip, e.port, False)
+                if (b.port in b.switch.restrictedPorts):
+                    logger.error(
+                        f"the connection:{b.name} with the restricted port {b.port} on switch:{b.switch.name} was modified")
+                if (b.switch.restricted):
+                    logger.error(
+                        f"The connection:{b.name} on the restricted switch:{b.switch.name} connection was modified")
             except Exception as ex:
                 logger.error(ex)
                 raise Exception(
