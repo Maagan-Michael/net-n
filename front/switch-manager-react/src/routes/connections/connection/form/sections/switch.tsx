@@ -65,7 +65,7 @@ const RestrictedPorts = ({
         {restrictedPorts.map((port: any, i: number) => (
           <div
             key={`${port}-${i}`}
-            className="grid grid-cols-12 gap-x-1 items-center"
+            className="grid grid-cols-12 gap-x-1 items-center w-full"
           >
             <TextAction
               text="-"
@@ -143,25 +143,27 @@ const SwitchSection = ({
         required
       />
       <div className="flex flex-row gap-x-2 items-center justify-between">
-        <IconRoundBtn
-          icon={<GPS className="w-4 h-4" />}
-          className="w-12 h-8 self-end text-blue-500"
-          onClick={(e) =>
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                setValue("switch.gpsLat", position.coords.latitude, {
-                  shouldDirty: true,
-                });
-                setValue("switch.gpsLong", position.coords.longitude, {
-                  shouldDirty: true,
-                });
-              },
-              (err) => {
-                console.error(err);
-              }
-            )
-          }
-        />
+        <div className="self-end">
+          <IconRoundBtn
+            icon={<GPS className="w-4 h-4" />}
+            className="w-8 h-8 text-blue-500"
+            onClick={(e) =>
+              navigator.geolocation.getCurrentPosition(
+                (position) => {
+                  setValue("switch.gpsLat", position.coords.latitude, {
+                    shouldDirty: true,
+                  });
+                  setValue("switch.gpsLong", position.coords.longitude, {
+                    shouldDirty: true,
+                  });
+                },
+                (err) => {
+                  console.error(err);
+                }
+              )
+            }
+          />
+        </div>
         <TextInput register={register} name="switch.gpsLat" label={t("lat")} />
         <TextInput register={register} name="switch.gpsLong" label={t("lng")} />
       </div>

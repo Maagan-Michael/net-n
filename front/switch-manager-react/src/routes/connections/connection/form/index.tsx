@@ -15,7 +15,6 @@ import { MouseEventHandler, useEffect } from "react";
 import { toast, CloseButtonProps } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import clsx from "clsx";
-import { log } from "console";
 
 function getTouchedValues<T extends Record<string, any>>(
   data?: Record<string, any>,
@@ -143,7 +142,7 @@ export default function ConnectionForm({
   }, [isLoading, response, goBack, t, i18n]);
   return (
     <form
-      className="relative flex flex-col p-4 items-center w-11/12 md:w-[600px] md:h-[700px] bg-white rounded-md z-10 shadow-md overflow-scroll"
+      className="relative flex flex-col p-4 items-center w-full max-h-full md:w-[600px] md:h-[700px] bg-white rounded-md z-10 shadow-md overflow-scroll"
       onSubmit={handleSubmit((d) => {
         const { switch: dsw, customer: dcustomer, ...dcon } = dirtyFields;
         let input: fullConnectionUpdateInput | undefined = {
@@ -158,7 +157,7 @@ export default function ConnectionForm({
     >
       <Cross
         className={clsx(
-          "absolute w-6 h-6 top-4 cursor-pointer hover:opacity-60 transition-all",
+          "fixed md:absolute w-6 h-6 top-4 cursor-pointer hover:opacity-60 transition-all z-20",
           i18n.dir() === "ltr" ? "right-4" : "left-4"
         )}
         onClick={goBack}
