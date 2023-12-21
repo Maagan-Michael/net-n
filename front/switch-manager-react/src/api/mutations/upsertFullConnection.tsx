@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { fullConnectionUpdateInput } from "../types";
 import { upsertConnections } from "./upsertConnections";
 import { upsertCustomers } from "./upsertCustomers";
@@ -31,7 +31,11 @@ const upsertFullConnection = async (params: fullConnectionUpdateInput) => {
 };
 
 export function useUpsertFullConnection() {
-  return useMutation((params: fullConnectionUpdateInput) =>
-    upsertFullConnection(params)
+  const queryClient = useQueryClient();
+  return useMutation(
+    (params: fullConnectionUpdateInput) => upsertFullConnection(params),
+    {
+      onSuccess: () => queryClient.invalidateQueries(["connections"]),
+    }
   );
 }
