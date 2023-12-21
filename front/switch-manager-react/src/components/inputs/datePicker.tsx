@@ -45,9 +45,12 @@ export default function DatePicker({
       control={control}
       name="toggleDate"
       render={({ field: { value, onChange } }) => {
-        const date = new Date(value);
-        date.setHours(0, 0, 0, 0);
-        date.setMinutes(0, 0, 0);
+        let date: Date | null = null;
+        if (value !== null) {
+          date = new Date(value);
+          date.setHours(0, 0, 0, 0);
+          date.setMinutes(0, 0, 0);
+        }
         return (
           <DP
             disabled={disabled}
@@ -65,7 +68,9 @@ export default function DatePicker({
               // not working (overloaded by css)
               return clsx(
                 "text-xs font-sans",
-                date.getTime() === _date.getTime() && "!bg-blue-400 text-white"
+                date &&
+                  date.getTime() === _date.getTime() &&
+                  "!bg-blue-400 text-white"
               );
             }}
             customInput={
