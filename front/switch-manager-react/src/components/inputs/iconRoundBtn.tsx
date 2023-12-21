@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 export interface IconRoundBtnProps
-  extends React.HTMLAttributes<HTMLButtonElement> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
   text?: string;
   className?: string;
