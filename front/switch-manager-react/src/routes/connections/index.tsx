@@ -11,7 +11,7 @@ import Header from "./table/header";
 import Row from "./table/row";
 import LoadingRow from "./table/loadingRow";
 
-function Connections() {
+function ConnectionsContent() {
   const { t } = useTranslation("translation", { keyPrefix: "connections" });
   const [queryParams, setParams] = useConnectionsUrlParams();
   const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
@@ -30,7 +30,7 @@ function Connections() {
     []
   );
   return (
-    <div>
+    <>
       <Table
         data={pagesContent || []}
         renderHeader={
@@ -60,6 +60,13 @@ function Connections() {
           <h3 className="font-bold text-md">{t("noMore")}</h3>
         </div>
       )}
+    </>
+  );
+}
+function Connections() {
+  return (
+    <div>
+      <ConnectionsContent />
       <Outlet />
     </div>
   );

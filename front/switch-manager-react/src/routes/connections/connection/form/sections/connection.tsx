@@ -26,7 +26,11 @@ const ConnectionSection = ({
   setValue: UseFormSetValue<any>;
   watch: UseFormWatch<any>;
 }) => {
-  const shouldLock = watch("switch.restricted");
+  const isRestricted = watch("switch.restricted");
+  const isRestrictedPort = watch("switch.restrictedPorts").includes(
+    watch("port")
+  );
+  const shouldLock = isRestricted || isRestrictedPort;
   const [locked, setLocked] = useState(true);
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "connection.form.connection",
@@ -121,6 +125,16 @@ const ConnectionSection = ({
           />
         </div>
       </div>
+      {(isRestricted && !locked && (
+        <div className="text-xs text-balance max-w-full text-red-400">
+          ⚠⚠⚠ {t("restricted")} ⚠⚠⚠
+        </div>
+      )) ||
+        (isRestrictedPort && !locked && (
+          <div className="text-xs text-balance max-w-full text-red-400">
+            ⚠⚠⚠ {t("restrictedPort")} ⚠⚠⚠
+          </div>
+        ))}
     </FormSection>
   );
 };

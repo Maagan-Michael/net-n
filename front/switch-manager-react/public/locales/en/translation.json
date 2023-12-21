@@ -42,7 +42,9 @@
         "toggleDate": "scheduled automatic change",
         "autoUpdate": "allow automatic updates",
         "address": "address",
-        "flat": "flat"
+        "flat": "flat",
+        "restricted": "warning: this switch is restricted, you can modify the connection but assure that it's been approved",
+        "restrictedPort": "warning: this port is restricted, you can modify the connection but assure that it's been approved"
       },
       "customer": {
         "title": "customer",

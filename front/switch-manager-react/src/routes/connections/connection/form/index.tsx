@@ -15,6 +15,7 @@ import { MouseEventHandler, useEffect } from "react";
 import { toast, CloseButtonProps } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import clsx from "clsx";
+import { log } from "console";
 
 function getTouchedValues<T extends Record<string, any>>(
   data?: Record<string, any>,
@@ -167,6 +168,7 @@ export default function ConnectionForm({
         className="bg-blue-400 w-6/12"
         label={t("save")}
         disabled={isLoading || !isDirty}
+        type="submit"
       />
     </form>
   );

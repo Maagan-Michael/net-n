@@ -16,6 +16,7 @@ import TextArea from "@/components/inputs/TextArea";
 import DropDownSection from "@/components/dropdownSection";
 import TextAction from "@/components/inputs/textAction";
 import clsx from "clsx";
+import { useEffect } from "react";
 
 const RestrictedPorts = ({
   register,
@@ -32,6 +33,11 @@ const RestrictedPorts = ({
   });
   const restrictedPorts = watch("switch.restrictedPorts");
   const restrictedDescs = watch("switch.restrictedPortsDesc");
+  useEffect(() => {
+    register("switch.restrictedPorts");
+    register("switch.restrictedPortsDesc");
+  }, [register]);
+
   return (
     <DropDownSection
       label={clsx(t("restricted-ports"), `(${restrictedPorts.length})`)}
@@ -39,11 +45,18 @@ const RestrictedPorts = ({
         <TextAction
           text="+"
           className="text-xl"
+          type="button"
           onMouseDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            setValue("switch.restrictedPorts", [0, ...restrictedPorts]);
-            setValue("switch.restrictedPortsDesc", ["", ...restrictedDescs]);
+            const ports = [0, ...restrictedPorts];
+            const descs = ["", ...restrictedDescs];
+            setValue("switch.restrictedPorts", ports, {
+              shouldDirty: true,
+            });
+            setValue("switch.restrictedPortsDesc", descs, {
+              shouldDirty: true,
+            });
           }}
         />
       }
@@ -56,18 +69,23 @@ const RestrictedPorts = ({
           >
             <TextAction
               text="-"
+              type="button"
               className="text-xl col-span-1"
               onMouseDown={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setValue("switch.restrictedPorts", [
-                  ...restrictedPorts.slice(0, i),
-                  ...restrictedPorts.slice(i + 1),
-                ]);
-                setValue("switch.restrictedPortsDesc", [
-                  ...restrictedDescs.slice(0, i),
-                  ...restrictedDescs.slice(i + 1),
-                ]);
+                const ports = [...restrictedPorts];
+                const descs = [...restrictedDescs];
+                ports.splice(i, 1);
+                descs.splice(i, 1);
+                setValue("switch.restrictedPorts", ports, {
+                  shouldDirty: true,
+                  shouldTouch: true,
+                });
+                setValue("switch.restrictedPortsDesc", descs, {
+                  shouldDirty: true,
+                  shouldTouch: true,
+                });
               }}
             />
             <TextInput
