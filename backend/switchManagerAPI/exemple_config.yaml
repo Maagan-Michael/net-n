@@ -42,9 +42,10 @@ sync:
   api_url: "http://localhost:8080"
 
   # column names in the source table (mapping to the backend table)
-  col_name_customer_id: "takziv" # find correct column
-  col_name_customer_lastname: "dayar_name"
-  col_name_customer_address: "dira_name"
-  col_name_customer_type: "dira_name" # find correct column
-  col_name_connection_toggled: "takziv"
-  split_name: True
+  mapping:
+    id: "takziv" # find correct column
+    lastname: "dayar_name"
+    # firstname: "some_other_column"
+    address: "dira_name"
+    type: "dira_name" # find correct column
+    toggled: "takziv"

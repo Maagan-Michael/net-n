@@ -3,7 +3,7 @@ from typing import List, Optional, Union
 from ..adapters.sync import AppAdapter
 from sqlalchemy import Column, or_, select, and_
 from sqlalchemy.orm import contains_eager
-from ..models import BatchedDeleteOutput, OrderBy, Connection, \
+from ..models import BatchedDeleteOutput, OrderBy, Connection, AssignCustomerInput, \
     BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListFilterEnum, ListSortEnum
 from ..db import DBConnection, DBSwitch, DBCustomer, ConnectionRepository
 import re
@@ -145,6 +145,42 @@ async def getConnection(id: str, repo: ConnectionRepository):
     if q is not None:
         return ConnectionOutput.model_construct(**q.__dict__)
     raise HTTPException(status_code=404, detail="Item not found")
+
+
+@router.post("/assign", response_model=ConnectionOutput)
+async def assignConnectionCustomer(input: AssignCustomerInput, repo: ConnectionRepository):
+    customer = await repo.session.scalar(
+        select(DBCustomer).where(DBCustomer.id == input.customerId)
+    )
+    if (customer is None):
+        raise HTTPException(
+            status_code=404, detail="Customer not found")
+    connection = None
+    if (input.connectionId):
+        connection = await repo.session.scalar(
+            select(DBConnection).where(DBConnection.id == input.connectionId)
+        )
+    if (input.address):
+        connection = await repo.session.scalar(
+            select(DBConnection).where(
+                DBConnection.address == input.address and
+                DBConnection.flat == input.flat
+            )
+            .join(DBConnection.customer, isouter=True)
+            .join(DBConnection.switch)
+            .options(contains_eager(DBConnection.customer), contains_eager(DBConnection.switch))
+            .execution_options(populate_existing=True)
+        )
+    if (connection is None):
+        raise HTTPException(
+            status_code=404, detail="Connection not found")
+    logger.warning(
+        f"assigning connection {connection.id} to customer {customer.id}")
+    if (connection.customerId != customer.id):
+        logger.warning(
+            f"replacing old customer {connection.customerId} with {customer.id}")
+    connection.customerId = customer.id
+    return ConnectionOutput.model_construct(**connection.__dict__)
 
 
 @router.post("/upsert", response_model=BatchConnectionOutput)

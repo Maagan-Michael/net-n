@@ -136,3 +136,20 @@ class ConnectionUpsertInput(BaseModel):
     autoUpdate: Optional[bool] = None
     address: Optional[str] = None
     flat: Optional[str] = None
+
+
+class AssignCustomerInput(BaseModel):
+    """Connection model assign customer API input"""
+    address: Optional[str] = None
+    flat: Optional[str] = None
+    customerId: int
+    connectionId: Optional[UUID4] = None
+
+    @validator("model")
+    def validate_model(cls, v):
+        if cls.connectionId is None:
+            assert v.address is not None, "connectionId or address and flat must be provided"
+            assert v.flat is not None, "connectionId or address and flat must be provided"
+        else:
+            assert v.connectionId is not None, "connectionId or address and flat must be provided"
+        return v

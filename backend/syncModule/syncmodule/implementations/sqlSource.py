@@ -5,17 +5,31 @@ from .interface import ISyncModule, DBConfig, TargetDataType
 from sqlalchemy import create_engine, text
 
 
+class ColMapping(BaseModel):
+    """ColMaps is the mapping of the source column to the target column"""
+    id: str
+    firstname: Optional[str] = None
+    lastname: str
+    type: Optional[str] = None
+    address: str
+    flat: str
+    toggled: str
+
+
 class SQLSyncModuleConfig(BaseModel):
     """
         SyncModuleConfig is the configuration for the SyncModule
         source: DBConfig is the source database configuration
         destination: DBConfig is the destination database configuration
-        col_name_customer_id is the source column name for customer id
-        col_name_customer_firstname is the source column name for customer firstname
-        col_name_customer_lastname is the source column name for customer lastname
-        col_name_customer_type is the source column name for customer type
-        col_name_customer_address is the source column name for customer address
-        col_name_connection_toggled is the source column name for connection toggled
+        mapping.id is the source column name for customer id
+
+        if firstname is None, then the lastname will be split into firstname and lastname
+        mapping.firstname is the source column name for customer firstname
+        mapping.lastname is the source column name for customer lastname
+
+        mapping.type is the source column name for customer type
+        mapping.address is the source column name for customer address
+        mapping.toggled is the source column name for connection toggled
     """
     model_config = ConfigDict(from_attributes=True)
 
@@ -23,13 +37,7 @@ class SQLSyncModuleConfig(BaseModel):
     destination: DBConfig
     api_url: str
 
-    col_name_customer_id: str
-    col_name_customer_firstname: Optional[str] = None
-    col_name_customer_lastname: str
-    col_name_customer_type: str
-    col_name_customer_address: str
-    col_name_connection_toggled: Optional[str]
-    split_name: bool = False
+    mapping: ColMapping
 
 
 class SQLSyncModule(ISyncModule):
@@ -45,16 +53,23 @@ class SQLSyncModule(ISyncModule):
         """gets the data from the source database"""
         url = self.config.source.generateUrl()
         engine = create_engine(url)
+
+        hasType = self.config.mapping.type is not None
+        splitName = self.config.mapping.firstname is None
+
         columns = ", ".join(
-            [self.config.col_name_customer_id]
-            + ([self.config.col_name_customer_lastname] if self.config.split_name
+            [self.config.mapping.id]
+            + [
+                self.config.mapping.flat,
+                self.config.mapping.address,
+                self.config.mapping.toggled,
+            ],
+            + ([self.config.mapping.lastname] if splitName
                else [
-                self.config.col_name_customer_firstname,
-                self.config.col_name_customer_lastname
-            ]) + [
-                self.config.col_name_customer_type,
-                self.config.col_name_customer_address,
-            ] + [self.config.col_name_connection_toggled] if self.config.col_name_connection_toggled else []
+                self.config.mapping.firstname,
+                self.config.mapping.lastname
+            ]) +
+            [self.config.mapping.type] if hasType is not None else []
         )
         results = []
         parsedValues = []
@@ -66,23 +81,24 @@ class SQLSyncModule(ISyncModule):
             for x in results:
                 length = len(x)
                 fn, lsn = "", ""
-                if self.config.split_name and x[1] is not None:
-                    _values = x[1].split(" ")
+                if splitName and x[4] is not None:
+                    _values = x[4].split(" ")
                     fn = _values[0]
                     lsn = " ".join(_values[1:len(_values)])
                 else:
-                    fn = x[1] if x[1] is not None else ""
-                    lsn = x[2] if x[2] is not None else ""
+                    fn = x[4] if x[4] is not None else ""
+                    lsn = x[5] if x[5] is not None else ""
                 parsedValues.append({
                     "customer": {
                         "id": x[0],
                         "firstname": fn,
                         "lastname": lsn,
-                        "type": "unknown",  # x[length - 3],
+                        "type": x[length - 1] if hasType else "unknown",
                     },
                     "connection": {
-                        "address": x[length - 2],
-                        "toggled": bool(x[length - 1])
+                        "flat": x[1],
+                        "address": x[2],
+                        "toggled": bool(x[3])
                     }
                 })
         except Exception as e:
