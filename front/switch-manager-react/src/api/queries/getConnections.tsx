@@ -30,7 +30,7 @@ export function useConnectionsQuery(params: ConnectionsListQueryInput) {
     [
       "connections",
       {
-        filters: params.filter,
+        filter: params.filter,
         sort: params.sort,
         order: params.order,
         search: params.search,

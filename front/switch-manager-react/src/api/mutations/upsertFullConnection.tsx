@@ -35,7 +35,34 @@ export function useUpsertFullConnection() {
   return useMutation(
     (params: fullConnectionUpdateInput) => upsertFullConnection(params),
     {
-      onSuccess: () => queryClient.invalidateQueries(["connections"]),
+      onSuccess: (data) => {
+        if (data.items.length > 0) {
+          console.log(queryClient);
+          const params = new URLSearchParams(window.location.search);
+          queryClient.invalidateQueries({
+            queryKey: "connections",
+            predicate: (query) => {
+              if (query.options.queryKey[0] !== "connections") {
+                return false;
+              }
+              for (const [key, value] of Object.entries(
+                query.options.queryKey[1]
+              )) {
+                const _value = params.get(key) || undefined;
+                if (value !== _value && value) {
+                  return false;
+                }
+              }
+              console.log("worked");
+              return true;
+            },
+          });
+          queryClient.invalidateQueries([
+            "connection",
+            { id: data.items[0].id },
+          ]);
+        }
+      },
     }
   );
 }
