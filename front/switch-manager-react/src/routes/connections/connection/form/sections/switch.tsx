@@ -145,6 +145,7 @@ const SwitchSection = ({
       <div className="flex flex-row gap-x-2 items-center justify-between">
         <div className="self-end">
           <IconRoundBtn
+            type="button"
             icon={<GPS className="w-4 h-4" />}
             className="w-8 h-8 text-blue-500"
             onClick={(e) =>
