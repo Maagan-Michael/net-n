@@ -17,8 +17,9 @@ export default function Toggle({
   className?: string;
   disabled?: boolean;
 }) {
+  const cb = disabled ? undefined : onChange;
   return (
-    <div onMouseDown={onChange}>
+    <div onMouseDown={cb}>
       {label && (
         <label htmlFor={name} className="">
           {label}

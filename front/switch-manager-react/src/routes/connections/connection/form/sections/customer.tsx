@@ -27,7 +27,7 @@ const CustomerSelector = ({ setValue }: { setValue: UseFormSetValue<any> }) => {
         {data?.map((customer) => (
           <div
             key={customer.id}
-            className="grid grid-cols-12 items-center text-xs gap-x-2 cursor-pointer hover:bg-neutral-100 py-1"
+            className="grid grid-cols-12 items-center text-xs gap-x-2 cursor-pointer hover:bg-neutral-100 p-1"
             onClick={() => {
               setValue("customerId", customer.id, {
                 shouldDirty: true,
