@@ -16,6 +16,7 @@ const CustomerSelector = ({ setValue }: { setValue: UseFormSetValue<any> }) => {
   });
   const [search, setSearch] = useState<string>("");
   const { data, loading } = useCustomersQuery({ search });
+  // todo : add loader cursor & no results
   return (
     <FormSection title={t("title")} ltr={i18n.dir() === "ltr"}>
       <TextInput
