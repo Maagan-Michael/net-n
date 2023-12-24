@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-from pydantic import BaseModel, ConfigDict, Field, validator, computed_field, UUID4
+from pydantic import BaseModel, ConfigDict, Field, validator, model_validator, computed_field, UUID4
 from .customer import Customer
 from .switch import Switch
 from .factories import OrderBy, batcheableOutputFactory
@@ -27,6 +27,7 @@ class IConnectionBase(BaseModel):
                              description="define if the connection should be updated automatically")
     address: Optional[str] = Field(min_length=1, max_length=255)
     flat: Optional[str] = Field(min_length=1, max_length=255)
+    customerId: Optional[int] = Field(min=0, description="customer id")
 
     @validator("toggleDate")
     def validate_toggleDate(cls, v):
@@ -145,7 +146,7 @@ class AssignCustomerInput(BaseModel):
     customerId: int
     connectionId: Optional[UUID4] = None
 
-    @validator("model")
+    @model_validator(mode="after")
     def validate_model(cls, v):
         if cls.connectionId is None:
             assert v.address is not None, "connectionId or address and flat must be provided"

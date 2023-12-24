@@ -51,7 +51,9 @@
         "firstname": "firstname",
         "lastname": "lastname",
         "type": "type",
-        "ID": "ID"
+        "ID": "ID",
+        "unasign": "unasign",
+        "search": "search..."
       },
       "errors": {
         "general": "an error has occured"

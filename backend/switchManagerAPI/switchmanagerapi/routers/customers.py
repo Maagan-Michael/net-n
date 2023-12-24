@@ -1,5 +1,7 @@
+import re
 from fastapi import APIRouter
 from typing import Optional, Union
+from ..db.schemas import DBCustomer
 from ..models import BatchedDeleteOutput, Customer, BatchedCustomerOutput, UpsertCustomerInput
 from ..db.factories import CustomerRepository
 
@@ -13,8 +15,16 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[Customer])
-async def listCustomers(search: Optional[str], repo: CustomerRepository):
-    return repo.list(search)
+async def listCustomers(search: Optional[str], limit: Optional[int], repo: CustomerRepository):
+    searchOperators = []
+    if (search and len(search) > 0):
+        search = re.escape(search)
+        searchOperators = [
+            DBCustomer.lastname.op("~*")(search),
+            DBCustomer.firstname.op("~*")(search),
+            DBCustomer.idstr.op("~*")(search)
+        ]
+    return await repo.list(searchOperators, limit)
 
 
 @router.get("/{id}", response_model=Customer)

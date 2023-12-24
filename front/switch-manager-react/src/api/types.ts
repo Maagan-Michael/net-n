@@ -23,8 +23,9 @@ export interface ConnectionOutput {
     toggled: boolean
     toggleDate?: Date
     type: string
-    customer: CustomerOutput
+    customer?: CustomerOutput
     switch: SwitchOuput
+    customerId?: string
     port: number
     isUp: boolean
     adapter: string
@@ -123,4 +124,11 @@ export interface fullConnectionUpdateInput {
     sw?: SwitchInput;
     customer?: CustomerInput;
     con?: ConnectionInput;
+}
+
+export interface CustomerOutput {
+    id: string
+    firstname: string
+    lastname: string
+    type: string
 }

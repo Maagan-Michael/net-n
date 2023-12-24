@@ -49,7 +49,9 @@
         "firstname": "שם פרטי",
         "lastname": "שם משפחה",
         "type": "סוג",
-        "ID": "מס׳"
+        "ID": "מס׳",
+        "unasign": "unasign",
+        "search": "חיפוש…"
       },
       "save": "שמירה",
       "errors": {

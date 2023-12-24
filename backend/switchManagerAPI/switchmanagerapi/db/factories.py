@@ -1,10 +1,10 @@
 import re
 import sys
 from pydantic import BaseModel
-from typing import Callable, Generic, TypeVar, List, Annotated, Union
+from typing import Callable, Generic, Optional, TypeVar, List, Annotated, Union
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy import select, delete
+from sqlalchemy import select, delete, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 from . import Base, get_db_session
@@ -36,16 +36,21 @@ class DatabaseRepository(Generic[Model]):
             )
         return Model(res[0])
 
-    async def list(self, search: str = None) -> list[Model]:
+    async def list(self, search=[], limit: Optional[int] = 10) -> list[Model]:
         """return a list of models"""
         q = None
-        if search and search != "":
-            search = re.escape(search)
+        if search and len(search) > 0:
             q = await self.session.scalars(
-                select(self.schema).filter(self.schema.name.like(search)))
+                select(self.schema).filter(
+                    or_(*search)
+                )
+                .limit(limit)
+            )
         else:
-            q = await self.session.scalars(select(self.schema))
-        return [Model(e) for e in q]
+            q = await self.session.scalars(
+                select(self.schema).limit(limit)
+            )
+        return [self.model.model_construct(**e.__dict__) for e in q]
 
     async def upsert(self, model: Model) -> Model:
         await self.session.execute(

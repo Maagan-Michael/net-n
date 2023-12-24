@@ -48,7 +48,6 @@ def getFilterStm(search: Optional[str], filter: ListFilterEnum):
         isMultiWord = wc > 1
         orSearch = "(^|{\s}?)" + \
             f"({'|'.join(search)}).*" if wc > 1 else f".*{search[0]}.*"
-        print(orSearch)
         andSearch = f".*{'.*'.join(search)}.*"
         if (filter == ListFilterEnum.customerId):
             filters.append(DBCustomer.idstr.op('~*')(orSearch))
@@ -202,6 +201,9 @@ async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUp
                 **items[idx].__dict__)
             b = items[idx]
             try:
+                if (e.customerId != b.customerId):
+                    logger.warning(
+                        f"customer changed on connection ({b.name})({b.id}) from {e.customerId} to {b.customerId}")
                 if (e.toggled != b.toggled):
                     # enable / disable connection with adapter
                     logger.info(

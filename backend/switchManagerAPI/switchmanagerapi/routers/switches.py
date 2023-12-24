@@ -1,10 +1,11 @@
+import re
 from fastapi import APIRouter
 from typing import Optional, Union
 
 from sqlalchemy import update
 from ..models.factories import BatchedDeleteOutput
 from ..models.switch import Switch, BatchedSwitchOutput, UpsertSwitchInput
-from ..db.schemas import DBConnection
+from ..db.schemas import DBSwitch, DBConnection
 from ..db.factories import SwitchRepository
 
 router = APIRouter(
@@ -17,9 +18,14 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[Switch])
-async def listSwitches(search: Optional[str], repo: SwitchRepository):
+async def listSwitches(search: Optional[str], limit: Optional[int], repo: SwitchRepository):
     """return a list of switches"""
-    return repo.list(search)
+    searchOperators = []
+    if (search and len(search) > 0):
+        search = re.escape(search)
+        DBSwitch.name.op("~*")(search)
+
+    return await repo.list(searchOperators, limit)
 
 
 @router.get("/{id}", response_model=Switch)

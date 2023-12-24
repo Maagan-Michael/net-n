@@ -82,7 +82,7 @@ const FormContent = ({
         setValue={setValue}
         watch={watch}
       />
-      <CustomerSection register={register} />
+      <CustomerSection register={register} setValue={setValue} watch={watch} />
     </div>
     <Separator />
     <div className="w-full col-span-5">
