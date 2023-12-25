@@ -8,8 +8,10 @@ from switchmanagerapi.routers import connections, customers, switches
 from .tests.mockups import generateMockupDB
 from .db.context import create_db, drop_db
 from .adapters.sync import AppAdapter
-from .jobs.connections import toggleDueConnections
 from .jobs.scheduler import schedule_every
+from .jobs.connections import toggleDueConnections
+from .jobs.syncModule import toggleSyncModule
+from .config import AppConfig
 
 origins = [
     "http://localhost:3000",
@@ -76,7 +78,13 @@ async def on_startup():
     jobs.append(asyncio.create_task(toggleDueConnections()))
     # checks for due connections every 12 hours
     jobs.append(asyncio.create_task(
-        schedule_every(60 * 60 * 12, toggleDueConnections)))
+        schedule_every(60 * 60 * 12, toggleDueConnections())))
+    if (AppConfig["sync"]["container"] is not None):
+        # start sync module on startup
+        jobs.append(asyncio.create_task(toggleSyncModule()))
+        # start sync module every 24 hours
+        jobs.append(asyncio.create_task(
+            schedule_every(60 * 60 * 24, toggleSyncModule())))
 
 
 def main():

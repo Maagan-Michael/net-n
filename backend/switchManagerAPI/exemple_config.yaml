@@ -16,6 +16,7 @@ db: &db
 
 # syncModule config
 sync:
+  container: "switchmanagerapi_sync"
   # right now only "sql" is supported
   # could be used with a REST API, GRAPHQL, redis, mongo or other in the futur.
   type: "sql"
