@@ -3,7 +3,7 @@ from typing import TypedDict, List, Optional
 from pydantic import BaseModel, model_validator
 import requests
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 
 class CustomerDataType(TypedDict):
@@ -12,7 +12,6 @@ class CustomerDataType(TypedDict):
     firstname: str
     lastname: str
     type: Optional[str]
-    address: str
 
 
 class ConnectionDataType(TypedDict):
@@ -20,6 +19,9 @@ class ConnectionDataType(TypedDict):
     id: Optional[int]
     toggled: bool
     autoUpdate: bool
+    address: str
+    flat: str
+    customerId: Optional[int]
 
 
 class SourceDataType(TypedDict):
@@ -104,91 +106,85 @@ class ISyncModule:
         """
         pass
 
-    def getCurrentConnections(self) -> List[TargetDataType]:
-        """gets the data from the target database"""
+    def getCurrentConnections(self) -> List[ConnectionDataType]:
+        """
+            gets full list of connections from the target database
+            customers are joined to the connections
+        """
         url = self.destination.generateUrl()
         engine = create_engine(url)
         columns = ", ".join([
-            "customers.id",
-            "customers.firstname",
-            "customers.lastname",
-            "customers.type",
-            "connections.id",
-            "connections.address",
-            "connections.flat",
-            "connections.toggled",
-            "connections.autoUpdate"
+            "id",
+            "address",
+            "flat",
+            "toggled",
+            "'autoUpdate'",
+            "'customerId'"
         ])
-        for x in columns:
-            x = {
-                "customer": {
-                    "id": x[0],
-                    "firstname": x[1],
-                    "lastname": x[2],
-                    "type": x[3],
-                },
-                "connection": {
-                    "id": x[4],
-                    "address": x[5],
-                    "flat": x[6],
-                    "toggled": x[7],
-                    "autoUpdate": x[8],
-                }
-            }
         with engine.connect() as conn:
             result = conn.execute(
-                f"""
-                SELECT {columns} FROM public.customers
-                LEFT JOIN connections ON = connections.customer_id
-                """
-            )
-        engine.dispose()
+                text(f"SELECT {columns} FROM public.connections")
+            ).all()
+            for x in result:
+                x = ConnectionDataType(
+                    id=x[0],
+                    address=x[1],
+                    flat=x[2],
+                    toggled=x[3],
+                    autoUpdate=x[4],
+                    customerId=x[5],
+                )
+            engine.dispose()
         return result
 
     def getCurrentCustomers(self) -> List[CustomerDataType]:
-        """gets the data from the target database"""
+        """
+            gets full list of customers from the target database
+        """
         url = self.destination.generateUrl()
         engine = create_engine(url)
         columns = ", ".join([
-            "customers.id",
-            "customers.firstname",
-            "customers.lastname",
-            "customers.type",
+            "id",
+            "firstname",
+            "lastname",
+            "type",
         ])
-        for x in columns:
-            x = {
-                "id": x[0],
-                "firstname": x[1],
-                "lastname": x[2],
-                "type": x[3],
-            }
         with engine.connect() as conn:
             result = conn.execute(
-                f"""
-                SELECT {columns} FROM public.customers
-                """
-            )
-        engine.dispose()
+                text(f"SELECT {columns} FROM public.customers")
+            ).all()
+            for x in result:
+                x = CustomerDataType(
+                    id=x[0],
+                    firstname=x[1],
+                    lastname=x[2],
+                    type=x[3],
+                )
+            engine.dispose()
         return result
 
     def splitData(self) -> SplitDataType:
-        """splits the data into updates and removes"""
+        """
+            get the data from the source and the target
+            splits the data into updates and removes objects ot be used with the API
+        """
         sourceData = self.getSourceData()
         connections = self.getCurrentConnections()
         customers = self.getCurrentCustomers()
-        res = {
-            "updates": {
-                "customers": [],
-                "connections": []
-            },
-            "removes": {
-                "customers": [],
-            }
-        }
+        res = SplitDataType(
+            updates=UpdatesDataType(
+                customers=[],
+                connections=[]
+            ),
+            removes=RemovesDataType(
+                customers=[]
+            )
+        )
         # getting customers and connections to update
         for x in sourceData:
             for (y, idx) in enumerate(connections):
                 # upsert customer
+                res.updates.customers.append(x.customer)
                 res["updates"]["customers"].append(x["customer"])
 
                 # match connection based on address and flat
@@ -231,7 +227,11 @@ class ISyncModule:
             await requests.post(f"{self.apiUrl}/v1/connections/upsert", json=data)
 
     async def apiRemoves(self, data: SplitDataType):
-        """removes the data from the API"""
+        """
+            removes the data from the API
+            only customers are removed
+            connections are not removed because they are statically generated based on hardware information, thus they must not be removed
+        """
         if (len(data["removes"]["customers"]) > 0):
             await requests.post(f"{self.apiUrl}/v1/customers/delete", json=data)
 

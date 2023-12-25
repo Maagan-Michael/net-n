@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, ConfigDict
 import logging
-from .interface import ISyncModule, DBConfig, TargetDataType
+from .interface import ConnectionDataType, CustomerDataType, ISyncModule, DBConfig, TargetDataType
 from sqlalchemy import create_engine, text
 
 
@@ -88,20 +88,21 @@ class SQLSyncModule(ISyncModule):
                 else:
                     fn = x[4] if x[4] is not None else ""
                     lsn = x[5] if x[5] is not None else ""
-                value = {
-                    "customer": {
-                        "id": x[0],
-                        "firstname": fn,
-                        "lastname": lsn,
-                    },
-                    "connection": {
-                        "flat": x[1],
-                        "address": x[2],
-                        "toggled": bool(x[3])
-                    }
-                }
+                value = TargetDataType(
+                    customer=CustomerDataType(
+                        id=x[0],
+                        firstname=fn,
+                        lastname=lsn,
+                    ),
+                    connection=ConnectionDataType(
+                        flat=x[1],
+                        address=x[2],
+                        toggled=bool(x[3]),
+                        autoUpdate=True,
+                    )
+                )
                 if hasType:
-                    value["customer"]["type"] = x[length - 1]
+                    value.customer.type = x[length - 1]
                 parsedValues.append(value)
         except Exception as e:
             self.logger.error(e)
