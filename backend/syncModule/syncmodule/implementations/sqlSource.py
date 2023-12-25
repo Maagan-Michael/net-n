@@ -58,8 +58,8 @@ class SQLSyncModule(ISyncModule):
         splitName = self.config.mapping.firstname is None
 
         columns = ", ".join(
-            [self.config.mapping.id]
-            + [
+            [
+                self.config.mapping.id,
                 self.config.mapping.flat,
                 self.config.mapping.address,
                 self.config.mapping.toggled,
@@ -78,13 +78,18 @@ class SQLSyncModule(ISyncModule):
                 results = conn.execute(
                     text(f"SELECT {columns} FROM {self.config.source.table}")).all()
                 engine.dispose()
-            for x in results:
+        except Exception as e:
+            self.logger.error(e)
+            self.logger.error("Error could retrieve data from source database")
+        for x in results:
+            try:
                 length = len(x)
                 fn, lsn = "", ""
                 if splitName and x[4] is not None:
-                    _values = x[4].split(" ")
-                    fn = _values[0]
-                    lsn = " ".join(_values[1:len(_values)])
+                    _v = x[4].split(" ")
+                    lsn = _v[0]
+                    fn = " ".join(_v[1:len(_v)]) if len(
+                        _v) > 1 else ""
                 else:
                     fn = x[4] if x[4] is not None else ""
                     lsn = x[5] if x[5] is not None else ""
@@ -104,7 +109,9 @@ class SQLSyncModule(ISyncModule):
                 if hasType:
                     value["customer"]["type"] = x[length - 1]
                 parsedValues.append(value)
-        except Exception as e:
-            self.logger.error(e)
-            self.logger.error("Error could retrieve data from source database")
+            except Exception as e:
+                self.logger.error(e)
+                self.logger.error(
+                    "Error could not parse element from sourceDB")
+                self.logger.error(x)
         return parsedValues
