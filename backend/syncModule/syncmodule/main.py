@@ -25,4 +25,4 @@ def main():
         syncModule = SQLSyncModule(config)
     else:
         raise NotImplementedError("the requested sync module is not supported")
-    print(syncModule.getSourceData())
+    syncModule.sync()

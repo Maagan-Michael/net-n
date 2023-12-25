@@ -11,7 +11,7 @@ class CustomerDataType(TypedDict):
     id: int
     firstname: str
     lastname: str
-    type: str
+    type: Optional[str]
     address: str
 
 
@@ -114,9 +114,10 @@ class ISyncModule:
             "customers.firstname",
             "customers.lastname",
             "customers.type",
-            "customers.address",
-            "connections.toggled",
             "connections.id",
+            "connections.address",
+            "connections.flat",
+            "connections.toggled",
             "connections.autoUpdate"
         ])
         for x in columns:
@@ -126,12 +127,13 @@ class ISyncModule:
                     "firstname": x[1],
                     "lastname": x[2],
                     "type": x[3],
-                    "address": x[4],
                 },
                 "connection": {
-                    "id": x[6],
-                    "toggled": x[5],
-                    "autoUpdate": x[7]
+                    "id": x[4],
+                    "address": x[5],
+                    "flat": x[6],
+                    "toggled": x[7],
+                    "autoUpdate": x[8],
                 }
             }
         with engine.connect() as conn:

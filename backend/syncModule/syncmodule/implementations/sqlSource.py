@@ -63,13 +63,13 @@ class SQLSyncModule(ISyncModule):
                 self.config.mapping.flat,
                 self.config.mapping.address,
                 self.config.mapping.toggled,
-            ],
-            + ([self.config.mapping.lastname] if splitName
-               else [
+            ] +
+            ([self.config.mapping.lastname] if splitName
+             else [
                 self.config.mapping.firstname,
                 self.config.mapping.lastname
             ]) +
-            [self.config.mapping.type] if hasType is not None else []
+            ([self.config.mapping.type] if hasType else [])
         )
         results = []
         parsedValues = []
@@ -88,19 +88,21 @@ class SQLSyncModule(ISyncModule):
                 else:
                     fn = x[4] if x[4] is not None else ""
                     lsn = x[5] if x[5] is not None else ""
-                parsedValues.append({
+                value = {
                     "customer": {
                         "id": x[0],
                         "firstname": fn,
                         "lastname": lsn,
-                        "type": x[length - 1] if hasType else "unknown",
                     },
                     "connection": {
                         "flat": x[1],
                         "address": x[2],
                         "toggled": bool(x[3])
                     }
-                })
+                }
+                if hasType:
+                    value["customer"]["type"] = x[length - 1]
+                parsedValues.append(value)
         except Exception as e:
             self.logger.error(e)
             self.logger.error("Error could retrieve data from source database")
