@@ -102,7 +102,7 @@ class SQLSyncModule(ISyncModule):
                     )
                 )
                 if hasType:
-                    value.customer.type = x[length - 1]
+                    value["customer"]["type"] = x[length - 1]
                 parsedValues.append(value)
         except Exception as e:
             self.logger.error(e)

@@ -184,7 +184,6 @@ class ISyncModule:
         for x in sourceData:
             for (y, idx) in enumerate(connections):
                 # upsert customer
-                res.updates.customers.append(x.customer)
                 res["updates"]["customers"].append(x["customer"])
 
                 # match connection based on address and flat
