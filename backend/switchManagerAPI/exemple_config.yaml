@@ -43,9 +43,9 @@ sync:
 
   # column names in the source table (mapping to the backend table)
   mapping:
-    id: "takziv" # find correct column
+    id: "dayar_code" # find correct column
     lastname: "dayar_name"
     # firstname: "some_other_column"
     address: "dira_name"
-    type: "dira_name" # find correct column
+    flat: "dira"
     toggled: "takziv"
