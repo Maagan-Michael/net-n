@@ -43,7 +43,6 @@ class UpdatesDataType(TypedDict):
 class RemovesDataType(TypedDict):
     """RemovesDataType is the type of the data to be removed"""
     customers: List[int]
-    connections: List[int]
 
 
 class SplitDataType(TypedDict):
@@ -105,7 +104,7 @@ class ISyncModule:
         """
         pass
 
-    def getTargetData(self) -> List[TargetDataType]:
+    def getCurrentConnections(self) -> List[TargetDataType]:
         """gets the data from the target database"""
         url = self.destination.generateUrl()
         engine = create_engine(url)
@@ -139,8 +138,34 @@ class ISyncModule:
         with engine.connect() as conn:
             result = conn.execute(
                 f"""
-                SELECT {columns} FROM {self.destination.table}
+                SELECT {columns} FROM public.customers
                 LEFT JOIN connections ON = connections.customer_id
+                """
+            )
+        engine.dispose()
+        return result
+
+    def getCurrentCustomers(self) -> List[CustomerDataType]:
+        """gets the data from the target database"""
+        url = self.destination.generateUrl()
+        engine = create_engine(url)
+        columns = ", ".join([
+            "customers.id",
+            "customers.firstname",
+            "customers.lastname",
+            "customers.type",
+        ])
+        for x in columns:
+            x = {
+                "id": x[0],
+                "firstname": x[1],
+                "lastname": x[2],
+                "type": x[3],
+            }
+        with engine.connect() as conn:
+            result = conn.execute(
+                f"""
+                SELECT {columns} FROM public.customers
                 """
             )
         engine.dispose()
@@ -149,7 +174,8 @@ class ISyncModule:
     def splitData(self) -> SplitDataType:
         """splits the data into updates and removes"""
         sourceData = self.getSourceData()
-        targetData = self.getTargetData()
+        connections = self.getCurrentConnections()
+        customers = self.getCurrentCustomers()
         res = {
             "updates": {
                 "customers": [],
@@ -157,29 +183,45 @@ class ISyncModule:
             },
             "removes": {
                 "customers": [],
-                "connections": []
             }
         }
         # getting customers and connections to update
         for x in sourceData:
-            for (y, idx) in enumerate(targetData):
-                if x["customer"]["id"] == y["customer"]["id"]:
-                    if (x["customer"] != y["customer"]):
-                        res["updates"]["customers"].append(x)
-                    if (x["connection"]["toggled"] != y["connection"]["toggled"] and y["connection"]["autoUpdate"]):
+            for (y, idx) in enumerate(connections):
+                # upsert customer
+                res["updates"]["customers"].append(x["customer"])
+
+                # match connection based on address and flat
+                if (
+                    (x["connection"]["address"] == y["connection"]["address"]) and
+                    (x["connection"]["flat"] == y["connection"]["flat"])
+                ):
+                    # check if has budget, close the port otherwise
+                    # also set the customerId in case customer changed
+                    if (
+                        y["connection"]["autoUpdate"] and
+                        (
+                            x["connection"]["toggled"] != y["connection"]["toggled"] or
+                            x["connection"]["customerId"] != y["customer"]["id"]
+                        )
+                    ):
                         res["updates"]["connection"].append({
                             "id": y["connection"]["id"],
-                            "toggled": x["connection"]["toggled"]
+                            "toggled": x["connection"]["toggled"],
+                            "customerId": x["customer"]["id"]
                         })
                     # remove from list
-                    del targetData[idx]
+                    del connections[idx]
                     break
 
-        # all the targetData left is to be removed only if autoUpdate is true
-        for (x, idx) in enumerate(targetData):
-            if x["connection"]["autoUpdate"]:
-                res["removes"]["customers"].append(x["customer"]["id"])
-                res["removes"]["connections"].append(x["connection"]["id"])
+        # getting customers to remove
+        customersToDelete = [
+            x["customer"]["id"] for x in customers if (
+                x["customer"]["id"] not in [y["customer"]["id"]
+                                            for y in sourceData]
+            )]
+        res["removes"]["customers"] = customersToDelete
+        return res
 
     async def apiUpdates(self, data: SplitDataType):
         """updates the data to the API"""
@@ -192,8 +234,6 @@ class ISyncModule:
         """removes the data from the API"""
         if (len(data["removes"]["customers"]) > 0):
             await requests.post(f"{self.apiUrl}/v1/customers/delete", json=data)
-        if (len(data["removes"]["connections"]) > 0):
-            await requests.post(f"{self.apiUrl}/v1/connections/delete", json=data)
 
     async def sync(self):
         """syncs the data from the source database to the API"""
