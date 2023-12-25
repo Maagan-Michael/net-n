@@ -3,6 +3,7 @@ import { fullConnectionUpdateInput } from "../types";
 import { upsertConnections } from "./upsertConnections";
 import { upsertCustomers } from "./upsertCustomers";
 import { upsertSwitches } from "./upsertSwitches";
+import { useConnectionsUrlParams } from "../queries/getConnections";
 
 const upsertFullConnection = async (params: fullConnectionUpdateInput) => {
   const { con, customer, sw } = params;
@@ -31,15 +32,14 @@ const upsertFullConnection = async (params: fullConnectionUpdateInput) => {
 };
 
 export function useUpsertFullConnection() {
+  const [urlArguments] = useConnectionsUrlParams();
   const queryClient = useQueryClient();
   return useMutation(
     (params: fullConnectionUpdateInput) => upsertFullConnection(params),
     {
       onSuccess: (data) => {
         if (data.items.length > 0) {
-          console.log(queryClient);
-          const params = new URLSearchParams(window.location.search);
-          queryClient.invalidateQueries({
+          const queries = queryClient.getQueriesData({
             queryKey: "connections",
             predicate: (query) => {
               if (query.options.queryKey[0] !== "connections") {
@@ -48,14 +48,31 @@ export function useUpsertFullConnection() {
               for (const [key, value] of Object.entries(
                 query.options.queryKey[1]
               )) {
-                const _value = params.get(key) || undefined;
-                if (value !== _value && value) {
+                const _value = urlArguments[key] || undefined;
+                if (value !== _value) {
                   return false;
                 }
               }
-              console.log("worked");
               return true;
             },
+          });
+          queries.forEach((query) => {
+            queryClient.setQueryData(query[0], (old: any) => {
+              if (old?.pages?.length) {
+                old.pages.map((page: any) => {
+                  for (let i = 0; i < data.items.length; i++) {
+                    const _index = page.connections.findIndex(
+                      (item: any) => item.id === data.items[i].id
+                    );
+                    if (_index > -1) {
+                      page.connections[_index] = data.items[i];
+                    }
+                  }
+                  return page;
+                });
+              }
+              return old;
+            });
           });
           queryClient.invalidateQueries([
             "connection",
