@@ -45,7 +45,8 @@ class SQLSyncModule(ISyncModule):
         current supported drivers :
             - postgresql    : psycopg2
             - oracleDB      : cx_oracle
-        if support was to be added for other databases :
+
+        to add extra support :
             - check the sqlalchemy documentation about drivers and dialects
             - add the driver to the dependencies through poetry
     """

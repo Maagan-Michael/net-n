@@ -90,6 +90,8 @@ class ISyncModule:
             get the data from the source and the target
             splits the data into updateables and removeables objects
 
+            the matching condition is based on the address and the flat
+            it will automatically reasign the customerId to the connection if the customer at a specific address changed
         """
         sourceData = self.getSourceData()
         connections = self.getCurrentConnections()
@@ -159,7 +161,12 @@ class ISyncModule:
             await requests.post(f"{self.apiUrl}/v1/customers/delete", json=data)
 
     async def sync(self):
-        """syncs the data from the source database to the API"""
+        """
+            syncs the data from the source database to the API :
+            1. gets the data from the source and the SyncManager DB
+            2. splits the data into updateables and removeables objects
+            3. updates the data using the syncManager API
+        """
         data = self.splitData()
         await self.apiUpdates(data)
         await self.apiRemoves(data)
