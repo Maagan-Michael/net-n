@@ -1,8 +1,10 @@
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 from pydantic import BaseModel, ConfigDict
 import logging
-from .interface import ConnectionDataType, CustomerDataType, ISyncModule, DBConfig, TargetDataType
+from .interface import ISyncModule
+from .types import ConnectionDataType, CustomerDataType, DBConfig, TargetDataType
 from sqlalchemy import create_engine, text
+from typing import List, Optional
 
 
 class ColMapping(BaseModel):
@@ -93,13 +95,13 @@ class SQLSyncModule(ISyncModule):
                 else:
                     fn = x[4] if x[4] is not None else ""
                     lsn = x[5] if x[5] is not None else ""
-                value = TargetDataType(
-                    customer=CustomerDataType(
+                value = TargetDataType.model_construct(
+                    customer=CustomerDataType.model_construct(
                         id=x[0],
                         firstname=fn,
                         lastname=lsn,
                     ),
-                    connection=ConnectionDataType(
+                    connection=ConnectionDataType.model_construct(
                         flat=x[1],
                         address=x[2],
                         toggled=bool(x[3]),
@@ -107,7 +109,7 @@ class SQLSyncModule(ISyncModule):
                     )
                 )
                 if hasType:
-                    value["customer"]["type"] = x[length - 1]
+                    value.customer.type = x[length - 1]
                 parsedValues.append(value)
             except Exception as e:
                 self.logger.error(e)

@@ -29,6 +29,7 @@ def main():
     # testing puposes
     # print(syncModule.getCurrentConnections())
     # print(syncModule.getCurrentCustomers())
-    print(syncModule.getSourceData())
+    # print(syncModule.getSourceData())
+    # print(syncModule.splitData())
 
     # syncModule.sync()
