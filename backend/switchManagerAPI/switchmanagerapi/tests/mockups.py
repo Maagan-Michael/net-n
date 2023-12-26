@@ -14,7 +14,7 @@ Faker.seed(random.randint(0, 1000))
 
 def createMockCustomer() -> InternalCustomer:
     id = fake.ean(length=8)
-    return InternalCustomer(
+    return InternalCustomer.model_validate(
         id=id,
         idstr=str(id),
         firstname=fake.first_name(),
@@ -24,9 +24,9 @@ def createMockCustomer() -> InternalCustomer:
 
 
 def createMockSwitch() -> Switch:
-    return Switch(
+    return Switch.model_validate(
         id=fake.uuid4(),
-        name=f"switch {fake.word()}",
+        name=fake.word(),
         ip=fake.ipv4(),
         description=fake.text(),
         gpsLat=random.choice([None, fake.latitude()]),
@@ -41,7 +41,7 @@ def createMockSwitch() -> Switch:
 def createMockConnection(switchId: str, customerId: str) -> Connection:
     port = fake.port_number()
     try:
-        return Connection(
+        return Connection.model_validate(
             id=fake.uuid4(),
             address=fake.address(),
             flat=fake.building_number(),
