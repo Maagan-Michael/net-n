@@ -3,6 +3,8 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, U
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from .. import Base
+from .customers import DBCustomer
+from .switches import DBSwitch
 
 
 class DBConnection(Base):
@@ -28,7 +30,7 @@ class DBConnection(Base):
     flat = Column(String, index=True, default=None, nullable=True)
 
     switch = relationship(
-        "DBSwitch", back_populates="connections", foreign_keys=[switchId])
+        "DBSwitch", back_populates="connections", foreign_keys=[switchId], order_by=DBSwitch.name.asc())
     customer = relationship(
-        "DBCustomer", back_populates="connections", foreign_keys=[customerId])
+        "DBCustomer", back_populates="connections", foreign_keys=[customerId], order_by=(DBCustomer.lastname.asc(), DBCustomer.firstname.asc()))
     UniqueConstraint(switchId, strPort, name="switch_port_unique")

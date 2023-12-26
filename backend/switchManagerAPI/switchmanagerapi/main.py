@@ -61,7 +61,6 @@ async def on_startup():
 
     # drop database (for testing purposes)
     # await drop_db()
-
     # create database
     await create_db()
 

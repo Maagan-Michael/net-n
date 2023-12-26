@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Optional, Union
 from ..adapters.sync import AppAdapter
-from sqlalchemy import Column, or_, select, and_
+from sqlalchemy import Column, asc, desc, or_, select, and_
 from sqlalchemy.orm import contains_eager
 from ..models import BatchedDeleteOutput, OrderBy, Connection, AssignCustomerInput, \
     BatchConnectionOutput, ConnectionOutput, ConnectionsOutput, ConnectionListInput, ConnectionUpsertInput, ListFilterEnum, ListSortEnum
@@ -100,25 +100,26 @@ async def listConnections(repo: ConnectionRepository, input: ConnectionListInput
     """return a paginated list of connections"""
     filters = getFilterStm(input.search, input.filter)
     obFields = sortEnumMap[input.sort]
-    orderBy = [e.desc() for e in obFields] if input.order == OrderBy.desc else [
-        e.asc() for e in obFields]
+    orderBy = [desc(e) for e in obFields] if input.order == OrderBy.desc else [
+        asc(e) for e in obFields]
+    print(*orderBy)
     stm = (
         select(DBConnection)
         .join(DBConnection.customer, isouter=True)
         .join(DBConnection.switch)
         .options(contains_eager(DBConnection.customer), contains_eager(DBConnection.switch))
-        .filter(*filters)
         .order_by(*orderBy)
-        .limit(input.limit + 1)
+        .filter(*filters)
         .offset(input.page * input.limit)
+        .limit(input.limit + 1)
         .execution_options(populate_existing=True)
     )
     q = await repo.session.scalars(stm)
     # todo : compute hasPrevious
     res = []
-    for e in q:
+    for (idx, e) in enumerate(q):
         connection = ConnectionOutput.model_construct(**e.__dict__)
-        res.append(connection)
+        res.insert(idx, connection)
     hasPrevious = input.page > 0
     hasNext = len(res) > input.limit
     if (hasNext):
