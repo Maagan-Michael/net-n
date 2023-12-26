@@ -91,7 +91,11 @@ class ISyncModule:
             splits the data into updateables and removeables objects
 
             the matching condition is based on the address and the flat
-            it will automatically reasign the customerId to the connection if the customer at a specific address changed
+            it will :
+                - automatically reasign the customerId to a connection if the customer at a specific address changed
+                  if the connection accepts auto updates.
+                - remove customers that are not in the source dataset
+
         """
         sourceData = self.getSourceData()
         connections = self.getCurrentConnections()
