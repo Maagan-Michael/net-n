@@ -34,9 +34,9 @@ sync:
   destination:
     # same database as the backend, but other target could be specified
     <<: *db
-    # requires asyncpg and postgresql drivers
-    driver: "postgresql+asyncpg"
-    # table name in the backend database
+    # only driver supported for now [psycopg2] (syncing module only)
+    # may add asyncpg driver later
+    driver: "postgresql+psycopg2"
     table: "public.customers"
 
   # api url to the backend

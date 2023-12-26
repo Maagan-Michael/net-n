@@ -32,4 +32,4 @@ def main():
     # print(syncModule.getSourceData())
     # print(syncModule.splitData())
 
-    # syncModule.sync()
+    syncModule.sync()
