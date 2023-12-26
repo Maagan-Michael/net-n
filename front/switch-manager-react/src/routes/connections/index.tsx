@@ -17,7 +17,11 @@ function ConnectionsContent() {
   const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useConnectionsQuery(queryParams);
   const onReady = useInfiniteScroller(
-    () => !isLoading && !isFetchingNextPage && fetchNextPage(),
+    () => {
+      if (!isLoading && !isFetchingNextPage && hasNextPage) {
+        fetchNextPage();
+      }
+    },
     {
       threshold: 0.8,
     }
@@ -44,7 +48,7 @@ function ConnectionsContent() {
         onReady={onReady}
       />
       {(isFetchingNextPage || isLoading) && (
-        <div className="flex flex-col gap-y-8 mt-8 animate-pulse">
+        <div className="flex flex-col gap-y-1 md:gap-y-1 lg:gap-y-4">
           {[...Array(queryParams.limit)].map((i, idx) => (
             <LoadingRow key={idx} />
           ))}

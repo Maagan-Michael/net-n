@@ -36,7 +36,7 @@ const Row = ({ data }: React.PropsWithChildren<{ data: ConnectionOutput }>) => {
   return (
     <div
       dir={i18n.dir()}
-      className="w-full h-18 lg:h-14 text-xs text-center grid grid-flow-col grid-cols-12 md:gap-x-4 lg:gap-x-8 [&>*]:hover:border-blue-300 cursor-pointer"
+      className="w-full h-20 lg:h-14 text-xs text-center grid grid-flow-col grid-cols-12 md:gap-x-4 lg:gap-x-8 [&>*]:hover:border-blue-300 cursor-pointer"
     >
       <div
         dir={i18n.dir()}

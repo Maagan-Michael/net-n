@@ -10,7 +10,13 @@ import TextAction from "@/components/inputs/textAction";
 import { useCustomersQuery } from "@/api/queries/getCustomers";
 import { useState } from "react";
 
-const CustomerSelector = ({ setValue }: { setValue: UseFormSetValue<any> }) => {
+const CustomerSelector = ({
+  setValue,
+  locked,
+}: {
+  setValue: UseFormSetValue<any>;
+  locked?: boolean;
+}) => {
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "connection.form.customer",
   });
@@ -23,26 +29,31 @@ const CustomerSelector = ({ setValue }: { setValue: UseFormSetValue<any> }) => {
         name="customerId"
         label={t("search")}
         onChange={(e) => setSearch(e.target.value)}
+        disabled={locked}
       />
       <div className="p-2">
-        {data?.map((customer) => (
-          <div
-            key={customer.id}
-            className="grid grid-cols-12 items-center text-xs gap-x-2 cursor-pointer hover:bg-neutral-100 p-1"
-            onClick={() => {
-              setValue("customerId", customer.id, {
-                shouldDirty: true,
-              });
-              setValue("customer", customer, {
-                shouldDirty: true,
-              });
-            }}
-          >
-            <div className="col-span-4">{customer.id}</div>
-            <div className="col-span-4">{customer.firstname}</div>
-            <div className="col-span-4">{customer.lastname}</div>
-          </div>
-        ))}
+        {!locked &&
+          data?.map((customer) => (
+            <div
+              key={customer.id}
+              className="grid grid-cols-12 items-center text-xs gap-x-2 cursor-pointer hover:bg-neutral-100 p-1"
+              onClick={() => {
+                setValue("customerId", customer.id, {
+                  shouldDirty: true,
+                });
+                setValue("customer", customer, {
+                  shouldDirty: true,
+                });
+                setValue("toggled", true, {
+                  shouldDirty: true,
+                });
+              }}
+            >
+              <div className="col-span-4">{customer.id}</div>
+              <div className="col-span-4">{customer.firstname}</div>
+              <div className="col-span-4">{customer.lastname}</div>
+            </div>
+          ))}
       </div>
     </FormSection>
   );
@@ -51,14 +62,15 @@ const CustomerSelector = ({ setValue }: { setValue: UseFormSetValue<any> }) => {
 const CustomerSectionForm = ({
   register,
   setValue,
+  locked,
 }: {
   register: UseFormRegister<any>;
   setValue: UseFormSetValue<any>;
+  locked?: boolean;
 }) => {
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "connection.form.customer",
   });
-
   return (
     <FormSection
       title={t("title")}
@@ -68,7 +80,11 @@ const CustomerSectionForm = ({
           type="button"
           text={t("unasign")}
           className="text-sm"
-          onClick={() => setValue("customerId", null, { shouldDirty: true })}
+          onClick={() => {
+            setValue("customerId", null, { shouldDirty: true });
+            setValue("toggled", false, { shouldDirty: true });
+          }}
+          disabled={locked}
         />
       }
     >
@@ -109,16 +125,24 @@ const CustomerSection = ({
   register,
   setValue,
   watch,
+  locked = false,
 }: {
   register: UseFormRegister<any>;
   setValue: UseFormSetValue<any>;
   watch: UseFormWatch<any>;
+  locked?: boolean;
 }) => {
   const customerId = watch("customerId");
   if (customerId == null) {
-    return <CustomerSelector setValue={setValue} />;
+    return <CustomerSelector setValue={setValue} locked={locked} />;
   }
-  return <CustomerSectionForm register={register} setValue={setValue} />;
+  return (
+    <CustomerSectionForm
+      register={register}
+      setValue={setValue}
+      locked={locked}
+    />
+  );
 };
 
 export default CustomerSection;
