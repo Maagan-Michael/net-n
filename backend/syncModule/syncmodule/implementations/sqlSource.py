@@ -1,5 +1,5 @@
 from typing import List, Optional
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 import logging
 from .interface import ISyncModule
 from .types import ConnectionDataType, CustomerDataType, DBConfig, TargetDataType
@@ -8,38 +8,33 @@ from typing import List, Optional
 
 
 class ColMapping(BaseModel):
-    """ColMaps is the mapping of the source column to the target column"""
-    id: str
-    firstname: Optional[str] = None
-    lastname: str
-    type: Optional[str] = None
-    address: str
-    flat: str
-    toggled: str
+    """
+        ColMaps is the mapping of the source column to the target column
+    """
+    id: str = Field(descrition="customer id column name")
+    firstname: Optional[str] = Field(
+        default=None, descrition="customer firstname column name")
+    lastname: str = Field(descrition="customer lastname column name")
+    type: Optional[str] = Field(
+        default=None, descrition="customer type column name")
+    address: str = Field(descrition="customer address column name")
+    flat: str = Field(descrition="customer flat column name")
+    toggled: str = Field(
+        descrition="weather the connection is toggled or not column name, will be automatically converted to bool")
 
 
 class SQLSyncModuleConfig(BaseModel):
     """
         SyncModuleConfig is the configuration for the SyncModule
-        source: DBConfig is the source database configuration
-        destination: DBConfig is the destination database configuration
-        mapping.id is the source column name for customer id
-
-        if firstname is None, then the lastname will be split into firstname and lastname
-        mapping.firstname is the source column name for customer firstname
-        mapping.lastname is the source column name for customer lastname
-
-        mapping.type is the source column name for customer type
-        mapping.address is the source column name for customer address
-        mapping.toggled is the source column name for connection toggled
     """
     model_config = ConfigDict(from_attributes=True)
 
-    source: DBConfig
-    destination: DBConfig
-    api_url: str
+    source: DBConfig = Field(description="source database configuration")
+    destination: DBConfig = Field(
+        description="SwitchManager database configuration")
+    api_url: str = Field(description="SwitchManager api url")
 
-    mapping: ColMapping
+    mapping: ColMapping = Field(description="source column mapping")
 
 
 class SQLSyncModule(ISyncModule):
