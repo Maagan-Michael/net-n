@@ -43,7 +43,17 @@ class SQLSyncModuleConfig(BaseModel):
 
 
 class SQLSyncModule(ISyncModule):
-    """SyncModule is the module that syncs the data from the source database to the target database"""
+    """
+        SyncModule is the module that syncs the customers from an external database
+        it implements the ISyncModule interface
+
+        current supported drivers :
+            - postgresql    : psycopg2
+            - oracleDB      : cx_oracle
+        if support was to be added for other databases :
+            - check the sqlalchemy documentation about drivers and dialects
+            - add the driver to the dependencies through poetry
+    """
 
     def __init__(self, config: SQLSyncModuleConfig):
         super().__init__(config.destination, config.api_url)
@@ -102,6 +112,7 @@ class SQLSyncModule(ISyncModule):
                         lastname=lsn,
                     ),
                     connection=ConnectionDataType.model_construct(
+                        customerId=x[0],
                         flat=x[1],
                         address=x[2],
                         toggled=bool(x[3]),

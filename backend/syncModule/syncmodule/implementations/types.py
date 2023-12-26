@@ -21,7 +21,10 @@ class ConnectionDataType(BaseModel):
 
 
 class SourceDataType(BaseModel):
-    """SourceDataType is the type of the data from the source"""
+    """
+        SourceDataType is the type of the data return from the source
+        it should contain the data from the customer and the connection
+    """
     customer: CustomerDataType
     connection: ConnectionDataType
 
@@ -44,13 +47,13 @@ class RemovesDataType(BaseModel):
 
 
 class SplitDataType(BaseModel):
-    """SplitDataType is the type of the data to be split"""
+    """SplitDataType is the data model once the data is split"""
     updates: UpdatesDataType
     removes: RemovesDataType
 
 
 class DBConfig(BaseModel):
-    """DBConfig is the configuration for the database"""
+    """DBConfig is the configuration object for the database connection and targeted table"""
     driver: Optional[str] = None
     host: Optional[str] = None
     port: Optional[int] = None

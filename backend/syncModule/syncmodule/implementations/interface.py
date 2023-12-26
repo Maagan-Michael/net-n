@@ -7,7 +7,12 @@ import requests
 
 
 class ISyncModule:
-    """ISyncModule is the interface for the SyncModule"""
+    """
+        ISyncModule is the interface for the SyncModule
+        this class should be inherited by the child class
+        this class should not be instantiated
+        only getSourceData should be implemented by the child class
+    """
 
     def __init__(self, destination: DBConfig, apiUrl: str):
         self.destination = destination
@@ -24,8 +29,7 @@ class ISyncModule:
 
     def getCurrentConnections(self) -> List[ConnectionDataType]:
         """
-            gets full list of connections from the target database
-            customers are joined to the connections
+            gets full list of connections from the switchManager database
         """
         results = []
         url = self.destination.generateUrl()
@@ -56,7 +60,7 @@ class ISyncModule:
 
     def getCurrentCustomers(self) -> List[CustomerDataType]:
         """
-            gets full list of customers from the target database
+            gets full list of customers from the switchManager database
         """
         results = []
         url = self.destination.generateUrl()
@@ -84,7 +88,8 @@ class ISyncModule:
     def splitData(self) -> SplitDataType:
         """
             get the data from the source and the target
-            splits the data into updates and removes objects ot be used with the API
+            splits the data into updateables and removeables objects
+
         """
         sourceData = self.getSourceData()
         connections = self.getCurrentConnections()
@@ -112,17 +117,18 @@ class ISyncModule:
                     # check if has budget, close the port otherwise
                     # also set the customerId in case customer changed
                     if (
-                        y["autoUpdate"] and
+                        y.autoUpdate and
                         (
                             x.connection.toggled != y.toggled or
-                            x.connection.customerId != y.customer.id
+                            x.connection.customerId != y.customerId
                         )
                     ):
-                        res.updates.connections.append({
-                            "id": y.id,
-                            "toggled": x.connection.toggled,
-                            "customerId": x.customer.id
-                        })
+                        res.updates.connections.append(
+                            ConnectionDataType.model_construct(
+                                id=y.id,
+                                toggled=x.connection.toggled,
+                                customerId=x.customer.id
+                            ))
                     # remove from list
                     del connections[idx]
                     break
@@ -137,7 +143,7 @@ class ISyncModule:
         return res
 
     async def apiUpdates(self, data: SplitDataType):
-        """updates the data to the API"""
+        """updates the data using the syncManager API"""
         if (len(data.updates.customers) > 0):
             await requests.post(f"{self.apiUrl}/v1/customers/upsert", json=data)
         if (len(data.updates.connections) > 0):
@@ -145,7 +151,7 @@ class ISyncModule:
 
     async def apiRemoves(self, data: SplitDataType):
         """
-            removes the data from the API
+            removes the data using the syncManager API
             only customers are removed
             connections are not removed because they are statically generated based on hardware information, thus they must not be removed
         """
