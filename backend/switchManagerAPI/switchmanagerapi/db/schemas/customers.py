@@ -5,6 +5,14 @@ from .. import Base
 
 
 class DBCustomer(Base):
+    """
+        DBCustomer is the database model for a customer entry.
+        id is the id of the customer (A.K.A customer work id)
+        idstr is the string representation of the id
+        firstname is the firstname of the customer
+        lastname is the lastname of the customer
+        type is the type of the customer (private/company)
+    """
     __tablename__ = "customers"
 
     id = Column(Integer, primary_key=True, index=True, unique=True)

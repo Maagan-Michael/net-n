@@ -18,7 +18,13 @@ PydanticModel = TypeVar("PydanticModel", bound=BaseModel)
 
 
 class DatabaseRepository(Generic[Model]):
-    """common repository for crud operations on models"""
+    """
+        common repository for crud operations on models
+        session is the database session
+        schema is the database schema
+        model is the pydantic model
+        name is the name of the repository
+    """
 
     def __init__(self, session: AsyncSession, schema: Model, model: PydanticModel, name: str) -> None:
         self.session = session
@@ -62,7 +68,12 @@ class DatabaseRepository(Generic[Model]):
         return model
 
     async def batch_upsert(self, inputs: Union[Model, List[Model]]) -> (List[Model], List[BatchError], List[Model]):
-        """upsert multiple model(s)"""
+        """
+            upsert multiple model(s)
+            returns a tuple of (items, errors, previousValues)
+            checks if the model exists in the database, if it does, it updates it, if it doesn't, it creates it
+            all models are validated before being upserted
+        """
         if not isinstance(inputs, list):
             inputs = [inputs]
         items = []
@@ -115,6 +126,7 @@ def get_repository(
     name: str
 ) -> Callable[[AsyncSession], DatabaseRepository]:
     def func(session: AsyncSession = Depends(get_db_session)):
+        """factory which returns a repository"""
         return DatabaseRepository(schema=schema, model=model, session=session, name=name)
     return func
 

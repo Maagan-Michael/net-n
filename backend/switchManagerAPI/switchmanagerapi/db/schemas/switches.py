@@ -7,6 +7,19 @@ import uuid
 
 
 class DBSwitch(Base):
+    """
+        DBSwitch is the database model for a switch entry.
+        id is the id of the switch
+        ip is the ip of the switch
+        gpsLat is the latitude of the switch
+        gpsLong is the longitude of the switch
+        name is the name of the switch
+        description is the description of the switch
+        restricted is the state of the switch (restricted/unrestricted)
+        notReachable is the state of the switch (reachable/unreachable)
+        restrictedPorts is the list of restricted ports
+        restrictedPortsDesc is the list of restricted ports descriptions
+    """
     __tablename__ = "switches"
 
     id = Column(UUID(as_uuid=True), primary_key=True, index=True,

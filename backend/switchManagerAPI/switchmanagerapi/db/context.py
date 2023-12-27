@@ -11,12 +11,16 @@ from sqlalchemy.ext.asyncio import (
 from ..config import AppConfig
 # using sqlite in dev environment, but will change to postgresql in production
 ### dev environment only ###
-SQLALCHEMY_DATABASE_URL = f"postgresql+asyncpg://{AppConfig['db']['user']}:{AppConfig['db']['password']}@{AppConfig['db']['host']}:{AppConfig['db']['port']}/{AppConfig['db']['database']}"
 Base = declarative_base()
 
 
-async def get_db_session(url: str = SQLALCHEMY_DATABASE_URL) -> AsyncGenerator[AsyncSession, None]:
+def getDBUrl() -> str:
+    return f"postgresql+asyncpg://{AppConfig['db']['user']}:{AppConfig['db']['password']}@{AppConfig['db']['host']}:{AppConfig['db']['port']}/{AppConfig['db']['database']}"
+
+
+async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     """get database session"""
+    url = getDBUrl()
     engine = create_async_engine(url)
     factory = async_sessionmaker(engine)
     async with factory() as session:
@@ -30,54 +34,43 @@ async def get_db_session(url: str = SQLALCHEMY_DATABASE_URL) -> AsyncGenerator[A
             await session.close()
 
 
-@asynccontextmanager
-async def get_context_db_session(url: str = SQLALCHEMY_DATABASE_URL):
-    """get database session"""
-    engine = create_async_engine(url)
-    factory = async_sessionmaker(engine)
-    async with factory() as session:
-        try:
-            yield session
-            await session.commit()
-        except exc.SQLAlchemyError as e:
-            await session.rollback()
-            raise e
-        finally:
-            await session.close()
+get_context_db_session = asynccontextmanager(get_db_session)
 
 
 async def create_db() -> None:
-    """create database"""
-    engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
+    """create database utility"""
+    url = getDBUrl()
+    engine = create_async_engine(url)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 
 async def drop_db() -> None:
-    """drop database"""
-    engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
+    """drop database utility"""
+    url = getDBUrl()
+    engine = create_async_engine(url)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
 
 
-# automaped (for sql sync module)
+# deprecated
 
-AutoMapBase = automap_base()
-
-
-@asynccontextmanager
-async def get_context_mapped_db_session(url: str = SQLALCHEMY_DATABASE_URL):
-    """get database session"""
-    engine = create_async_engine(url)
-    factory = async_sessionmaker(engine)
-    async with factory() as session:
-        AutoMapBase = automap_base()
-        AutoMapBase.prepare(engine, reflect=True)
-        try:
-            yield session, AutoMapBase.classes
-            await session.commit()
-        except exc.SQLAlchemyError as e:
-            await session.rollback()
-            raise e
-        finally:
-            await session.close()
+# automaped (for sql sync module) : get the schema from the database and map it to the classes
+# AutoMapBase = automap_base()
+# @asynccontextmanager
+# async def get_context_mapped_db_session():
+#     """get database session"""
+#     url = getDBUrl()
+#     engine = create_async_engine(url)
+#     factory = async_sessionmaker(engine)
+#     async with factory() as session:
+#         AutoMapBase = automap_base()
+#         AutoMapBase.prepare(engine, reflect=True)
+#         try:
+#             yield session, AutoMapBase.classes
+#             await session.commit()
+#         except exc.SQLAlchemyError as e:
+#             await session.rollback()
+#             raise e
+#         finally:
+#             await session.close()

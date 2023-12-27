@@ -8,6 +8,23 @@ from .switches import DBSwitch
 
 
 class DBConnection(Base):
+    """
+        DBConnection is the database model for a connection entry.
+        name is the name of the connection (A.K.A ppp)
+        strPort is the string representation of the port
+        port is the integer representation of the port
+        toggled is the state of the connection (on/off)
+        toggleDate is the date for the next automatic change (on/off)
+        type is the type of the connection (copper/fiber)
+        isUp is the state of the connection (up/down)
+        adapter is the adapter used to manage the connection (imc/snmp) (right now only imc is supported)
+        speed is the speed of the connection (10/100/1000/10000)
+        switchId is the id of the switch the connection is on
+        customerId is the id of the customer the connection is for
+        autoUpdate is the state of the automatic update (on/off), determines if an update can be made with the syncModule
+        address is the address of the connection
+        flat is the flat of the connection
+    """
     __tablename__ = "connections"
 
     id = Column(UUID(as_uuid=True), primary_key=True,
