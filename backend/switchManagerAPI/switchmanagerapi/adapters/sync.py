@@ -18,6 +18,11 @@ logger = get_logger("SyncAdapter")
 
 class ModelsSyncModule:
     def __init__(self, adapter: Adapter, session):
+        """
+            initialize the sync module
+            - adapter: the network adapter to use
+            - session: the database session to use
+        """
         self.adapter = adapter
         self.session = session
 
@@ -34,6 +39,13 @@ class ModelsSyncModule:
         pass
 
     async def sync(self):
+        """
+            syncronize models
+            - get switches from the adapter
+            - update the database
+            - check if all switches are reachable
+            - insert new switches
+        """
         self.adapter.getSwitches()
         await self.update()
         await self.check()
@@ -45,6 +57,9 @@ class ConnectionSyncModule(ModelsSyncModule):
         super().__init__(adapter, session)
 
     async def insert(self):
+        """
+            insert new connections detected on the network (physical ports)
+        """
         switches = await (self.session.scalars(
             select(DBSwitch)
             .where(DBSwitch.notReachable == False)
@@ -85,6 +100,11 @@ class ConnectionSyncModule(ModelsSyncModule):
         pass
 
     async def toggleConnections(self):
+        """
+            check for inconsistent connections state between the network and the database
+            toggle / untoggle connections to match the network state (source of truth)
+            set the toggleDate to None if one is set in the impacted connections
+        """
         cons = (await self.session.scalars(
             select(DBConnection.id, DBConnection.toggled,
                    DBConnection.port, DBSwitch.ip)
@@ -118,6 +138,11 @@ class ConnectionSyncModule(ModelsSyncModule):
                 )
 
     async def sync(self):
+        """
+            syncronize connections
+            - insert new connections
+            - toggle connections
+        """
         await super().sync()
         await self.toggleConnections()
 
@@ -127,6 +152,9 @@ class SwitchesSyncModule(ModelsSyncModule):
         super().__init__(adapter, session)
 
     async def insert(self):
+        """
+            insert new switches detected on the network
+        """
         inserts = [{
             "name": e["label"],
             "ip": e["ip"],
@@ -153,6 +181,10 @@ class SwitchesSyncModule(ModelsSyncModule):
             logger.info("adding new switches detected on the network done")
 
     async def update(self):
+        """
+            update switches ip
+            set them to reachable
+        """
         updates = [{
             "name": e["label"],
             "ip": e["ip"],
@@ -171,6 +203,11 @@ class SwitchesSyncModule(ModelsSyncModule):
             logger.info(f"syncing switch {e['name']} done")
 
     async def check(self):
+        """
+            check if all switches are reachable
+            if not, set them as notReachable
+            TODO: this flag should be seen in the UI somewhere to indicate an issue to the user
+        """
         names = [e['label'] for e in self.adapter.switches]
         await self.session.execute(
             update(DBSwitch)
@@ -189,6 +226,12 @@ class SwitchesSyncModule(ModelsSyncModule):
 
 class AdapterSyncModule:
     def __init__(self) -> None:
+        """
+            initialize the network adapter
+            right now :
+                - only IMC is supported
+                - only a single adapter can be used at runtime, will change in the futur to support multiple adapters
+        """
         self.adapter = None
         if (AppConfig.get("imc")):
             self.adapter = IMCAdapter(
@@ -204,13 +247,20 @@ class AdapterSyncModule:
             self.adapter = Adapter()
 
     async def _sync_all(self, session):
+        """
+            private method to sync all models (switches, connections)
+        """
         switches = SwitchesSyncModule(self.adapter, session)
         await switches.sync()
         connections = ConnectionSyncModule(self.adapter, session)
         await connections.sync()
 
     async def sync(self):
-        """get database session"""
+        """
+            only this method should be called externally to sync the models
+            get database session
+            sync all models (switches, connections)
+        """
         async with get_context_db_session() as session:
             await self._sync_all(session)
 
