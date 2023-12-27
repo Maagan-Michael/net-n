@@ -39,6 +39,7 @@ async def upsertSwitch(input: Union[UpsertSwitchInput, list[UpsertSwitchInput]],
     """
         upsert or udpate one || multiple switch(s)
         if a switch moved to restricted, then the autoUpdate flag is set to False
+        TODO: if restrictedPorts changed, then update the connections.autoUpdate accordingly
     """
     [items, errors, previousValues] = await repo.batch_upsert(input)
     restricted = [e.id for e in items if e.restricted]
@@ -53,5 +54,9 @@ async def upsertSwitch(input: Union[UpsertSwitchInput, list[UpsertSwitchInput]],
 
 @router.post("/delete", response_model=BatchedDeleteOutput)
 async def deleteSwitch(ids: list[str], repo: SwitchRepository):
-    """delete switch(es)"""
+    """
+        delete switch(es)
+        TODO: close all connections to the switch(es)
+        TODO: remove all associated connections
+    """
     return repo.delete(ids)
