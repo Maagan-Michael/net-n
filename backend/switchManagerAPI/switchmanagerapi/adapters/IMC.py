@@ -3,6 +3,11 @@ from pyhpeimc.plat.device import *
 from .adapter import Adapter
 
 
+# physical and virtual
+ALL_PORTS = "53"
+PHYSICAL_PORTS = "6"
+
+
 class IMCAdapter(Adapter):
     """
         IMCAdapter is an adapter for the HP IMC API.
@@ -23,7 +28,7 @@ class IMCAdapter(Adapter):
             url=self.auth.url,
             devip=ip
         )
-        res = [i for i in res if i["ifType"] == "53"]  # virtual
+        res = [i for i in res if i["ifType"] == PHYSICAL_PORTS]  # virtual
         return res
 
     def getSwitchInterface(self, ip: str, port: int) -> dict:
@@ -33,7 +38,7 @@ class IMCAdapter(Adapter):
             url=self.auth.url,
             devip=ip,
         )
-        if (inter["ifType"] == "53"):
+        if (inter["ifType"] == PHYSICAL_PORTS):
             return inter
         return None
 
@@ -44,7 +49,7 @@ class IMCAdapter(Adapter):
         interfaces = [
             i for i in interfaces if (
                 # virtual connections only need to check wanted behavior; physical connections == "6" need to check both
-                i["ifType"] == "53"
+                i["ifType"] == PHYSICAL_PORTS
                 and i["ifIndex"] == str(port)
             )
         ]
