@@ -18,9 +18,7 @@ router = APIRouter(
 )
 
 # connections CRUD
-# from ..tests.mockups import createMockConnection
-# createMockConnection() for i in range(10)
-
+# map API sort enum to database indexed columns
 sortEnumMap: dict[ListSortEnum, List[Column[any]]] = {
     ListSortEnum.con: [DBConnection.name],
     ListSortEnum.customerId: [DBConnection.customerId],
@@ -31,6 +29,7 @@ sortEnumMap: dict[ListSortEnum, List[Column[any]]] = {
 
 
 def getFilterStm(search: Optional[str], filter: ListFilterEnum):
+    """return a list of filters for a given search and filter"""
     filters = []
     # status filters
     if (filter == ListFilterEnum.enabled):
@@ -133,6 +132,7 @@ async def listConnections(repo: ConnectionRepository, input: ConnectionListInput
 
 @router.get("/{id}", response_model=ConnectionOutput)
 async def getConnection(id: str, repo: ConnectionRepository):
+    """return a connection by id"""
     q = await repo.session.scalar(
         select(DBConnection)
         .join(DBConnection.customer, isouter=True)
@@ -149,6 +149,9 @@ async def getConnection(id: str, repo: ConnectionRepository):
 
 @router.post("/assign", response_model=ConnectionOutput)
 async def assignConnectionCustomer(input: AssignCustomerInput, repo: ConnectionRepository):
+    """
+        assign a connection to a customer by address and flat
+    """
     customer = await repo.session.scalar(
         select(DBCustomer).where(DBCustomer.id == input.customerId)
     )
@@ -185,7 +188,13 @@ async def assignConnectionCustomer(input: AssignCustomerInput, repo: ConnectionR
 
 @router.post("/upsert", response_model=BatchConnectionOutput)
 async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUpsertInput]], repo: ConnectionRepository):
-    """upsert or udpate one || multiple connections"""
+    """
+        upsert or udpate one || multiple connections
+        handle side effects :
+            - toggle connection with newtork adapter
+            - close old port with network adapter if port changed
+            - logs changes and events (customer, port, toggled, restricted)
+    """
     [items, errors, previousValues] = await repo.batch_upsert(input)
     ids = [e.id for e in items]
     items = (await repo.session.scalars(
@@ -202,15 +211,22 @@ async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUp
                 **items[idx].__dict__)
             b = items[idx]
             try:
+                # customer changed : log the change
                 if (e.customerId != b.customerId):
                     logger.warning(
                         f"customer changed on connection ({b.name})({b.id}) from {e.customerId} to {b.customerId}")
+                # toggled changed :
+                #   - log the change
+                #   - toggle connection with adapter
                 if (e.toggled != b.toggled):
-                    # enable / disable connection with adapter
                     logger.info(
                         f"toggling {'on' if b.toggled else 'off'} connection {b.id} on {b.switch.name}({b.switch.ip}:{b.port})")
                     AppAdapter.adapter.togglePort(
                         b.switch.ip, b.port, b.toggled)
+                # port changed :
+                #   - log the change
+                #   - toggle connection with adapter
+                #   - close old port with adapter
                 if (e.port != b.port):
                     # closing old port with adapter
                     logger.info(
@@ -219,6 +235,7 @@ async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUp
                         b.switch.ip, b.port, b.toggled)
                     AppAdapter.adapter.togglePort(
                         b.switch.ip, e.port, False)
+                # connection was upserted by is using a restricted port or restricted switch (log the changes)
                 if (b.port in b.switch.restrictedPorts):
                     logger.error(
                         f"the connection:{b.name} with the restricted port {b.port} on switch:{b.switch.name} was modified")

@@ -16,6 +16,7 @@ router = APIRouter(
 
 @router.get("/", response_model=list[Customer])
 async def listCustomers(search: Optional[str], limit: Optional[int], repo: CustomerRepository):
+    """return a list of customers"""
     searchOperators = []
     if (search and len(search) > 0):
         search = re.escape(search)

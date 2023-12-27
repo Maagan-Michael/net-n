@@ -16,6 +16,7 @@ class Customer(BaseModel):
 
 
 class InternalCustomer(Customer):
+    """Internal Customer Database model (used for input validation, so that the idstr is generated)"""
     @computed_field(return_type=str)
     @property
     def idstr(self):
@@ -30,6 +31,7 @@ BatchedCustomerOutput = batcheableOutputFactory(Customer)
 
 
 class UpsertCustomerInput(BaseModel):
+    """Customer input model"""
     id: Optional[int] = None
     firstname: Optional[str] = None
     lastname: Optional[str] = None

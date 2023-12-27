@@ -14,8 +14,10 @@ class Switch(BaseModel):
                       description="switch unique name / id")  # switch name
     ip: str = Field(default="0.0.0.0", min_length=7,
                     max_length=15, description="switch ip address")
-    gpsLat: Optional[float] = Field(default=None, min=-90, max=90)
-    gpsLong: Optional[float] = Field(default=None, min=-180, max=180)
+    gpsLat: Optional[float] = Field(
+        default=None, min=-90, max=90, description="GPS latitude")
+    gpsLong: Optional[float] = Field(
+        default=None, min=-180, max=180, description="GPS longitude")
     name: str
     description: str
     notReachable: bool = Field(

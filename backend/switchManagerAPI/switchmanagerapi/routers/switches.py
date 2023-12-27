@@ -36,7 +36,10 @@ async def getSwitch(id: int, repo: SwitchRepository):
 
 @router.post("/upsert", response_model=BatchedSwitchOutput)
 async def upsertSwitch(input: Union[UpsertSwitchInput, list[UpsertSwitchInput]], repo: SwitchRepository):
-    """upsert or udpate one || multiple switch(s)"""
+    """
+        upsert or udpate one || multiple switch(s)
+        if a switch moved to restricted, then the autoUpdate flag is set to False
+    """
     [items, errors, previousValues] = await repo.batch_upsert(input)
     restricted = [e.id for e in items if e.restricted]
     if len(restricted) > 0:
