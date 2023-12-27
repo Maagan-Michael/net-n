@@ -51,26 +51,3 @@ async def drop_db() -> None:
     engine = create_async_engine(url)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
-
-
-# deprecated
-
-# automaped (for sql sync module) : get the schema from the database and map it to the classes
-# AutoMapBase = automap_base()
-# @asynccontextmanager
-# async def get_context_mapped_db_session():
-#     """get database session"""
-#     url = getDBUrl()
-#     engine = create_async_engine(url)
-#     factory = async_sessionmaker(engine)
-#     async with factory() as session:
-#         AutoMapBase = automap_base()
-#         AutoMapBase.prepare(engine, reflect=True)
-#         try:
-#             yield session, AutoMapBase.classes
-#             await session.commit()
-#         except exc.SQLAlchemyError as e:
-#             await session.rollback()
-#             raise e
-#         finally:
-#             await session.close()
