@@ -42,6 +42,7 @@ async def on_shutdown():
     """
     Run on shutdown
     - cancel all running background jobs
+    TODO: create a JOB queue class to manage jobs
     """
     for job in jobs:
         if (not job.cancelled() and not job.done()):
