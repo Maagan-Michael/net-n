@@ -43,5 +43,8 @@ async def upsertCustomer(input: Union[UpsertCustomerInput, list[UpsertCustomerIn
 
 @router.post("/delete", response_model=BatchedDeleteOutput)
 async def deleteCustomer(ids: list[str], repo: CustomerRepository):
-    """delete a customer"""
+    """
+        delete a customer
+        TODO: toggle off all associated connections if connection.autoUpdate is True
+    """
     return repo.delete(ids)
