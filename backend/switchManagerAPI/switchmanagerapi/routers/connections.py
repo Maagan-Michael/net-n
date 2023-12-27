@@ -194,6 +194,8 @@ async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUp
             - toggle connection with newtork adapter
             - close old port with network adapter if port changed
             - logs changes and events (customer, port, toggled, restricted)
+        TODO: if a customer is assigned to a connection, he should be removed from other connections (if autoUpdate is true) and the said connection
+              should be closed with the adapter
     """
     [items, errors, previousValues] = await repo.batch_upsert(input)
     ids = [e.id for e in items]
