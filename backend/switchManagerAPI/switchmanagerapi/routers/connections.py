@@ -223,6 +223,7 @@ async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUp
                             .where(DBConnection.id == b.id)
                             .values(toggled=False)
                         )
+                        b.toggled = False
                         logger.warning(
                             f"closing connection {b.id} on {b.switch.name}({b.switch.ip}:{b.port})")
                         AppAdapter.adapter.togglePort(

@@ -67,7 +67,7 @@ class DatabaseRepository(Generic[Model]):
         self.logger.info(f"upserted:{model.id}")
         return model
 
-    async def batch_upsert(self, inputs: Union[Model, List[Model]]) -> (List[Model], List[BatchError], List[Model]):
+    async def batch_upsert(self, inputs: Union[Model, List[Model]]) -> (List[PydanticModel], List[BatchError], List[PydanticModel]):
         """
             upsert multiple model(s)
             returns a tuple of (items, errors, previousValues)
