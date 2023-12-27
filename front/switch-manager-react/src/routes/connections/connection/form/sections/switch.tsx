@@ -94,12 +94,12 @@ const RestrictedPorts = ({
               max="65535"
               className="col-span-3"
               register={register}
-              name={`switch.restrictedPorts[${i}]`}
+              name={`switch.restrictedPorts.${i}`}
             />
             <TextInput
               className="col-span-8"
               register={register}
-              name={`switch.restrictedPortsDesc[${i}]`}
+              name={`switch.restrictedPortsDesc.${i}`}
             />
           </div>
         ))}
