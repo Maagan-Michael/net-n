@@ -31,7 +31,7 @@ const upsertFullConnection = async (params: fullConnectionUpdateInput) => {
   return _res;
 };
 
-export function useUpsertFullConnection() {
+export function useUpsertFullConnection(connectionId: string) {
   const [urlArguments] = useConnectionsUrlParams();
   const queryClient = useQueryClient();
   return useMutation(
@@ -74,10 +74,7 @@ export function useUpsertFullConnection() {
               return old;
             });
           });
-          queryClient.invalidateQueries([
-            "connection",
-            { id: data.items[0].id },
-          ]);
+          queryClient.invalidateQueries(["connection", { id: connectionId }]);
         }
       },
     }

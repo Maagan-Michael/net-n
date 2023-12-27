@@ -116,7 +116,11 @@ export default function ConnectionForm({
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "connection.form",
   });
-  const { mutate, isLoading, data: response } = useUpsertFullConnection();
+  const {
+    mutate,
+    isLoading,
+    data: response,
+  } = useUpsertFullConnection(data.id);
   useEffect(() => {
     const position = i18n.dir() === "rtl" ? "top-left" : "top-right";
     if (!isLoading && response) {
