@@ -211,23 +211,22 @@ async def upsertConnection(input: Union[ConnectionUpsertInput, list[ConnectionUp
                 **items[idx].__dict__)
             b = items[idx]
             try:
-                # customer changed :
-                #   - log the change
-                #   - if the customer is null, then close the connection with the adapter (if autoUpdate is true)
+                # customer changed : log the change
                 if (e.customerId != b.customerId):
                     logger.warning(
                         f"customer changed on connection ({b.name})({b.id}) from {e.customerId} to {b.customerId}")
-                    if (b.customerId is None and b.autoUpdate and b.toggled):
-                        await repo.session.execute(
-                            update(DBConnection)
-                            .where(DBConnection.id == b.id)
-                            .values(toggled=False)
-                        )
-                        b.toggled = False
-                        logger.warning(
-                            f"closing connection {b.id} on {b.switch.name}({b.switch.ip}:{b.port})")
-                        AppAdapter.adapter.togglePort(
-                            b.switch.ip, b.port, False)
+                #   - if the customer is null, then close the connection with the adapter (if autoUpdate is true)
+                if (b.customerId is None and b.autoUpdate and b.toggled):
+                    await repo.session.execute(
+                        update(DBConnection)
+                        .where(DBConnection.id == b.id)
+                        .values(toggled=False)
+                    )
+                    b.toggled = False
+                    logger.warning(
+                        f"closing connection {b.id} on {b.switch.name}({b.switch.ip}:{b.port})")
+                    AppAdapter.adapter.togglePort(
+                        b.switch.ip, b.port, False)
                 # toggled changed :
                 #   - log the change
                 #   - toggle connection with adapter
