@@ -207,6 +207,7 @@ class SwitchesSyncModule(ModelsSyncModule):
             check if all switches are reachable
             if not, set them as notReachable
             TODO: this flag should be seen in the UI somewhere to indicate an issue to the user
+            TODO: put all unreachable switches.connections.isUp to False / True
         """
         names = [e['label'] for e in self.adapter.switches]
         await self.session.execute(

@@ -18,7 +18,7 @@ origins = [
 ]
 
 app = FastAPI(
-    # todo : authentification dependency with external oauth service
+    # todo : authentification dependency with external oauth service (v2)
     dependencies=[],
     responses={404: {"description": "Not found"}},
 )

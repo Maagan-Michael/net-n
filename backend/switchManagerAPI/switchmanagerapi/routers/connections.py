@@ -114,7 +114,7 @@ async def listConnections(repo: ConnectionRepository, input: ConnectionListInput
         .execution_options(populate_existing=True)
     )
     q = await repo.session.scalars(stm)
-    # todo : compute hasPrevious
+    # todo : compute hasPrevious (not needed as of now)
     res = []
     for (idx, e) in enumerate(q):
         connection = ConnectionOutput.model_construct(**e.__dict__)
