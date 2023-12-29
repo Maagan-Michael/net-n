@@ -1,0 +1,52 @@
+# imc adapter config
+imc:
+  https: false
+  host: "127.0.0.1"
+  port: "2000"
+  user: imc_user
+  password: imc_password
+
+# backend database config
+db: &db
+  user: db_user
+  password: db_password
+  host: "0.0.0.0"
+  port: 5432
+  database: db_name
+
+# syncModule config
+sync:
+  container: "switchmanagerapi_sync"
+  # right now only "sql" is supported
+  # could be used with a REST API, GRAPHQL, redis, mongo or other in the futur.
+  type: "sql"
+  source:
+    # requires oracle and cx_oracle drivers
+    driver: "oracle+cx_oracle"
+    user: source_db_user
+    password: source_db_pass
+    host: "0.0.0.0"
+    port: 1521
+    database: source_db_name
+    table: source_table_name
+    # use the url parameter if you want to use a service name or other specific attributes for the connection
+    url: "oracle+cx_oracle://user:pass@ip:1521?service_name=service_name"
+  destination:
+    # same database as the backend, but other target could be specified
+    <<: *db
+    # only driver supported for now [psycopg2] (syncing module only)
+    # may add asyncpg driver later
+    driver: "postgresql+psycopg2"
+    table: "public.customers"
+
+  # api url to the backend
+  api_url: "http://localhost:8080"
+
+  # column names in the source table (mapping to the backend table)
+  mapping:
+    id: "dayar_code" # find correct column
+    lastname: "dayar_name"
+    # firstname: "some_other_column"
+    address: "dira_name"
+    flat: "dira"
+    toggled: "takziv"

@@ -1,0 +1,63 @@
+{
+  "hello": "התרגום עובד",
+  "navigation": {
+    "search": {
+      "placeholder": "חיפוש…"
+    }
+  },
+  "connections": {
+    "notFound": "לא נמצאו חיבורים",
+    "noMore": "אין עוד חיבורים",
+    "table": {
+      "header": {
+        "ppp": "ppp",
+        "type": "סוג",
+        "status": "סוג חיבור",
+        "ID": "מס׳"
+      }
+    }
+  },
+  "settings": {
+    "title": "הגדרות",
+    "instructions": "בחר שפה",
+    "continue": "להמשיך לעבוד"
+  },
+  "connection": {
+    "form": {
+      "switch": {
+        "title": "מתג רשת",
+        "name": "שֵׁם",
+        "ID": "מס׳",
+        "ip": "כתובת ה - IP",
+        "lat": "קו רוחב",
+        "lng": "קו גובה",
+        "restricted": "הגבל שינויים",
+        "description": "תיאור",
+        "restricted-ports": "פחתות רשת מוגבלות"
+      },
+      "connection": {
+        "title": "אפשרויות טכניות",
+        "ppp": "ppp",
+        "port": "פחתה",
+        "toggleDate": "מתוזמן לשינוי אוטומטי",
+        "autoUpdate": "לאפשר עדכוני אוטומטיים",
+        "address": "כתובת",
+        "flat": "דִירָה"
+      },
+      "customer": {
+        "title": "פרטי לקוח",
+        "firstname": "שם פרטי",
+        "lastname": "שם משפחה",
+        "type": "סוג",
+        "ID": "מס׳",
+        "unasign": "unasign",
+        "search": "חיפוש…"
+      },
+      "save": "שמירה",
+      "errors": {
+        "general": "אירעה שגיאה בשמירת החיבור"
+      },
+      "success": "החיבור נשמר בהצלחה"
+    }
+  }
+}

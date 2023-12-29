@@ -1,0 +1,53 @@
+from sqlalchemy import exc
+from contextlib import asynccontextmanager
+from collections.abc import AsyncGenerator
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.orm import declarative_base
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine
+)
+from ..config import AppConfig
+# using sqlite in dev environment, but will change to postgresql in production
+### dev environment only ###
+Base = declarative_base()
+
+
+def getDBUrl() -> str:
+    return f"postgresql+asyncpg://{AppConfig['db']['user']}:{AppConfig['db']['password']}@{AppConfig['db']['host']}:{AppConfig['db']['port']}/{AppConfig['db']['database']}"
+
+
+async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
+    """get database session"""
+    url = getDBUrl()
+    engine = create_async_engine(url)
+    factory = async_sessionmaker(engine)
+    async with factory() as session:
+        try:
+            yield session
+            await session.commit()
+        except exc.SQLAlchemyError as e:
+            await session.rollback()
+            raise e
+        finally:
+            await session.close()
+
+
+get_context_db_session = asynccontextmanager(get_db_session)
+
+
+async def create_db() -> None:
+    """create database utility"""
+    url = getDBUrl()
+    engine = create_async_engine(url)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+
+async def drop_db() -> None:
+    """drop database utility"""
+    url = getDBUrl()
+    engine = create_async_engine(url)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)

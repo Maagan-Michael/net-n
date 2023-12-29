@@ -1,0 +1,65 @@
+{
+  "hello": "working translation",
+  "navigation": {
+    "search": {
+      "placeholder": "search..."
+    }
+  },
+  "connections": {
+    "notFound": "No connections found",
+    "noMore": "No more connections",
+    "table": {
+      "header": {
+        "ppp": "ppp",
+        "type": "type",
+        "status": "connection status",
+        "ID": "ID"
+      }
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "instructions": "select a language",
+    "continue": "continue working"
+  },
+  "connection": {
+    "form": {
+      "switch": {
+        "title": "switch",
+        "name": "name",
+        "ID": "ID",
+        "ip": "ip address",
+        "lat": "latitude",
+        "lng": "longitude",
+        "restricted": "restrict modifications",
+        "description": "description",
+        "restricted-ports": "restricted ports"
+      },
+      "connection": {
+        "title": "connection",
+        "ppp": "ppp",
+        "port": "port",
+        "toggleDate": "scheduled automatic change",
+        "autoUpdate": "allow automatic updates",
+        "address": "address",
+        "flat": "flat",
+        "restricted": "warning: this switch is restricted, you can modify the connection but assure that it's been approved",
+        "restrictedPort": "warning: this port is restricted, you can modify the connection but assure that it's been approved"
+      },
+      "customer": {
+        "title": "customer",
+        "firstname": "firstname",
+        "lastname": "lastname",
+        "type": "type",
+        "ID": "ID",
+        "unasign": "unasign",
+        "search": "search..."
+      },
+      "errors": {
+        "general": "an error has occured"
+      },
+      "save": "save",
+      "success": "connection saved"
+    }
+  }
+}

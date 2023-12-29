@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "syncmodule"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic = "^2.5.2"
+sqlalchemy = "^2.0.23"
+requests = "^2.31.0"
+pyyaml = "^6.0.1"
+cx-oracle = "^8.3.0"
+psycopg2 = "^2.9.9"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+start = "syncmodule.main:main"
