@@ -16,3 +16,12 @@ patch:
         patched: '2023-12-20T21:49:45.417Z'
         id: SNYK-JS-LODASH-567746
         path: tailwind > flaschenpost > lodash
+  SNYK-JS-LODASH-450202:
+    - tailwind > lodash:
+        patched: '2024-01-10T22:54:59.900Z'
+        id: SNYK-JS-LODASH-450202
+        path: tailwind > lodash
+    - tailwind > flaschenpost > lodash:
+        patched: '2024-01-10T22:54:59.900Z'
+        id: SNYK-JS-LODASH-450202
+        path: tailwind > flaschenpost > lodash
